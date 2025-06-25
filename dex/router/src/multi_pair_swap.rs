@@ -2,8 +2,8 @@ dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
 
 use super::factory;
-use crate::{config, events};
-use pair::{pair_actions::swap::ProxyTrait as _, read_pair_storage};
+
+use pair::ProxyTrait as _;
 
 type SwapOperationType<M> =
     MultiValue4<ManagedAddress<M>, ManagedBuffer<M>, TokenIdentifier<M>, BigUint<M>>;
@@ -12,21 +12,10 @@ pub const SWAP_TOKENS_FIXED_INPUT_FUNC_NAME: &[u8] = b"swapTokensFixedInput";
 pub const SWAP_TOKENS_FIXED_OUTPUT_FUNC_NAME: &[u8] = b"swapTokensFixedOutput";
 
 #[dharitri_sc::module]
-pub trait MultiPairSwap:
-    config::ConfigModule
-    + read_pair_storage::ReadPairStorageModule
-    + factory::FactoryModule
-    + token_send::TokenSendModule
-    + events::EventsModule
-{
+pub trait MultiPairSwap: factory::FactoryModule + token_send::TokenSendModule {
     #[payable("*")]
     #[endpoint(multiPairSwap)]
-    fn multi_pair_swap(
-        &self,
-        swap_operations: MultiValueEncoded<SwapOperationType<Self::Api>>,
-    ) -> ManagedVec<DcdtTokenPayment> {
-        require!(self.is_active(), "Not active");
-
+    fn multi_pair_swap(&self, swap_operations: MultiValueEncoded<SwapOperationType<Self::Api>>) {
         let (token_id, nonce, amount) = self.call_value().single_dcdt().into_tuple();
         require!(nonce == 0, "Invalid nonce. Should be zero");
         require!(amount > 0u64, "Invalid amount. Should not be zero");
@@ -40,7 +29,7 @@ pub trait MultiPairSwap:
 
         let caller = self.blockchain().get_caller();
         let mut payments = ManagedVec::new();
-        let mut last_payment = DcdtTokenPayment::new(token_id.clone(), nonce, amount.clone());
+        let mut last_payment = DcdtTokenPayment::new(token_id, nonce, amount);
 
         for entry in swap_operations.into_iter() {
             let (pair_address, function, token_wanted, amount_wanted) = entry.into_tuple();
@@ -64,10 +53,7 @@ pub trait MultiPairSwap:
                 );
 
                 last_payment = payment;
-
-                if residuum.amount > 0 {
-                    payments.push(residuum);
-                }
+                payments.push(residuum);
             } else {
                 sc_panic!("Invalid function to call");
             }
@@ -75,10 +61,6 @@ pub trait MultiPairSwap:
 
         payments.push(last_payment);
         self.send().direct_multi(&caller, &payments);
-
-        self.emit_multi_pair_swap_event(caller, token_id, amount, payments.clone());
-
-        payments
     }
 
     fn actual_swap_fixed_input(

@@ -6,12 +6,14 @@ use math::weighted_average_round_up;
 use mergeable::Mergeable;
 
 use crate::Epoch;
-#[derive( TypeAbi,
+
+#[derive(
     ManagedVecItem,
     TopEncode,
     TopDecode,
     NestedEncode,
     NestedDecode,
+    TypeAbi,
     Clone,
     PartialEq,
     Debug,
@@ -49,8 +51,8 @@ impl<M: ManagedTypeApi> FixedSupplyToken<M> for FarmTokenAttributes<M> {
 
 impl<M: ManagedTypeApi> Mergeable<M> for FarmTokenAttributes<M> {
     #[inline]
-    fn can_merge_with(&self, _other: &Self) -> bool {
-        true
+    fn can_merge_with(&self, other: &Self) -> bool {
+        self.original_owner == other.original_owner
     }
 
     fn merge_with(&mut self, other: Self) {

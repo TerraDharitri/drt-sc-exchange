@@ -38,7 +38,6 @@ pub trait UnlockWithPenaltyModule:
     #[payable("*")]
     #[endpoint(unlockEarly)]
     fn unlock_early(&self) {
-        self.require_not_paused();
         let caller = self.blockchain().get_caller();
         let payment = self.call_value().single_dcdt();
         let reduce_result = self.reduce_lock_period_common(&caller, payment.clone(), None);
@@ -60,7 +59,6 @@ pub trait UnlockWithPenaltyModule:
     #[payable("*")]
     #[endpoint(reduceLockPeriod)]
     fn reduce_lock_period(&self, new_lock_period: Epoch) -> DcdtTokenPayment {
-        self.require_not_paused();
         self.require_is_listed_lock_option(new_lock_period);
 
         let caller = self.blockchain().get_caller();

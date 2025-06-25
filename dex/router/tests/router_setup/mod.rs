@@ -27,11 +27,9 @@ pub const MIN_LOCKED_PERIOD_EPOCHS: u64 = 100;
 pub const USER_CUSTOM_TOKEN_BALANCE: u64 = 1_000_000_000;
 pub const USER_USDC_BALANCE: u64 = 1_000_000;
 
-use pair::config::ConfigModule as PairConfigModule;
-use pair::pair_actions::add_liq::AddLiquidityModule;
+use pair::config::*;
 use pair::*;
 use pausable::{PausableModule, State};
-use router::config::ConfigModule;
 use router::factory::*;
 use router::multi_pair_swap::*;
 use router::*;
@@ -46,7 +44,7 @@ where
     pub owner_address: Address,
     pub user_address: Address,
     pub router_wrapper: ContractObjWrapper<router::ContractObj<DebugApi>, RouterObjBuilder>,
-    pub moa_pair_wrapper: ContractObjWrapper<pair::ContractObj<DebugApi>, PairObjBuilder>,
+    pub pair_wrapper: ContractObjWrapper<pair::ContractObj<DebugApi>, PairObjBuilder>,
     pub usdc_pair_wrapper: ContractObjWrapper<pair::ContractObj<DebugApi>, PairObjBuilder>,
 }
 
@@ -67,7 +65,7 @@ where
             ROUTER_WASM_PATH,
         );
 
-        let moa_pair_wrapper = blockchain_wrapper.create_sc_account(
+        let pair_wrapper = blockchain_wrapper.create_sc_account(
             &rust_zero,
             Some(&owner_addr),
             pair_builder,
@@ -82,7 +80,7 @@ where
         );
 
         blockchain_wrapper
-            .execute_tx(&owner_addr, &moa_pair_wrapper, &rust_zero, |sc| {
+            .execute_tx(&owner_addr, &pair_wrapper, &rust_zero, |sc| {
                 let first_token_id = managed_token_id!(WREWA_TOKEN_ID);
                 let second_token_id = managed_token_id!(MOA_TOKEN_ID);
                 let router_address = managed_address!(&owner_addr);
@@ -144,7 +142,7 @@ where
                         first_token_id: managed_token_id!(WREWA_TOKEN_ID),
                         second_token_id: managed_token_id!(MOA_TOKEN_ID),
                     },
-                    managed_address!(moa_pair_wrapper.address_ref()),
+                    managed_address!(pair_wrapper.address_ref()),
                 );
                 sc.pair_map().insert(
                     PairTokens {
@@ -158,7 +156,7 @@ where
 
         let lp_token_roles = [DcdtLocalRole::Mint, DcdtLocalRole::Burn];
         blockchain_wrapper.set_dcdt_local_roles(
-            moa_pair_wrapper.address_ref(),
+            pair_wrapper.address_ref(),
             LPMOA_TOKEN_ID,
             &lp_token_roles[..],
         );
@@ -192,7 +190,7 @@ where
             owner_address: owner_addr,
             user_address: user_addr,
             router_wrapper,
-            moa_pair_wrapper,
+            pair_wrapper,
             usdc_pair_wrapper,
         }
     }
@@ -214,7 +212,7 @@ where
         self.blockchain_wrapper
             .execute_dcdt_multi_transfer(
                 &self.user_address,
-                &self.moa_pair_wrapper,
+                &self.pair_wrapper,
                 &payments,
                 |sc| {
                     sc.add_liquidity(
@@ -280,6 +278,19 @@ where
                     }
 
                     sc.multi_pair_swap(swap_operations);
+                },
+            )
+            .assert_ok();
+    }
+
+    pub fn migrate_pair_map(&mut self) {
+        self.blockchain_wrapper
+            .execute_tx(
+                &self.owner_address,
+                &self.router_wrapper,
+                &rust_biguint!(0u64),
+                |sc| {
+                    sc.migrate_pair_map();
                 },
             )
             .assert_ok();

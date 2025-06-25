@@ -2,12 +2,14 @@ dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
 
 use crate::config;
-#[derive( TypeAbi, TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Debug, Clone)]
+
+#[derive(TypeAbi, TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Debug, Clone)]
 pub enum VoteType {
     Upvote = 1,
     DownVote = 2,
 }
-#[derive( TypeAbi, TopEncode, TopDecode, PartialEq, Debug)]
+
+#[derive(TypeAbi, TopEncode, TopDecode, PartialEq, Debug)]
 pub struct VoteNFTAttributes<M: ManagedTypeApi> {
     pub proposal_id: u64,
     pub vote_type: VoteType,

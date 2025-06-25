@@ -3,7 +3,7 @@ use crate::phase::Phase;
 dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
 
-#[derive( TypeAbi,TopEncode)]
+#[derive(TypeAbi, TopEncode)]
 pub struct DepositEvent<M: ManagedTypeApi> {
     token_id_in: RewaOrDcdtTokenIdentifier<M>,
     token_amount_in: BigUint<M>,
@@ -16,7 +16,7 @@ pub struct DepositEvent<M: ManagedTypeApi> {
     current_phase: Phase<M>,
 }
 
-#[derive( TypeAbi,TopEncode)]
+#[derive(TypeAbi, TopEncode)]
 pub struct WithdrawEvent<M: ManagedTypeApi> {
     token_id_out: RewaOrDcdtTokenIdentifier<M>,
     token_amount_out: BigUint<M>,
@@ -29,7 +29,7 @@ pub struct WithdrawEvent<M: ManagedTypeApi> {
     current_phase: Phase<M>,
 }
 
-#[derive( TypeAbi,TopEncode)]
+#[derive(TypeAbi, TopEncode)]
 pub struct RedeemEvent<M: ManagedTypeApi> {
     redeem_token_id: TokenIdentifier<M>,
     redeem_token_nonce: u64,

@@ -5,12 +5,15 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Upgrade:                              1
-// Endpoints:                           21
+// Endpoints:                           22
 // Async Callback (empty):               1
 // Total number of exported functions:  24
 
 #![no_std]
+
+// Configuration that works with rustc < 1.73.0.
+// TODO: Recommended rustc version: 1.73.0 or newer.
+#![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
 dharitri_sc_wasm_adapter::panic_handler!();
@@ -39,7 +42,7 @@ dharitri_sc_wasm_adapter::endpoints! {
         getProposal => proposal
         getProposalIdCounter => proposal_id_counter
         getVoteNFTId => vote_nft_id
-        getMoaTokenId => moa_token_id
+        getMoaTokenId => token_id
         getProposalStatus => get_proposal_status_view
     )
 }

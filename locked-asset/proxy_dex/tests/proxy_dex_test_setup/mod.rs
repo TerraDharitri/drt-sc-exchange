@@ -1,7 +1,5 @@
-#![allow(dead_code)]
 #![allow(deprecated)]
 
-use common_structs::{LockedAssetTokenAttributesEx, UnlockMilestoneEx, UnlockScheduleEx};
 use config::ConfigModule;
 use energy_factory::{locked_token_transfer::LockedTokenTransferModule, SimpleLockEnergy};
 use energy_query::EnergyQueryModule;
@@ -13,7 +11,7 @@ use dharitri_sc::{
     codec::multi_types::OptionalValue,
     contract_base::{CallableContract, ContractBase},
     storage::mappers::StorageTokenWrapper,
-    types::{Address, DcdtLocalRole, ManagedAddress, ManagedVec, MultiValueEncoded},
+    types::{Address, DcdtLocalRole, ManagedAddress, MultiValueEncoded},
 };
 use dharitri_sc_modules::pause::PauseModule;
 use dharitri_sc_scenario::{
@@ -152,24 +150,6 @@ where
 
         b_mock.set_dcdt_balance(&second_user, MOA_TOKEN_ID, &user_balance);
         b_mock.set_dcdt_balance(&second_user, WREWA_TOKEN_ID, &user_balance);
-
-        let mut unlock_milestones = ManagedVec::<DebugApi, UnlockMilestoneEx>::new();
-        unlock_milestones.push(UnlockMilestoneEx {
-            unlock_percent: 10_000,
-            unlock_epoch: LOCK_OPTIONS[0],
-        });
-
-        let old_token_attributes = LockedAssetTokenAttributesEx {
-            is_merged: false,
-            unlock_schedule: UnlockScheduleEx { unlock_milestones },
-        };
-        b_mock.set_nft_balance(
-            &first_user,
-            LEGACY_LOCKED_TOKEN_ID,
-            3, // higher random nonce to avoid nonce caching conflicts
-            &rust_biguint!(USER_BALANCE),
-            &old_token_attributes,
-        );
 
         // users lock tokens
         b_mock

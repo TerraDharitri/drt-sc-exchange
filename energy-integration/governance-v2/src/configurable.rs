@@ -135,8 +135,7 @@ pub trait ConfigurablePropertiesModule:
             "Not valid value for withdraw percentage if defeated!"
         );
 
-        self.withdraw_percentage_defeated()
-            .set(new_withdraw_percentage);
+        self.withdraw_percentage_defeated().set(new_withdraw_percentage);
     }
 
     fn try_change_fee_token_id(&self, fee_token_id: TokenIdentifier) {

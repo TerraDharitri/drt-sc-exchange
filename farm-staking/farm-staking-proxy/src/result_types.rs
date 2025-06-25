@@ -41,7 +41,7 @@ pub struct PairRemoveLiquidityResult<M: ManagedTypeApi> {
 
 // proxy return types
 
-#[derive( TypeAbi, TopEncode, TopDecode)]
+#[derive(TypeAbi, TopEncode, TopDecode)]
 pub struct StakeProxyResult<M: ManagedTypeApi> {
     pub dual_yield_tokens: DcdtTokenPayment<M>,
     pub staking_boosted_rewards: DcdtTokenPayment<M>,
@@ -62,7 +62,7 @@ impl<M: ManagedTypeApi> StakeProxyResult<M> {
     }
 }
 
-#[derive( TypeAbi, TopEncode, TopDecode)]
+#[derive(TypeAbi, TopEncode, TopDecode)]
 pub struct ClaimDualYieldResult<M: ManagedTypeApi> {
     pub lp_farm_rewards: DcdtTokenPayment<M>,
     pub staking_farm_rewards: DcdtTokenPayment<M>,
@@ -86,7 +86,7 @@ impl<M: ManagedTypeApi> ClaimDualYieldResult<M> {
     }
 }
 
-#[derive( TypeAbi, TopEncode, TopDecode)]
+#[derive(TypeAbi, TopEncode, TopDecode)]
 pub struct UnstakeResult<M: ManagedTypeApi> {
     pub other_token_payment: DcdtTokenPayment<M>,
     pub lp_farm_rewards: DcdtTokenPayment<M>,
@@ -112,7 +112,7 @@ impl<M: ManagedTypeApi> UnstakeResult<M> {
     }
 }
 
-#[derive( TypeAbi, TopEncode, TopDecode)]
+#[derive(TypeAbi, TopEncode, TopDecode)]
 pub struct MergeResult<M: ManagedTypeApi> {
     pub lp_farm_rewards: DcdtTokenPayment<M>,
     pub staking_farm_rewards: DcdtTokenPayment<M>,

@@ -1,4 +1,6 @@
 #![no_std]
+#![feature(trait_alias)]
+#![feature(int_roundings)]
 
 dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
@@ -16,7 +18,7 @@ use common_types::PaymentsVec;
 use energy_query::Energy;
 use week_timekeeping::{Week, EPOCHS_IN_WEEK};
 
-#[derive( TypeAbi, TopEncode, TopDecode, Clone, PartialEq, Debug)]
+#[derive(TypeAbi, TopEncode, TopDecode, Clone, PartialEq, Debug)]
 pub struct ClaimProgress<M: ManagedTypeApi> {
     pub energy: Energy<M>,
     pub week: Week,

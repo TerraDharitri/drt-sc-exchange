@@ -9,14 +9,13 @@ use dharitri_sc::{
         MultiValueEncoded,
     },
 };
-use pair::{
-    config::ConfigModule as PairConfigModule, pair_actions::initial_liq::InitialLiquidityModule,
-    Pair,
-};
+use pair::{config::ConfigModule, Pair};
 use pausable::{PausableModule, State};
 use router::{
-    config::ConfigModule, enable_swap_by_user::EnableSwapByUserModule, factory::PairTokens,
-    multi_pair_swap::SWAP_TOKENS_FIXED_INPUT_FUNC_NAME, Router,
+    enable_swap_by_user::EnableSwapByUserModule,
+    factory::{FactoryModule, PairTokens},
+    multi_pair_swap::SWAP_TOKENS_FIXED_INPUT_FUNC_NAME,
+    Router,
 };
 use router_setup::*;
 
@@ -113,7 +112,13 @@ fn test_router_upgrade_pair() {
         .execute_tx(&owner, &router_wrapper, &rust_zero, |sc| {
             let first_token_id = managed_token_id!(CUSTOM_TOKEN_ID);
             let second_token_id = managed_token_id!(USDC_TOKEN_ID);
-            sc.upgrade_pair_endpoint(first_token_id, second_token_id);
+            sc.upgrade_pair_endpoint(
+                first_token_id,
+                second_token_id,
+                managed_address!(&user),
+                300,
+                50,
+            );
         })
         .assert_ok();
 
@@ -128,6 +133,7 @@ fn test_router_upgrade_pair() {
 #[test]
 fn test_multi_pair_swap() {
     let mut router_setup = RouterSetup::new(router::contract_obj, pair::contract_obj);
+    router_setup.migrate_pair_map();
 
     router_setup.add_liquidity();
 
@@ -149,7 +155,7 @@ fn test_multi_pair_swap() {
 
     let ops = vec![
         (
-            router_setup.moa_pair_wrapper.address_ref().clone(),
+            router_setup.pair_wrapper.address_ref().clone(),
             SWAP_TOKENS_FIXED_INPUT_FUNC_NAME,
             WREWA_TOKEN_ID, //swap to wrewa
             1,
@@ -247,6 +253,8 @@ fn user_enable_pair_swaps_through_router_test() {
                 },
                 managed_address!(pair_wrapper.address_ref()),
             );
+
+            sc.migrate_pair_map();
 
             sc.add_common_tokens_for_user_pairs(MultiValueEncoded::from(ManagedVec::from(vec![
                 managed_token_id!(USDC_TOKEN_ID),
@@ -432,6 +440,8 @@ fn user_enable_pair_swaps_fail_test() {
                 },
                 managed_address!(pair_wrapper.address_ref()),
             );
+
+            sc.migrate_pair_map();
 
             sc.add_common_tokens_for_user_pairs(MultiValueEncoded::from(ManagedVec::from(vec![
                 managed_token_id!(USDC_TOKEN_ID),

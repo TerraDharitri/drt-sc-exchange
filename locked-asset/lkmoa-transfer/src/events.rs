@@ -2,7 +2,8 @@ dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
 
 use crate::LockedFunds;
-#[derive( TypeAbi,TopEncode)]
+
+#[derive(TypeAbi, TopEncode)]
 pub struct LkmoaTransferEvent<M: ManagedTypeApi> {
     sender: ManagedAddress<M>,
     receiver: ManagedAddress<M>,

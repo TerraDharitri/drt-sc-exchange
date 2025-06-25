@@ -28,7 +28,7 @@ pub trait PauseAll:
     #[init]
     fn init(&self) {}
 
-    #[upgrade]
+    #[endpoint]
     fn upgrade(&self) {}
 
     #[only_owner]

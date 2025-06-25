@@ -7,12 +7,14 @@ use mergeable::ExternallyMergeable;
 use dharitri_sc::api::{CallTypeApi, StorageMapperApi};
 
 use crate::external_merging::merge_locked_tokens_through_factory;
-#[derive( TypeAbi,
+
+#[derive(
     ManagedVecItem,
     TopEncode,
     TopDecode,
     NestedEncode,
     NestedDecode,
+    TypeAbi,
     Clone,
     PartialEq,
     Debug,

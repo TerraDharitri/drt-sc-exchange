@@ -10,12 +10,14 @@ use crate::{
     external_merging::{merge_farm_tokens_through_farm, merge_locked_tokens_through_factory},
     wrapped_lp_attributes::{merge_wrapped_lp_tokens, WrappedLpToken},
 };
-#[derive( TypeAbi,
+
+#[derive(
     ManagedVecItem,
     TopEncode,
     TopDecode,
     NestedEncode,
     NestedDecode,
+    TypeAbi,
     Clone,
     PartialEq,
     Debug,

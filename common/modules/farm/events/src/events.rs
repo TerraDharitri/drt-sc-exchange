@@ -10,7 +10,7 @@ use contexts::{
     storage_cache::{FarmContracTraitBounds, StorageCache},
 };
 
-#[derive( TypeAbi,TopEncode)]
+#[derive(TypeAbi, TopEncode)]
 pub struct EnterFarmEvent<M: ManagedTypeApi> {
     farming_token_id: TokenIdentifier<M>,
     farming_token_amount: BigUint<M>,
@@ -22,7 +22,7 @@ pub struct EnterFarmEvent<M: ManagedTypeApi> {
     created_with_merge: bool,
 }
 
-#[derive( TypeAbi,TopEncode)]
+#[derive(TypeAbi, TopEncode)]
 pub struct ExitFarmEvent<M: ManagedTypeApi> {
     farming_token_id: TokenIdentifier<M>,
     farming_token_amount: BigUint<M>,
@@ -33,7 +33,7 @@ pub struct ExitFarmEvent<M: ManagedTypeApi> {
     farm_attributes: ManagedBuffer<M>,
 }
 
-#[derive( TypeAbi,TopEncode)]
+#[derive(TypeAbi, TopEncode)]
 pub struct ClaimRewardsEvent<M: ManagedTypeApi> {
     old_farm_token: DcdtTokenPayment<M>,
     new_farm_token: DcdtTokenPayment<M>,
@@ -45,7 +45,7 @@ pub struct ClaimRewardsEvent<M: ManagedTypeApi> {
     created_with_merge: bool,
 }
 
-#[derive( TypeAbi,TopEncode)]
+#[derive(TypeAbi, TopEncode)]
 pub struct CompoundRewardsEvent<M: ManagedTypeApi> {
     old_farm_token: DcdtTokenPayment<M>,
     new_farm_token: DcdtTokenPayment<M>,

@@ -3,7 +3,8 @@ dharitri_sc::derive_imports!();
 
 use crate::config;
 use crate::errors::*;
-#[derive( TypeAbi, TopEncode, TopDecode, PartialEq, Debug)]
+
+#[derive(TypeAbi, TopEncode, TopDecode, PartialEq, Debug)]
 pub enum ProposalStatus {
     Pending, //Starts from 0
     Active,
@@ -11,7 +12,8 @@ pub enum ProposalStatus {
     Succeeded,
     Executed,
 }
-#[derive( TypeAbi,TopEncode, TopDecode, NestedEncode, NestedDecode, ManagedVecItem )]
+
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, ManagedVecItem, TypeAbi)]
 pub struct Action<M: ManagedTypeApi> {
     pub gas_limit: u64,
     pub dest_address: ManagedAddress<M>,
@@ -19,12 +21,14 @@ pub struct Action<M: ManagedTypeApi> {
     pub endpoint_name: ManagedBuffer<M>,
     pub arguments: ManagedVec<M, ManagedBuffer<M>>,
 }
-#[derive( TypeAbi,TopEncode, TopDecode)]
+
+#[derive(TopEncode, TopDecode, TypeAbi)]
 pub struct ProposalCreationArgs<M: ManagedTypeApi> {
     pub description: ManagedBuffer<M>,
     pub actions: ManagedVec<M, Action<M>>,
 }
-#[derive( TypeAbi,TopEncode, TopDecode )]
+
+#[derive(TopEncode, TopDecode, TypeAbi)]
 pub struct Proposal<M: ManagedTypeApi> {
     pub id: u64,
     pub creation_block: u64,

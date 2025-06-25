@@ -3,7 +3,7 @@ dharitri_sc::derive_imports!();
 
 use crate::energy::Energy;
 
-#[derive( TypeAbi, TopEncode, TopDecode)]
+#[derive(TypeAbi, TopEncode, TopDecode)]
 pub struct EnergyUpdatedEvent<M: ManagedTypeApi> {
     pub old_energy_entry: Energy<M>,
     pub new_energy_entry: Energy<M>,

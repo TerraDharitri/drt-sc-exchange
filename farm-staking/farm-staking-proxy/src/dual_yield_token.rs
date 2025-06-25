@@ -3,7 +3,7 @@ use fixed_supply_token::FixedSupplyToken;
 dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
 
-#[derive( TypeAbi, TopEncode, TopDecode, Clone, PartialEq, Debug)]
+#[derive(TypeAbi, TopEncode, TopDecode, Clone, PartialEq, Debug)]
 pub struct DualYieldTokenAttributes<M: ManagedTypeApi> {
     pub lp_farm_token_nonce: u64,
     pub lp_farm_token_amount: BigUint<M>,

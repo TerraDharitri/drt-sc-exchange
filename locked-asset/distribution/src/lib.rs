@@ -16,12 +16,14 @@ pub struct BigUintEpochPair<M: ManagedTypeApi> {
     pub biguint: BigUint<M>,
     pub epoch: u64,
 }
-#[derive( TypeAbi,ManagedVecItem, TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq )]
+
+#[derive(ManagedVecItem, TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, TypeAbi)]
 pub struct UserLockedAssetKey<M: ManagedTypeApi> {
     pub caller: ManagedAddress<M>,
     pub spread_epoch: u64,
 }
-#[derive( TypeAbi,TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Clone)]
+
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, TypeAbi, Clone)]
 pub struct CommunityDistribution<M: ManagedTypeApi> {
     pub total_amount: BigUint<M>,
     pub spread_epoch: u64,
@@ -45,7 +47,7 @@ pub trait Distribution: global_op::GlobalOperationModule {
             .set_if_empty(&locked_asset_factory_address);
     }
 
-    #[upgrade]
+    #[endpoint]
     fn upgrade(&self) {}
 
     #[only_owner]

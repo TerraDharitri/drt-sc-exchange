@@ -9,7 +9,7 @@
             "step": "scQuery",
             "txId": "calculateRewards",
             "tx": {
-                "to": "sc:moa_farm_contract",
+                "to": "sc:farm_contract",
                 "function": "calculateRewardsForGivenPosition",
                 "arguments": [
                     "address:user1",
@@ -42,7 +42,7 @@
             "step": "scQuery",
             "txId": "calculateRewards2",
             "tx": {
-                "to": "sc:moa_farm_contract",
+                "to": "sc:farm_contract",
                 "function": "calculateRewardsForGivenPosition",
                 "arguments": [
                     "address:user1",

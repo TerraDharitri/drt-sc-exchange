@@ -17,7 +17,7 @@ fn init(
         voting_delay_in_blocks: u64,
         voting_period_in_blocks: u64,
         vote_nft_id: TokenIdentifier,
-        moa_token_id: TokenIdentifier,
+        token_id: TokenIdentifier,
         min_weight_for_proposal: BigUint,
         governance_token_ids: ManagedVec<TokenIdentifier>,
         price_providers: MultiValueEncoded<MultiValue2<TokenIdentifier, ManagedAddress>>
@@ -28,7 +28,7 @@ fn init(
 - voting_delay_in_blocks -> Once a proposal is created, users cannot vote immediately, to avoid impulsivity. A number of blocks must be passed before voting is enabled.
 - voting_period_in_blocks -> Self explanatory.
 - vote_nft_id -> Each vote will be represented by an NFT. We'll see later what attributes this NFT has.
-- moa_token_id -> Self explanatory.
+- token_id -> Self explanatory.
 - min_weight_for_proposal -> The minimum weight for creating a proposal. We'll see later what this weight means.
 - governance_token_ids -> A list of tokens that users can vote with. Will contain MOA, but also LP_MOA, FARM_MOA and so on.
 - price_providers -> A list of pairs, Token-Address, where the contract can query a token's weight.

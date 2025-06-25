@@ -11,8 +11,9 @@ use common_structs::FarmTokenAttributes;
 use contexts::storage_cache::StorageCache;
 
 use farm_base_impl::base_traits_impl::{DefaultFarmWrapper, FarmContract};
+use fixed_supply_token::FixedSupplyToken;
 
-use crate::{exit_penalty, MAX_PERCENT};
+use crate::exit_penalty;
 
 pub type DoubleMultiPayment<M> = MultiValue2<DcdtTokenPayment<M>, DcdtTokenPayment<M>>;
 pub type ClaimRewardsResultType<M> = DoubleMultiPayment<M>;
@@ -182,17 +183,18 @@ pub trait BaseFunctionsModule:
         }
     }
 
-    fn merge_and_return_attributes<FC: FarmContract<FarmSc = Self>>(
-        &self,
-        orig_caller: &ManagedAddress,
-    ) -> FC::AttributesType {
+    fn merge_farm_tokens<FC: FarmContract<FarmSc = Self>>(&self) -> DcdtTokenPayment<Self::Api> {
         let payments = self.get_non_empty_payments();
         let token_mapper = self.farm_token();
         token_mapper.require_all_same_token(&payments);
 
-        FC::check_and_update_user_farm_position(self, orig_caller, &payments);
+        let caller = self.blockchain().get_caller();
+        FC::check_and_update_user_farm_position(self, &caller, &payments);
 
-        self.merge_from_payments_and_burn(payments, &token_mapper)
+        let output_attributes: FC::AttributesType =
+            self.merge_from_payments_and_burn(payments, &token_mapper);
+        let new_token_amount = output_attributes.get_total_supply();
+        token_mapper.nft_create(new_token_amount, &output_attributes)
     }
 
     fn claim_only_boosted_payment(&self, caller: &ManagedAddress) -> BigUint {
@@ -218,8 +220,10 @@ pub trait BaseFunctionsModule:
         }
 
         if migrated_amount > 0 {
+            let mut user_total_farm_position = self.get_user_total_farm_position(caller);
+            user_total_farm_position.total_farm_position += &migrated_amount;
             self.user_total_farm_position(caller)
-                .update(|total_farm_position| *total_farm_position += &migrated_amount);
+                .set(user_total_farm_position);
         }
 
         migrated_amount
@@ -229,16 +233,10 @@ pub trait BaseFunctionsModule:
         if migrated_amount == BigUint::zero() {
             return;
         }
-
-        let user_total_farm_position_mapper = self.user_total_farm_position(caller);
-        let mut user_total_farm_position = user_total_farm_position_mapper.get();
-
-        if user_total_farm_position > migrated_amount {
-            user_total_farm_position -= &migrated_amount;
-            user_total_farm_position_mapper.set(user_total_farm_position);
-        } else {
-            user_total_farm_position_mapper.clear();
-        }
+        self.user_total_farm_position(caller)
+            .update(|user_total_farm_position| {
+                user_total_farm_position.total_farm_position -= migrated_amount;
+            });
     }
 
     fn end_produce_rewards<FC: FarmContract<FarmSc = Self>>(&self) {
@@ -285,9 +283,10 @@ where
         sc: &<Self as FarmContract>::FarmSc,
         caller: &ManagedAddress<<<Self as FarmContract>::FarmSc as ContractBase>::Api>,
     ) -> BigUint<<<Self as FarmContract>::FarmSc as ContractBase>::Api> {
-        let user_total_farm_position = sc.user_total_farm_position(caller).get();
+        let user_total_farm_position = sc.get_user_total_farm_position(caller);
+        let user_farm_position = user_total_farm_position.total_farm_position;
 
-        sc.claim_boosted_yields_rewards(caller, user_total_farm_position)
+        sc.claim_boosted_yields_rewards(caller, user_farm_position)
     }
 }
 
@@ -347,7 +346,7 @@ where
         if user_farming_epochs >= min_farming_epochs {
             BigUint::zero()
         } else {
-            total_exit_amount * sc.penalty_percent().get() / MAX_PERCENT
+            total_exit_amount * sc.penalty_percent().get() / exit_penalty::MAX_PERCENT
         }
     }
 

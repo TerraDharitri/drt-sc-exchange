@@ -15,7 +15,9 @@ path = "../../common/modules/token_send"
 path = "../../common/modules/pausable"
 
 [dependencies.dharitri-sc]
-version = "1.0.1"
+version = "1.6.4" #teja789
+#[dependencies.dharitri-sc]
+#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.45.2/framework/base"
 features = ["dcdt-token-payment-legacy-decode"]
 
 [dependencies.pair]
@@ -28,4 +30,6 @@ path = "../../common/modules/locking_module"
 path = "../../locked-asset/simple-lock"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.0.1"
+version = "=1.6.4" #teja789
+# [dependencies.dharitri-sc-scenario]
+# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.45.2/framework/scenario"

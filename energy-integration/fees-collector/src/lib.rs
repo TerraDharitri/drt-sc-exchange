@@ -44,7 +44,7 @@ pub trait FeesCollector:
         self.energy_factory_address().set(&energy_factory_address);
     }
 
-    #[upgrade]
+    #[endpoint]
     fn upgrade(&self) {}
 
     #[endpoint(claimRewards)]

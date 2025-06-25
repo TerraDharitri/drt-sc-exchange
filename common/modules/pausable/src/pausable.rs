@@ -4,7 +4,8 @@ use permissions_module::Permissions;
 
 dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
-#[derive( TypeAbi, TopEncode, TopDecode, PartialEq, Copy, Clone, Debug)]
+
+#[derive(TypeAbi, TopEncode, TopDecode, PartialEq, Copy, Clone, Debug)]
 pub enum State {
     Inactive,
     Active,

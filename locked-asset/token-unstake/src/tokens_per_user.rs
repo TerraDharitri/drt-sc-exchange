@@ -1,11 +1,13 @@
 dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
-#[derive( TypeAbi,
+
+#[derive(
     ManagedVecItem,
     TopEncode,
     TopDecode,
     NestedEncode,
     NestedDecode,
+    TypeAbi,
     Clone,
     PartialEq,
     Debug,

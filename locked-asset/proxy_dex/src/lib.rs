@@ -1,4 +1,6 @@
 #![no_std]
+#![allow(clippy::too_many_arguments)]
+#![feature(exact_size_is_empty)]
 
 dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
@@ -7,11 +9,11 @@ pub mod energy_update;
 pub mod events;
 pub mod external_merging;
 pub mod farm_interactions;
-pub mod other_sc_whitelist;
 pub mod pair_interactions;
 pub mod proxy_common;
 pub mod proxy_farm;
 pub mod proxy_pair;
+pub mod other_sc_whitelist;
 pub mod wrapped_farm_attributes;
 pub mod wrapped_farm_token_merge;
 pub mod wrapped_lp_attributes;
@@ -56,19 +58,8 @@ pub trait ProxyDexImpl:
             .set_if_empty(&energy_factory_address);
     }
 
-    #[upgrade]
-    fn upgrade(&self, old_locked_token_id: TokenIdentifier, old_factory_address: ManagedAddress) {
-        require!(
-            old_locked_token_id.is_valid_dcdt_identifier(),
-            "Invalid token id"
-        );
-        self.require_sc_address(&old_factory_address);
-
-        self.old_locked_token_id()
-            .set_if_empty(&old_locked_token_id);
-        self.old_factory_address()
-            .set_if_empty(&old_factory_address);
-    }
+    #[endpoint]
+    fn upgrade(&self) {}
 
     #[only_owner]
     #[payable("REWA")]

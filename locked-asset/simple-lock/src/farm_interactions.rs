@@ -6,7 +6,7 @@ dharitri_sc::derive_imports!();
 type EnterFarmResultType<BigUint> =
     MultiValue2<DcdtTokenPayment<BigUint>, DcdtTokenPayment<BigUint>>;
 type ExitFarmResultType<BigUint> =
-    MultiValue2<DcdtTokenPayment<BigUint>, DcdtTokenPayment<BigUint>>;
+    MultiValue3<DcdtTokenPayment<BigUint>, DcdtTokenPayment<BigUint>, DcdtTokenPayment<BigUint>>;
 type ClaimRewardsResultType<BigUint> =
     MultiValue2<DcdtTokenPayment<BigUint>, DcdtTokenPayment<BigUint>>;
 
@@ -74,7 +74,7 @@ pub trait FarmInteractionsModule {
     ) -> EnterFarmResultWrapper<Self::Api> {
         let mut contract_call = self
             .farm_proxy(farm_address)
-            .enter_farm(OptionalValue::Some(caller))
+            .enter_farm(caller)
             .with_dcdt_transfer(DcdtTokenPayment::new(
                 farming_token,
                 0,
@@ -108,7 +108,7 @@ pub trait FarmInteractionsModule {
     ) -> ExitFarmResultWrapper<Self::Api> {
         let raw_results: RawResultsType<Self::Api> = self
             .farm_proxy(farm_address)
-            .exit_farm(OptionalValue::Some(caller))
+            .exit_farm(caller)
             .with_dcdt_transfer(DcdtTokenPayment::new(
                 farm_token,
                 farm_token_nonce,
@@ -138,7 +138,7 @@ pub trait FarmInteractionsModule {
     ) -> FarmClaimRewardsResultWrapper<Self::Api> {
         let raw_results: RawResultsType<Self::Api> = self
             .farm_proxy(farm_address)
-            .claim_rewards(OptionalValue::Some(caller))
+            .claim_rewards(caller)
             .with_dcdt_transfer(DcdtTokenPayment::new(
                 farm_token,
                 farm_token_nonce,

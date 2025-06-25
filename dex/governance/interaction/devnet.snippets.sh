@@ -15,11 +15,11 @@ issueToken() {
         --proxy=${PROXY} --chain=${CHAIN_ID} \
         --value=50000000000000000 \
         --function="issue" \
-        --arguments 0x4d4558 0x4d4558 0xfffffffffffffffffffffffffffffffffffff 18 \
+        --arguments 0x4d4f41 0x4d4f41 0xfffffffffffffffffffffffffffffffffffff 18 \
         --send || return
 }
 
-MOA_TOKEN_ID="0x4d45582d373631343430"
+MOA_TOKEN_ID="0x4d4f412d373631343430"
 
 issueVoteNFT() {
     drtpy --verbose contract call ${DCDT_ISSUE_ADDRESS} --recall-nonce \
@@ -51,7 +51,7 @@ deployGovernanceSC() {
         ${VOTE_NFT_ID} \
         ${MOA_TOKEN_ID} \
         ${MIN_WEIGHT_FOR_PROPOSAL} \
-        0x0000000a4d45582d373631343430 \
+        0x0000000a4d4f412d373631343430 \
         --send || return
 }
 

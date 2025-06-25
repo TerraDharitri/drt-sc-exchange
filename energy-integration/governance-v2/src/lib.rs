@@ -61,7 +61,7 @@ pub trait GovernanceV2:
         self.try_change_fee_token_id(fee_token);
     }
 
-    #[upgrade]
+    #[endpoint]
     fn upgrade(&self) {}
 
     /// Propose a list of actions.

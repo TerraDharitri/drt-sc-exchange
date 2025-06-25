@@ -10,7 +10,7 @@ pub type ProposalId = usize;
 pub type GovernanceActionAsMultiArg<M> =
     MultiValue4<u64, ManagedAddress<M>, ManagedBuffer<M>, ManagedVec<M, ManagedBuffer<M>>>;
 
-#[derive( TypeAbi, TopEncode, TopDecode, PartialEq, Eq)]
+#[derive(TypeAbi, TopEncode, TopDecode, PartialEq, Eq)]
 pub enum GovernanceProposalStatus {
     None,
     Pending,
@@ -20,7 +20,7 @@ pub enum GovernanceProposalStatus {
     Succeeded,
 }
 
-#[derive( TypeAbi, TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Debug)]
+#[derive(TypeAbi, TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Debug)]
 pub struct GovernanceAction<M: ManagedTypeApi> {
     pub gas_limit: u64,
     pub dest_address: ManagedAddress<M>,
@@ -52,7 +52,8 @@ impl<M: ManagedTypeApi> From<GovernanceActionAsMultiArg<M>> for GovernanceAction
     }
 }
 
-#[derive( TypeAbi, NestedEncode, NestedDecode, PartialEq, Debug, TopEncodeOrDefault, TopDecodeOrDefault,
+#[derive(
+    TypeAbi, NestedEncode, NestedDecode, PartialEq, Debug, TopEncodeOrDefault, TopDecodeOrDefault,
 )]
 pub struct GovernanceProposal<M: ManagedTypeApi> {
     pub proposal_id: usize,

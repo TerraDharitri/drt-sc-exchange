@@ -113,7 +113,7 @@ pub trait PriceDiscovery:
         self.set_locking_sc_address(locking_sc_address);
     }
 
-    #[upgrade]
+    #[endpoint]
     fn upgrade(&self) {}
 
     /// Users can deposit either launched_token or accepted_token.

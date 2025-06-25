@@ -1,6 +1,7 @@
 dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
-#[derive( TypeAbi, TopEncode, TopDecode, NestedEncode, PartialEq)]
+
+#[derive(TypeAbi, TopEncode, TopDecode, NestedEncode, PartialEq)]
 pub enum Phase<M: ManagedTypeApi> {
     Idle,
     NoPenalty,

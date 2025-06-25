@@ -6,7 +6,7 @@ use crate::{
     wrapped_lp_attributes::WrappedLpTokenAttributes,
 };
 
-#[derive( TypeAbi,TopEncode)]
+#[derive(TypeAbi, TopEncode)]
 pub struct AddLiquidityProxyEvent<M: ManagedTypeApi> {
     first_token: DcdtTokenPayment<M>,
     second_token: DcdtTokenPayment<M>,
@@ -15,7 +15,7 @@ pub struct AddLiquidityProxyEvent<M: ManagedTypeApi> {
     created_with_merge: bool,
 }
 
-#[derive( TypeAbi,TopEncode)]
+#[derive(TypeAbi, TopEncode)]
 pub struct RemoveLiquidityProxyEvent<M: ManagedTypeApi> {
     wrapped_lp_token: DcdtTokenPayment<M>,
     wrapped_lp_attributes: WrappedLpTokenAttributes<M>,
@@ -23,7 +23,7 @@ pub struct RemoveLiquidityProxyEvent<M: ManagedTypeApi> {
     second_token: DcdtTokenPayment<M>,
 }
 
-#[derive( TypeAbi,TopEncode)]
+#[derive(TypeAbi, TopEncode)]
 pub struct EnterFarmProxyEvent<M: ManagedTypeApi> {
     farming_token: DcdtTokenPayment<M>,
     wrapped_farm_token: DcdtTokenPayment<M>,
@@ -31,14 +31,14 @@ pub struct EnterFarmProxyEvent<M: ManagedTypeApi> {
     created_with_merge: bool,
 }
 
-#[derive( TypeAbi,TopEncode)]
+#[derive(TypeAbi, TopEncode)]
 pub struct ExitFarmProxyEvent<M: ManagedTypeApi> {
     wrapped_farm_token: DcdtTokenPayment<M>,
     wrapped_farm_attributes: WrappedFarmTokenAttributes<M>,
     reward_tokens: DcdtTokenPayment<M>,
 }
 
-#[derive( TypeAbi,TopEncode)]
+#[derive(TypeAbi, TopEncode)]
 pub struct ClaimRewardsProxyEvent<M: ManagedTypeApi> {
     old_wrapped_farm_token: DcdtTokenPayment<M>,
     old_wrapped_farm_attributes: WrappedFarmTokenAttributes<M>,
@@ -47,7 +47,7 @@ pub struct ClaimRewardsProxyEvent<M: ManagedTypeApi> {
     reward_tokens: DcdtTokenPayment<M>,
 }
 
-#[derive( TypeAbi,TopEncode)]
+#[derive(TypeAbi, TopEncode)]
 pub struct CompoundRewardsProxyEvent<M: ManagedTypeApi> {
     old_wrapped_farm_token: DcdtTokenPayment<M>,
     old_wrapped_farm_attributes: WrappedFarmTokenAttributes<M>,

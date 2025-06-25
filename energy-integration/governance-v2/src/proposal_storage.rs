@@ -3,14 +3,15 @@ dharitri_sc::derive_imports!();
 
 use crate::proposal::{GovernanceProposal, ProposalId};
 
-#[derive( TypeAbi, TopEncode, TopDecode)]
+#[derive(TypeAbi, TopEncode, TopDecode)]
 pub enum VoteType {
     UpVote,
     DownVote,
     DownVetoVote,
     AbstainVote,
 }
-#[derive( TypeAbi,TopEncode, TopDecode, NestedEncode, NestedDecode)]
+
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, TypeAbi)]
 pub struct ProposalVotes<M: ManagedTypeApi> {
     pub up_votes: BigUint<M>,
     pub down_votes: BigUint<M>,

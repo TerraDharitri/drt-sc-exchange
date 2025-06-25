@@ -324,9 +324,6 @@ pub trait ProxyFarmModule:
         self.send_payment_non_zero(&caller, &new_wrapped_token);
         self.send_payment_non_zero(&caller, &claim_result.rewards);
 
-        // Burn farm token
-        wrapped_farm_token_mapper.nft_burn(payment.token_nonce, &payment.amount);
-
         self.emit_claim_rewards_farm_proxy_event(
             &original_caller,
             &farm_address,
@@ -376,11 +373,8 @@ pub trait ProxyFarmModule:
             == wrapped_lp_token_id
         {
             let wrapped_lp_mapper = self.wrapped_lp_token();
-            let wrapped_lp_attributes: WrappedLpTokenAttributes<Self::Api> = self
-                .get_attributes_as_part_of_fixed_supply(
-                    &wrapped_farm_attributes.proxy_farming_token,
-                    &wrapped_lp_mapper,
-                );
+            let wrapped_lp_attributes: WrappedLpTokenAttributes<Self::Api> =
+                self.get_attributes_as_part_of_fixed_supply(&payment, &wrapped_lp_mapper);
             let new_locked_tokens = self.increase_proxy_pair_token_energy(
                 caller.clone(),
                 lock_epochs,
@@ -394,8 +388,11 @@ pub trait ProxyFarmModule:
             };
 
             let new_token_amount = new_wrapped_lp_attributes.get_total_supply();
-            let new_wrapped_lp =
-                wrapped_lp_mapper.nft_create(new_token_amount, &new_wrapped_lp_attributes);
+            let new_wrapped_lp = wrapped_lp_mapper.nft_create_and_send(
+                &caller,
+                new_token_amount,
+                &new_wrapped_lp_attributes,
+            );
 
             self.send().dcdt_local_burn(
                 &wrapped_farm_attributes.proxy_farming_token.token_identifier,

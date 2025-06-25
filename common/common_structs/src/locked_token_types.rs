@@ -6,11 +6,13 @@ use crate::{Epoch, EpochAmountPair};
 pub const MAX_MILESTONES_IN_SCHEDULE: usize = 64;
 pub const PERCENTAGE_TOTAL_EX: u64 = 100_000u64;
 pub const PRECISION_EX_INCREASE: u64 = 1_000u64; // From 1 to 1_000;
-#[derive( TypeAbi,
+
+#[derive(
     ManagedVecItem,
     TopEncode,
     TopDecode,
     PartialEq,
+    TypeAbi,
     NestedEncode,
     NestedDecode,
     Clone,
@@ -21,11 +23,13 @@ pub struct UnlockMilestone {
     pub unlock_epoch: u64,
     pub unlock_percent: u8,
 }
-#[derive( TypeAbi,
+
+#[derive(
     ManagedVecItem,
     TopEncode,
     TopDecode,
     PartialEq,
+    TypeAbi,
     NestedEncode,
     NestedDecode,
     Clone,
@@ -36,8 +40,9 @@ pub struct UnlockMilestoneEx {
     pub unlock_epoch: u64,
     pub unlock_percent: u64,
 }
-#[derive( TypeAbi,
-    TopEncode, TopDecode, NestedEncode, NestedDecode, Clone, ManagedVecItem, Debug,
+
+#[derive(
+    TopEncode, TopDecode, NestedEncode, NestedDecode, Clone, ManagedVecItem, TypeAbi, Debug,
 )]
 pub struct UnlockSchedule<M: ManagedTypeApi> {
     pub unlock_milestones: ManagedVec<M, UnlockMilestone>,
@@ -48,13 +53,15 @@ impl<M: ManagedTypeApi> UnlockSchedule<M> {
         UnlockSchedule { unlock_milestones }
     }
 }
-#[derive( TypeAbi,
+
+#[derive(
     TopEncode,
     TopDecode,
     NestedEncode,
     NestedDecode,
     Clone,
     ManagedVecItem,
+    TypeAbi,
     PartialEq,
     Debug,
 )]
@@ -118,19 +125,22 @@ impl<M: ManagedTypeApi> UnlockScheduleEx<M> {
         self.unlock_milestones = reallocated_milestones;
     }
 }
-#[derive( TypeAbi,
-    ManagedVecItem, TopEncode, TopDecode, NestedEncode, NestedDecode, Clone, Debug,
+
+#[derive(
+    ManagedVecItem, TopEncode, TopDecode, NestedEncode, NestedDecode, TypeAbi, Clone, Debug,
 )]
 pub struct LockedAssetTokenAttributes<M: ManagedTypeApi> {
     pub unlock_schedule: UnlockSchedule<M>,
     pub is_merged: bool,
 }
-#[derive( TypeAbi,
+
+#[derive(
     ManagedVecItem,
     TopEncode,
     TopDecode,
     NestedEncode,
     NestedDecode,
+    TypeAbi,
     Clone,
     PartialEq,
     Debug,
@@ -195,7 +205,8 @@ impl<M: ManagedTypeApi> LockedAssetTokenAttributesEx<M> {
         UnlockEpochAmountPairs::new(amounts)
     }
 }
-#[derive( TypeAbi, TopEncode, TopDecode)]
+
+#[derive(TypeAbi, TopEncode, TopDecode)]
 pub struct UnlockEpochAmountPairs<M: ManagedTypeApi> {
     pub pairs: ArrayVec<EpochAmountPair<M>, MAX_MILESTONES_IN_SCHEDULE>,
 }

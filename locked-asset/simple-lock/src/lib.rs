@@ -25,7 +25,7 @@ pub trait SimpleLock:
     #[init]
     fn init(&self) {}
 
-    #[upgrade]
+    #[endpoint]
     fn upgrade(&self) {}
 
     /// Locks any token (including REWA) until `unlock_epoch` and receive meta DCDT LOCKED tokens.

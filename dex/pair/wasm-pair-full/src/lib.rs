@@ -5,12 +5,15 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Upgrade:                              1
-// Endpoints:                           63
+// Endpoints:                           64
 // Async Callback (empty):               1
 // Total number of exported functions:  66
 
 #![no_std]
+
+// Configuration that works with rustc < 1.73.0.
+// TODO: Recommended rustc version: 1.73.0 or newer.
+#![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
 dharitri_sc_wasm_adapter::panic_handler!();
@@ -20,7 +23,19 @@ dharitri_sc_wasm_adapter::endpoints! {
     (
         init => init
         upgrade => upgrade
+        addInitialLiquidity => add_initial_liquidity
+        addLiquidity => add_liquidity
+        removeLiquidity => remove_liquidity
+        removeLiquidityAndBuyBackAndBurnToken => remove_liquidity_and_burn_token
+        swapNoFeeAndForward => swap_no_fee
+        swapTokensFixedInput => swap_tokens_fixed_input
+        swapTokensFixedOutput => swap_tokens_fixed_output
         setLpTokenIdentifier => set_lp_token_identifier
+        getTokensForGivenPosition => get_tokens_for_given_position
+        getReservesAndTotalSupply => get_reserves_and_total_supply
+        getAmountOut => get_amount_out_view
+        getAmountIn => get_amount_in_view
+        getEquivalent => get_equivalent
         getFeeState => is_fee_enabled
         whitelist => whitelist_endpoint
         removeWhitelist => remove_whitelist
@@ -62,18 +77,6 @@ dharitri_sc_wasm_adapter::endpoints! {
         pause => pause
         resume => resume
         getState => state
-        addInitialLiquidity => add_initial_liquidity
-        addLiquidity => add_liquidity
-        removeLiquidity => remove_liquidity
-        removeLiquidityAndBuyBackAndBurnToken => remove_liquidity_and_burn_token
-        swapNoFeeAndForward => swap_no_fee
-        swapTokensFixedInput => swap_tokens_fixed_input
-        swapTokensFixedOutput => swap_tokens_fixed_output
-        getTokensForGivenPosition => get_tokens_for_given_position
-        getReservesAndTotalSupply => get_reserves_and_total_supply
-        getAmountOut => get_amount_out_view
-        getAmountIn => get_amount_in_view
-        getEquivalent => get_equivalent
         getLpTokensSafePriceByDefaultOffset => get_lp_tokens_safe_price_by_default_offset
         getLpTokensSafePriceByRoundOffset => get_lp_tokens_safe_price_by_round_offset
         getLpTokensSafePriceByTimestampOffset => get_lp_tokens_safe_price_by_timestamp_offset

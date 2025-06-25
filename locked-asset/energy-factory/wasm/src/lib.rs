@@ -5,12 +5,15 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Upgrade:                              1
 // Endpoints:                           34
 // Async Callback:                       1
-// Total number of exported functions:  37
+// Total number of exported functions:  36
 
 #![no_std]
+
+// Configuration that works with rustc < 1.73.0.
+// TODO: Recommended rustc version: 1.73.0 or newer.
+#![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
 dharitri_sc_wasm_adapter::panic_handler!();
@@ -23,7 +26,6 @@ dharitri_sc_wasm_adapter::endpoints! {
         lockTokens => lock_tokens_endpoint
         unlockTokens => unlock_tokens_endpoint
         extendLockPeriod => extend_lock_period
-        adjustUserEnergy => adjust_user_energy
         issueLockedToken => issue_locked_token
         getLockedTokenId => locked_token
         getBaseAssetTokenId => base_asset_token_id

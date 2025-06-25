@@ -12,14 +12,16 @@ use common_structs::{Epoch, PaymentsVec};
 use permissions_module::Permissions;
 
 use crate::constants::*;
-#[derive( TypeAbi,
-    TopEncode, TopDecode, NestedEncode, NestedDecode, Clone, ManagedVecItem, Debug,
+
+#[derive(
+    TopEncode, TopDecode, NestedEncode, NestedDecode, Clone, ManagedVecItem, TypeAbi, Debug,
 )]
 pub struct LockedFunds<M: ManagedTypeApi> {
     pub funds: PaymentsVec<M>,
     pub locked_epoch: Epoch,
 }
-#[derive( TypeAbi,TopEncode, TopDecode, NestedEncode, NestedDecode,)]
+
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, TypeAbi)]
 pub struct ScheduledTransfer<M: ManagedTypeApi> {
     pub sender: ManagedAddress<M>,
     pub locked_funds: LockedFunds<M>,
@@ -54,7 +56,7 @@ pub trait LkmoaTransfer:
         self.add_permissions(caller, Permissions::OWNER);
     }
 
-    #[upgrade]
+    #[endpoint]
     fn upgrade(&self) {}
 
     #[endpoint]

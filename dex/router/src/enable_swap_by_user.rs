@@ -1,16 +1,17 @@
 dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
 
-use pair::{config::ProxyTrait as _, pair_actions::views::ProxyTrait as _, read_pair_storage};
+use pair::config::ProxyTrait as _;
 use pausable::{ProxyTrait as _, State};
 use simple_lock::locked_token::LockedTokenAttributes;
 
-use crate::{config, DEFAULT_SPECIAL_FEE_PERCENT, USER_DEFINED_TOTAL_FEE_PERCENT};
+use crate::{DEFAULT_SPECIAL_FEE_PERCENT, USER_DEFINED_TOTAL_FEE_PERCENT};
 
 static PAIR_LP_TOKEN_ID_STORAGE_KEY: &[u8] = b"lpTokenIdentifier";
 static PAIR_INITIAL_LIQ_ADDER_STORAGE_KEY: &[u8] = b"initial_liquidity_adder";
 static PAIR_STATE_STORAGE_KEY: &[u8] = b"state";
-#[derive( TypeAbi, TopEncode, TopDecode)]
+
+#[derive(TypeAbi, TopEncode, TopDecode)]
 pub struct EnableSwapByUserConfig<M: ManagedTypeApi> {
     pub locked_token_id: TokenIdentifier<M>,
     pub min_locked_token_value: BigUint<M>,
@@ -26,10 +27,7 @@ pub struct SafePriceResult<M: ManagedTypeApi> {
 
 #[dharitri_sc::module]
 pub trait EnableSwapByUserModule:
-    config::ConfigModule
-    + read_pair_storage::ReadPairStorageModule
-    + crate::factory::FactoryModule
-    + crate::events::EventsModule
+    crate::factory::FactoryModule + crate::events::EventsModule
 {
     #[only_owner]
     #[endpoint(configEnableByUserParameters)]
@@ -85,7 +83,6 @@ pub trait EnableSwapByUserModule:
     #[payable("*")]
     #[endpoint(setSwapEnabledByUser)]
     fn set_swap_enabled_by_user(&self, pair_address: ManagedAddress) {
-        require!(self.is_active(), "Not active");
         self.check_is_pair_sc(&pair_address);
         self.require_state_active_no_swaps(&pair_address);
 
@@ -253,4 +250,14 @@ pub trait EnableSwapByUserModule:
 
     #[proxy]
     fn user_pair_proxy(&self, to: ManagedAddress) -> pair::Proxy<Self::Api>;
+
+    #[storage_mapper("enableSwapByUserConfig")]
+    fn enable_swap_by_user_config(
+        &self,
+        token_id: &TokenIdentifier,
+    ) -> SingleValueMapper<EnableSwapByUserConfig<Self::Api>>;
+
+    #[view(getCommonTokensForUserPairs)]
+    #[storage_mapper("commonTokensForUserPairs")]
+    fn common_tokens_for_user_pairs(&self) -> UnorderedSetMapper<TokenIdentifier>;
 }

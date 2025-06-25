@@ -1,10 +1,6 @@
 dharitri_sc::imports!();
 
-use pair::pair_actions::{
-    add_liq::ProxyTrait as _,
-    common_result_types::{AddLiquidityResultType, RemoveLiquidityResultType},
-    remove_liq::ProxyTrait as _,
-};
+use pair::{AddLiquidityResultType, ProxyTrait as _, RemoveLiquidityResultType};
 
 pub struct AddLiquidityResultWrapper<M: ManagedTypeApi> {
     pub lp_tokens_received: DcdtTokenPayment<M>,

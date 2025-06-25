@@ -10,7 +10,8 @@ pub type Nonce = u64;
 pub type TokenAmountPairsVec<M> = ManagedVec<M, TokenAmountPair<M>>;
 pub type PaymentsVec<M> = ManagedVec<M, DcdtTokenPayment<M>>;
 
-#[derive( TypeAbi,
+#[derive(
+    TypeAbi,
     TopEncode,
     TopDecode,
     NestedEncode,

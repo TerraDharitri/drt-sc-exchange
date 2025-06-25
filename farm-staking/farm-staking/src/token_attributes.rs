@@ -8,7 +8,8 @@ use mergeable::Mergeable;
 use dharitri_sc::codec::{NestedDecodeInput, TopDecodeInput};
 
 static NOT_IMPLEMENTED_ERR_MSG: &[u8] = b"Conversion not implemented";
-#[derive( TypeAbi,ManagedVecItem, TopEncode, NestedEncode, Clone, PartialEq, Debug)]
+
+#[derive(ManagedVecItem, TopEncode, NestedEncode, TypeAbi, Clone, PartialEq, Debug)]
 pub struct StakingFarmTokenAttributes<M: ManagedTypeApi> {
     pub reward_per_share: BigUint<M>,
     pub compounded_reward: BigUint<M>,
@@ -107,8 +108,8 @@ impl<M: ManagedTypeApi> FixedSupplyToken<M> for StakingFarmTokenAttributes<M> {
 
 impl<M: ManagedTypeApi> Mergeable<M> for StakingFarmTokenAttributes<M> {
     #[inline]
-    fn can_merge_with(&self, _other: &Self) -> bool {
-        true
+    fn can_merge_with(&self, other: &Self) -> bool {
+        self.original_owner == other.original_owner
     }
 
     fn merge_with(&mut self, other: Self) {
@@ -128,7 +129,7 @@ impl<M: ManagedTypeApi> Mergeable<M> for StakingFarmTokenAttributes<M> {
     }
 }
 
-#[derive( TypeAbi, TopEncode, TopDecode, PartialEq, Debug)]
+#[derive(TypeAbi, TopEncode, TopDecode, PartialEq, Debug)]
 pub struct UnbondSftAttributes {
     pub unlock_epoch: u64,
 }

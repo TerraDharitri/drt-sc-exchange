@@ -126,8 +126,4 @@ pub trait UtilsModule {
             "Invalid SC address"
         );
     }
-
-    fn require_not_empty_buffer(&self, buffer: &ManagedBuffer) {
-        require!(!buffer.is_empty(), "Empty buffer");
-    }
 }

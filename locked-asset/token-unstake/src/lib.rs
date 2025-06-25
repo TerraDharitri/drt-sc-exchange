@@ -42,6 +42,6 @@ pub trait TokenUnstakeModule:
         self.fees_burn_percentage().set(fees_burn_percentage);
     }
 
-    #[upgrade]
+    #[endpoint]
     fn upgrade(&self) {}
 }

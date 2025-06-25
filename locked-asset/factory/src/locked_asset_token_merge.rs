@@ -49,6 +49,8 @@ pub trait LockedAssetTokenMergeModule:
         &self,
         payments: ManagedVecRefIterator<Self::Api, DcdtTokenPayment<Self::Api>>,
     ) -> (BigUint, LockedAssetTokenAttributesEx<Self::Api>) {
+        require!(!payments.is_empty(), "Cannot merge with 0 tokens");
+
         let mut tokens = ManagedVec::new();
         let mut sum_amount = BigUint::zero();
         let locked_asset_token_id = self.locked_asset_token().get_token_id();
@@ -67,8 +69,6 @@ pub trait LockedAssetTokenMergeModule:
                 attributes,
             });
         }
-
-        require!(!tokens.is_empty(), "Cannot merge with 0 tokens");
 
         if tokens.len() == 1 {
             let token_0 = tokens.get(0);

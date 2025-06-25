@@ -3,14 +3,15 @@ dharitri_sc::derive_imports!();
 
 use crate::{error_messages::*, proxy_lp::LpProxyTokenAttributes};
 
-#[derive( TypeAbi, TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Debug, Clone, Copy,
+#[derive(
+    TypeAbi, TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Debug, Clone, Copy,
 )]
 pub enum FarmType {
     SimpleFarm,
     FarmWithLockedRewards,
 }
 
-#[derive( TypeAbi, TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Debug)]
+#[derive(TypeAbi, TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Debug)]
 pub struct FarmProxyTokenAttributes<M: ManagedTypeApi> {
     pub farm_type: FarmType,
     pub farm_token_id: TokenIdentifier<M>,
@@ -213,7 +214,7 @@ pub trait ProxyFarmModule:
             farm_address,
             farm_proxy_token_attributes.farm_token_id,
             farm_proxy_token_attributes.farm_token_nonce,
-            payment.amount.clone(),
+            payment.amount,
             caller.clone(),
         );
         require!(
@@ -234,15 +235,6 @@ pub trait ProxyFarmModule:
             lp_proxy_token_payment.token_nonce,
             &lp_proxy_token_payment.amount,
         );
-
-        if payment.amount > lp_proxy_token_payment.amount {
-            let penalty_amount = &payment.amount - &lp_proxy_token_payment.amount;
-
-            self.lp_proxy_token().nft_burn(
-                farm_proxy_token_attributes.farming_token_locked_nonce,
-                &penalty_amount,
-            );
-        }
 
         if exit_farm_result.reward_tokens.amount > 0 {
             self.send().direct_dcdt(
@@ -281,7 +273,7 @@ pub trait ProxyFarmModule:
             farm_address,
             farm_proxy_token_attributes.farm_token_id.clone(),
             farm_proxy_token_attributes.farm_token_nonce,
-            payment.amount.clone(),
+            payment.amount,
             caller.clone(),
         );
         require!(

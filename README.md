@@ -4,7 +4,7 @@ This repository contains the principal Smart Contract components of DharitriX.
 
 This document is a brief description of the Smart Contracts. It covers the basic workflows that a user may do in order to succesfully interact with each contract. For those interested about more in-depth technical details, each contract will have its separate README in its own root directory.
 
-- [DharitriX Smart Contracts](#dharitrix-smart-contracts)
+- [DharitriX Smart Contracts](#DharitriX-smart-contracts)
   - [DEX Contracts](#dex-contracts)
     - [Pair Contract](#pair-contract)
     - [Router Contract](#router-contract)
@@ -22,7 +22,7 @@ This document is a brief description of the Smart Contracts. It covers the basic
 
 Other Smart Contracts that are part of DharitriX, but are not part of this repository:
 
-- [Rewa wrapping](https://github.com/TerraDharitri/drt-rs-sdk/tree/master/contracts/core/wrewa-swap) used for swapping REWA to an DCDT and reversed with an exchange rate of 1:1.
+- [Rewa wrapping](https://github.com/TerraDharitri/drt-rs-sdk/tree/main/contracts/core/wrewa-swap) used for swapping REWA to an DCDT and reversed with an exchange rate of 1:1.
 
 ## DEX Contracts
 

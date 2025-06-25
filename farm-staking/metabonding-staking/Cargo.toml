@@ -1,0 +1,34 @@
+[package]
+name = "metabonding-staking"
+version = "0.0.0"
+authors = ["contact@dharitri.org"]
+edition = "2021"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies.dharitri-sc]
+version = "1.6.4" #teja789
+#[dependencies.dharitri-sc]
+#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.45.2/framework/base"
+features = ["dcdt-token-payment-legacy-decode"]
+
+[dependencies.dharitri-sc-modules]
+version = "=1.6.4" #teja789
+#[dependencies.dharitri-sc-modules]
+#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.45.2/contracts/modules"
+
+[dependencies.factory]
+path = "../../locked-asset/factory"
+
+[dev-dependencies]
+num-bigint = "0.4.2"
+
+[dev-dependencies.dharitri-sc-scenario]
+version = "=1.6.4" #teja789
+# [dependencies.dharitri-sc-scenario]
+# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.45.2/framework/scenario"
+
+[dev-dependencies.common_structs]
+path = "../../common/common_structs"

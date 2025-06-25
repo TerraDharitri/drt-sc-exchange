@@ -9,11 +9,15 @@ publish = false
 path = "src/lib.rs"
 
 [dependencies.dharitri-sc]
-version = "1.0.1"
+version = "1.6.4" #teja789
+#[dependencies.dharitri-sc]
+#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.45.2/framework/base"
 features = ["dcdt-token-payment-legacy-decode"]
 
 [dependencies.dharitri-sc-modules]
-version = "1.0.1"
+version = "=1.6.4" #teja789
+#[dependencies.dharitri-sc-modules]
+#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.45.2/contracts/modules"
 
 [dependencies.farm]
 path = "../../dex/farm"
@@ -25,4 +29,6 @@ path = "../common-modules/weekly-rewards-splitting"
 num-bigint = "0.4.2"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.0.1"
+version = "=1.6.4" #teja789
+# [dependencies.dharitri-sc-scenario]
+# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.45.2/framework/scenario"

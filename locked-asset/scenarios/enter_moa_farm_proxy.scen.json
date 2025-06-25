@@ -7,7 +7,7 @@
         },
         {
             "step": "externalSteps",
-            "path": "steps/setup_moa_farm_contract.steps.json"
+            "path": "steps/setup_farm_contract.steps.json"
         },
         {
             "step": "scCall",
@@ -17,7 +17,7 @@
                 "to": "sc:proxy_dex_contract",
                 "function": "addFarmToIntermediate",
                 "arguments": [
-                    "sc:moa_farm_contract"
+                    "sc:farm_contract"
                 ],
                 "gasLimit": "100,000,000",
                 "gasPrice": "0"
@@ -44,7 +44,7 @@
                 ],
                 "function": "enterFarmProxy",
                 "arguments": [
-                    "sc:moa_farm_contract"
+                    "sc:farm_contract"
                 ],
                 "gasLimit": "1,000,000,000",
                 "gasPrice": "0"

@@ -34,6 +34,13 @@ pub const FULL_PERCENTAGE: u64 = 10_000;
 pub const USER_ENERGY: u64 = 1_000_000;
 pub const GAS_LIMIT: u64 = 1_000_000;
 
+#[derive(Clone)]
+pub struct Payment {
+    pub token: Vec<u8>,
+    pub nonce: u64,
+    pub amount: u64,
+}
+
 pub struct GovSetup<GovBuilder>
 where
     GovBuilder: 'static + Copy + Fn() -> governance_v2::ContractObj<DebugApi>,
@@ -175,8 +182,15 @@ where
             })
             .assert_ok();
 
-        let vote_nft_roles = [DcdtLocalRole::Mint, DcdtLocalRole::Burn];
-        b_mock.set_dcdt_local_roles(gov_wrapper.address_ref(), MOA_TOKEN_ID, &vote_nft_roles[..]);
+        let vote_nft_roles = [
+            DcdtLocalRole::Mint,
+            DcdtLocalRole::Burn,
+        ];
+        b_mock.set_dcdt_local_roles(
+            gov_wrapper.address_ref(),
+            MOA_TOKEN_ID,
+            &vote_nft_roles[..],
+        );
 
         Self {
             b_mock,
@@ -274,8 +288,7 @@ where
     pub fn change_min_energy(&mut self, min_energy_for_propose: usize) -> TxResult {
         self.b_mock
             .execute_tx(&self.owner, &self.gov_wrapper, &rust_biguint!(0), |sc| {
-                sc.min_energy_for_propose()
-                    .set(&managed_biguint!(min_energy_for_propose));
+                sc.min_energy_for_propose().set(&managed_biguint!(min_energy_for_propose));
             })
     }
 
