@@ -4,7 +4,7 @@
         {
             "step": "setState",
             "accounts": {
-                "sc:moa_farm_contract": {
+                "sc:farm_contract": {
                     "nonce": "0",
                     "balance": "0",
                     "dcdt": {
@@ -52,7 +52,7 @@
                 "value": "0",
                 "function": "whitelist",
                 "arguments": [
-                    "sc:moa_farm_contract"
+                    "sc:farm_contract"
                 ],
                 "gasLimit": "100,000,000",
                 "gasPrice": "0"

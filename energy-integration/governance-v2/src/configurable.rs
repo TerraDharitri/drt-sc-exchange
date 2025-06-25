@@ -2,7 +2,7 @@ use crate::errors::ERROR_NOT_AN_DCDT;
 
 dharitri_sc::imports!();
 
-/// # DharitrI smart contract module - Governance
+/// # Dharitri smart contract module - Governance
 ///
 /// This is a standard smart contract module, that when added to a smart contract offers governance features:
 /// - proposing actions

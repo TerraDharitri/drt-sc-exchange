@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                           72
+// Endpoints:                           70
 // Async Callback:                       1
-// Total number of exported functions:  75
+// Total number of exported functions:  73
 
 #![no_std]
 
@@ -36,13 +36,14 @@ dharitri_sc_wasm_adapter::endpoints! {
         getMinUnbondEpochs => min_unbond_epochs
         getRewardPerShare => reward_per_share
         getRewardReserve => reward_reserve
+        allowExternalClaimBoostedRewards => allow_external_claim_boosted_rewards
+        getAllowExternalClaimRewards => get_allow_external_claim_rewards
         getFarmingTokenId => farming_token_id
         getRewardTokenId => reward_token_id
         getPerBlockRewardAmount => per_block_reward_amount
         getLastRewardBlockNonce => last_reward_block_nonce
         getDivisionSafetyConstant => division_safety_constant
         getUserTotalFarmPosition => user_total_farm_position
-        getAllowExternalClaim => allow_external_claim
         getFarmPositionMigrationNonce => farm_position_migration_nonce
         registerFarmToken => register_farm_token
         getFarmTokenId => farm_token
@@ -59,7 +60,6 @@ dharitri_sc_wasm_adapter::endpoints! {
         removeAdmin => remove_admin_endpoint
         updateOwnerOrAdmin => update_owner_or_admin_endpoint
         getPermissions => permissions
-        setPermissionsHubAddress => set_permissions_hub_address
         setBurnRoleForAddress => set_burn_role_for_address
         stakeFarmThroughProxy => stake_farm_through_proxy
         stakeFarm => stake_farm_endpoint
@@ -69,8 +69,6 @@ dharitri_sc_wasm_adapter::endpoints! {
         unstakeFarm => unstake_farm
         unstakeFarmThroughProxy => unstake_farm_through_proxy
         unbondFarm => unbond_farm
-        stakeFarmOnBehalf => stake_farm_on_behalf
-        claimRewardsOnBehalf => claim_rewards_on_behalf
         claimBoostedRewards => claim_boosted_rewards
         collectUndistributedBoostedRewards => collect_undistributed_boosted_rewards
         getBoostedYieldsRewardsPercentage => boosted_yields_rewards_percentage

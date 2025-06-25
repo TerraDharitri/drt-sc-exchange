@@ -7,13 +7,9 @@ pub mod staking_farm_with_lp_staking_contract_setup;
 
 dharitri_sc::imports!();
 
-use common_structs::FarmTokenAttributes;
 use config::ConfigModule;
 use constants::*;
-use farm_staking_proxy::{
-    dual_yield_token::DualYieldTokenAttributes,
-    proxy_actions::external_interaction::ProxyExternalInteractionsModule,
-};
+use farm_staking_proxy::dual_yield_token::DualYieldTokenAttributes;
 
 use farm_staking_proxy::proxy_actions::unstake::ProxyUnstakeModule;
 
@@ -35,7 +31,6 @@ fn test_all_setup() {
         pair::contract_obj,
         farm_with_locked_rewards::contract_obj,
         energy_factory::contract_obj,
-        permissions_hub::contract_obj,
         farm_staking::contract_obj,
         farm_staking_proxy::contract_obj,
     );
@@ -47,7 +42,6 @@ fn test_stake_farm_proxy() {
         pair::contract_obj,
         farm_with_locked_rewards::contract_obj,
         energy_factory::contract_obj,
-        permissions_hub::contract_obj,
         farm_staking::contract_obj,
         farm_staking_proxy::contract_obj,
     );
@@ -63,7 +57,6 @@ fn test_claim_rewards_farm_proxy_full() {
         pair::contract_obj,
         farm_with_locked_rewards::contract_obj,
         energy_factory::contract_obj,
-        permissions_hub::contract_obj,
         farm_staking::contract_obj,
         farm_staking_proxy::contract_obj,
     );
@@ -92,7 +85,6 @@ fn test_claim_rewards_farm_proxy_half() {
         pair::contract_obj,
         farm_with_locked_rewards::contract_obj,
         energy_factory::contract_obj,
-        permissions_hub::contract_obj,
         farm_staking::contract_obj,
         farm_staking_proxy::contract_obj,
     );
@@ -121,7 +113,6 @@ fn test_claim_rewards_farm_proxy_twice() {
         pair::contract_obj,
         farm_with_locked_rewards::contract_obj,
         energy_factory::contract_obj,
-        permissions_hub::contract_obj,
         farm_staking::contract_obj,
         farm_staking_proxy::contract_obj,
     );
@@ -165,7 +156,6 @@ fn test_unstake_through_proxy_no_claim() {
         pair::contract_obj,
         farm_with_locked_rewards::contract_obj,
         energy_factory::contract_obj,
-        permissions_hub::contract_obj,
         farm_staking::contract_obj,
         farm_staking_proxy::contract_obj,
     );
@@ -197,7 +187,6 @@ fn unstake_through_proxy_after_claim() {
         pair::contract_obj,
         farm_with_locked_rewards::contract_obj,
         energy_factory::contract_obj,
-        permissions_hub::contract_obj,
         farm_staking::contract_obj,
         farm_staking_proxy::contract_obj,
     );
@@ -239,7 +228,6 @@ fn unstake_partial_position_test() {
         pair::contract_obj,
         farm_with_locked_rewards::contract_obj,
         energy_factory::contract_obj,
-        permissions_hub::contract_obj,
         farm_staking::contract_obj,
         farm_staking_proxy::contract_obj,
     );
@@ -356,7 +344,6 @@ fn unbond_test() {
         pair::contract_obj,
         farm_with_locked_rewards::contract_obj,
         energy_factory::contract_obj,
-        permissions_hub::contract_obj,
         farm_staking::contract_obj,
         farm_staking_proxy::contract_obj,
     );
@@ -402,7 +389,6 @@ fn farm_staking_compound_rewards_and_unstake_test() {
         pair::contract_obj,
         farm_with_locked_rewards::contract_obj,
         energy_factory::contract_obj,
-        permissions_hub::contract_obj,
         farm_staking::contract_obj,
         farm_staking_proxy::contract_obj,
     );
@@ -434,7 +420,6 @@ fn test_stake_farm_through_proxy_with_merging() {
         pair::contract_obj,
         farm_with_locked_rewards::contract_obj,
         energy_factory::contract_obj,
-        permissions_hub::contract_obj,
         farm_staking::contract_obj,
         farm_staking_proxy::contract_obj,
     );
@@ -511,7 +496,6 @@ fn test_farm_stake_proxy_merging_boosted_rewards() {
         pair::contract_obj,
         farm_with_locked_rewards::contract_obj,
         energy_factory::contract_obj,
-        permissions_hub::contract_obj,
         farm_staking::contract_obj,
         farm_staking_proxy::contract_obj,
     );
@@ -657,7 +641,6 @@ fn original_caller_negative_test() {
         pair::contract_obj,
         farm_with_locked_rewards::contract_obj,
         energy_factory::contract_obj,
-        permissions_hub::contract_obj,
         farm_staking::contract_obj,
         farm_staking_proxy::contract_obj,
     );
@@ -700,7 +683,6 @@ fn claim_for_others_positive_test() {
         pair::contract_obj,
         farm_with_locked_rewards::contract_obj,
         energy_factory::contract_obj,
-        permissions_hub::contract_obj,
         farm_staking::contract_obj,
         farm_staking_proxy::contract_obj,
     );
@@ -791,8 +773,7 @@ fn claim_for_others_positive_test() {
             &setup.lp_farm_wrapper,
             &rust_biguint!(0),
             |sc| {
-                sc.allow_external_claim(&managed_address!(&user_address))
-                    .set(true);
+                sc.allow_external_claim_boosted_rewards(true);
             },
         )
         .assert_ok();
@@ -804,8 +785,7 @@ fn claim_for_others_positive_test() {
             &setup.staking_farm_wrapper,
             &rust_biguint!(0),
             |sc| {
-                sc.allow_external_claim(&managed_address!(&user_address))
-                    .set(true);
+                sc.allow_external_claim_boosted_rewards(true);
             },
         )
         .assert_ok();
@@ -897,7 +877,6 @@ fn stake_farm_through_proxy_migration_test() {
         pair::contract_obj,
         farm_with_locked_rewards::contract_obj,
         energy_factory::contract_obj,
-        permissions_hub::contract_obj,
         farm_staking::contract_obj,
         farm_staking_proxy::contract_obj,
     );
@@ -1032,7 +1011,6 @@ fn total_farm_position_after_claim_and_exit_metastaking_test() {
         pair::contract_obj,
         farm_with_locked_rewards::contract_obj,
         energy_factory::contract_obj,
-        permissions_hub::contract_obj,
         farm_staking::contract_obj,
         farm_staking_proxy::contract_obj,
     );
@@ -1235,291 +1213,4 @@ fn total_farm_position_after_claim_and_exit_metastaking_test() {
 
     // Total farm position should be 0 after full unstake
     setup.check_user_total_staking_farm_position(&user_address, 0);
-}
-
-#[test]
-fn test_multiple_positions_on_behalf() {
-    DebugApi::dummy();
-
-    let mut setup = FarmStakingSetup::new(
-        pair::contract_obj,
-        farm_with_locked_rewards::contract_obj,
-        energy_factory::contract_obj,
-        permissions_hub::contract_obj,
-        farm_staking::contract_obj,
-        farm_staking_proxy::contract_obj,
-    );
-
-    // Boosted rewards setup
-    setup
-        .b_mock
-        .execute_tx(
-            &setup.owner_addr,
-            &setup.staking_farm_wrapper,
-            &rust_biguint!(0),
-            |sc| {
-                sc.set_boosted_yields_rewards_percentage(BOOSTED_YIELDS_PERCENTAGE);
-            },
-        )
-        .assert_ok();
-
-    setup.set_lp_farm_boosted_yields_rewards_percentage(BOOSTED_YIELDS_PERCENTAGE);
-    let farm_amount = 100_000_000u64;
-    let user_address = setup.user_addr.clone();
-    let authorized_address = setup.b_mock.create_user_account(&rust_biguint!(0));
-    let temp_user = setup
-        .b_mock
-        .create_user_account(&rust_biguint!(farm_amount));
-    setup.exit_lp_farm(&user_address, 1, USER_TOTAL_LP_TOKENS);
-    setup
-        .b_mock
-        .set_dcdt_balance(&setup.user_addr, LP_TOKEN_ID, &rust_biguint!(farm_amount));
-    setup
-        .b_mock
-        .set_dcdt_balance(&temp_user, LP_TOKEN_ID, &rust_biguint!(1));
-
-    let mut block_nonce = 2u64;
-    setup.b_mock.set_block_epoch(2u64);
-
-    setup.set_user_energy(&user_address, 1_000, 2, 1);
-    setup
-        .b_mock
-        .set_dcdt_balance(&user_address, LP_TOKEN_ID, &rust_biguint!(farm_amount * 2));
-    setup
-        .b_mock
-        .set_dcdt_balance(&user_address, STAKING_REWARD_TOKEN_ID, &rust_biguint!(0));
-    let farm_token_nonce = setup.enter_lp_farm(&user_address, farm_amount * 2);
-
-    setup.check_user_total_staking_farm_position(&user_address, 0);
-
-    // authorize address
-    setup.whitelist_address_on_behalf(&user_address, &authorized_address);
-
-    setup.send_farm_position(
-        &user_address,
-        &authorized_address,
-        farm_token_nonce,
-        farm_amount * 2,
-        0,
-        block_nonce,
-    );
-
-    setup.b_mock.check_dcdt_balance(
-        &authorized_address,
-        STAKING_REWARD_TOKEN_ID,
-        &rust_biguint!(0), // should always be 0
-    );
-
-    setup.stake_farm_on_behalf(
-        &authorized_address,
-        &user_address,
-        farm_token_nonce,
-        farm_amount,
-        0,
-        0,
-        1,
-        farm_amount,
-    );
-    setup.check_user_total_staking_farm_position(&user_address, farm_amount);
-
-    let block_nonce_diff = 100;
-    block_nonce += block_nonce_diff;
-
-    setup.b_mock.set_block_nonce(block_nonce);
-
-    // Only base rewards are given
-    setup
-        .b_mock
-        .check_dcdt_balance(&user_address, STAKING_REWARD_TOKEN_ID, &rust_biguint!(0));
-    setup.claim_rewards_on_behalf(&authorized_address, 1, farm_amount);
-    setup.b_mock.check_dcdt_balance(
-        &user_address,
-        STAKING_REWARD_TOKEN_ID,
-        &rust_biguint!(14u64),
-    );
-
-    // User total farm position should still be the same
-    setup.check_user_total_staking_farm_position(&user_address, farm_amount);
-
-    // random tx on end of week 1, to cummulate rewards
-    setup.b_mock.set_block_epoch(6);
-    setup.set_user_energy(&user_address, 1_000, 6, 1);
-    setup.set_user_energy(&temp_user, 1, 6, 1);
-    let temp_user_farm_token_nonce = setup.enter_lp_farm(&temp_user, 1);
-    setup.exit_lp_farm(&temp_user, temp_user_farm_token_nonce, 1);
-
-    // advance 1 week
-    block_nonce += block_nonce_diff;
-    setup.b_mock.set_block_nonce(block_nonce);
-    setup.b_mock.set_block_epoch(10);
-    setup.set_user_energy(&user_address, 1_000, 10, 1);
-
-    // enter farm again for the same user (with additional payment)
-    setup.stake_farm_on_behalf(
-        &authorized_address,
-        &user_address,
-        farm_token_nonce,
-        farm_amount,
-        2, // nonce 2 as the user already claimed with this position
-        farm_amount,
-        3,
-        farm_amount * 2,
-    );
-    setup.b_mock.check_dcdt_balance(
-        &user_address,
-        STAKING_REWARD_TOKEN_ID,
-        &rust_biguint!(14u64 + 4u64),
-    );
-
-    setup.check_user_total_staking_farm_position(&user_address, farm_amount * 2);
-    setup.claim_rewards_on_behalf(&authorized_address, 3, farm_amount * 2);
-    setup.check_user_total_staking_farm_position(&user_address, farm_amount * 2);
-
-    // Check reward token balances
-    setup.b_mock.check_dcdt_balance(
-        &user_address,
-        STAKING_REWARD_TOKEN_ID,
-        &rust_biguint!(693), // actual amount computation out of scope for this unit test
-    );
-    setup.b_mock.check_dcdt_balance(
-        &authorized_address,
-        STAKING_REWARD_TOKEN_ID,
-        &rust_biguint!(0), // should always be 0
-    );
-
-    let dual_yield_token_attributes: DualYieldTokenAttributes<DebugApi> =
-        DualYieldTokenAttributes {
-            lp_farm_token_nonce: 6,
-            lp_farm_token_amount: managed_biguint!(farm_amount * 2u64),
-            staking_farm_token_nonce: 4,
-            staking_farm_token_amount: managed_biguint!(farm_amount * 2u64),
-        };
-
-    setup.b_mock.check_nft_balance(
-        &authorized_address,
-        DUAL_YIELD_TOKEN_ID,
-        4,
-        &rust_biguint!(farm_amount * 2u64),
-        Some(&dual_yield_token_attributes),
-    );
-}
-
-#[test]
-fn test_on_behalf_original_owner_validation() {
-    DebugApi::dummy();
-
-    let mut setup = FarmStakingSetup::new(
-        pair::contract_obj,
-        farm_with_locked_rewards::contract_obj,
-        energy_factory::contract_obj,
-        permissions_hub::contract_obj,
-        farm_staking::contract_obj,
-        farm_staking_proxy::contract_obj,
-    );
-
-    // Boosted rewards setup
-    setup
-        .b_mock
-        .execute_tx(
-            &setup.owner_addr,
-            &setup.staking_farm_wrapper,
-            &rust_biguint!(0),
-            |sc| {
-                sc.set_boosted_yields_rewards_percentage(BOOSTED_YIELDS_PERCENTAGE);
-            },
-        )
-        .assert_ok();
-
-    setup.set_lp_farm_boosted_yields_rewards_percentage(BOOSTED_YIELDS_PERCENTAGE);
-    let farm_amount = 100_000_000u64;
-    let user_address = setup.user_addr.clone();
-    let authorized_address = setup.b_mock.create_user_account(&rust_biguint!(0));
-
-    setup.exit_lp_farm(&user_address, 1, USER_TOTAL_LP_TOKENS);
-    setup
-        .b_mock
-        .set_dcdt_balance(&setup.user_addr, LP_TOKEN_ID, &rust_biguint!(farm_amount));
-
-    let block_nonce = 2u64;
-    setup.b_mock.set_block_epoch(2u64);
-
-    setup.set_user_energy(&user_address, 1_000, 2, 1);
-    setup
-        .b_mock
-        .set_dcdt_balance(&user_address, LP_TOKEN_ID, &rust_biguint!(farm_amount * 2));
-    setup
-        .b_mock
-        .set_dcdt_balance(&user_address, STAKING_REWARD_TOKEN_ID, &rust_biguint!(0));
-    let farm_token_nonce = setup.enter_lp_farm(&user_address, farm_amount * 2);
-
-    setup.check_user_total_staking_farm_position(&user_address, 0);
-
-    // authorize address
-    setup.whitelist_address_on_behalf(&user_address, &authorized_address);
-
-    setup.send_farm_position(
-        &user_address,
-        &authorized_address,
-        farm_token_nonce,
-        farm_amount * 2,
-        0,
-        block_nonce,
-    );
-
-    setup.b_mock.check_dcdt_balance(
-        &authorized_address,
-        STAKING_REWARD_TOKEN_ID,
-        &rust_biguint!(0), // should always be 0
-    );
-
-    setup.stake_farm_on_behalf(
-        &authorized_address,
-        &user_address,
-        farm_token_nonce,
-        farm_amount,
-        0,
-        0,
-        1,
-        farm_amount,
-    );
-
-    // Update farm original owner to test validation
-    // How we get to this point is out of scope for this unit test
-    let temp_user = setup.b_mock.create_user_account(&rust_biguint!(0));
-
-    let dual_yield_token_attributes: DualYieldTokenAttributes<DebugApi> = setup
-        .b_mock
-        .get_nft_attributes(setup.proxy_wrapper.address_ref(), DUAL_YIELD_TOKEN_ID, 1)
-        .unwrap();
-    let mut lp_farm_token_attributes: FarmTokenAttributes<DebugApi> = setup
-        .b_mock
-        .get_nft_attributes(
-            setup.proxy_wrapper.address_ref(),
-            LP_FARM_TOKEN_ID,
-            dual_yield_token_attributes.lp_farm_token_nonce,
-        )
-        .unwrap();
-    lp_farm_token_attributes.original_owner = managed_address!(&temp_user);
-
-    setup.b_mock.set_nft_balance(
-        setup.proxy_wrapper.address_ref(),
-        LP_FARM_TOKEN_ID,
-        dual_yield_token_attributes.lp_farm_token_nonce,
-        &rust_biguint!(farm_amount),
-        &lp_farm_token_attributes,
-    );
-
-    setup
-        .b_mock
-        .execute_dcdt_transfer(
-            &authorized_address,
-            &setup.proxy_wrapper,
-            DUAL_YIELD_TOKEN_ID,
-            1,
-            &rust_biguint!(1),
-            |sc| {
-                sc.claim_dual_yield_on_behalf();
-            },
-        )
-        .assert_error(4, "Underlying positions original owners do not match");
 }

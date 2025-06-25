@@ -94,12 +94,14 @@ pub trait UnlockWithPenaltyModule:
         energy.add_after_token_lock(&new_locked_tokens.amount, new_unlock_epoch, current_epoch);
         self.set_energy_entry(&caller, energy);
 
-        self.send().direct(
-            &caller,
-            &new_locked_tokens.token_identifier,
-            new_locked_tokens.token_nonce,
-            &new_locked_tokens.amount,
-        );
+        self.tx()
+            .to(&caller)
+            .rewa_or_single_dcdt(
+                &new_locked_tokens.token_identifier,
+                new_locked_tokens.token_nonce,
+                &new_locked_tokens.amount,
+            )
+            .transfer();
 
         self.to_dcdt_payment(new_locked_tokens)
     }

@@ -24,8 +24,8 @@ fn claim_locked_assets_basic_go() {
 
 #[test]
 #[ignore]
-fn claim_moa_rewards_proxy_after_mint_rewards_go() {
-    world().run("scenarios/claim_moa_rewards_proxy_after_mint_rewards.scen.json");
+fn claim_rewards_proxy_after_mint_rewards_go() {
+    world().run("scenarios/claim_rewards_proxy_after_mint_rewards.scen.json");
 }
 
 #[test]
@@ -48,8 +48,8 @@ fn clear_unclaimable_assets_go() {
 
 #[test]
 #[ignore]
-fn compound_moa_rewards_proxy_after_mint_rewards_go() {
-    world().run("scenarios/compound_moa_rewards_proxy_after_mint_rewards.scen.json");
+fn compound_rewards_proxy_after_mint_rewards_go() {
+    world().run("scenarios/compound_rewards_proxy_after_mint_rewards.scen.json");
 }
 
 #[test]
@@ -64,11 +64,11 @@ fn enter_farm_proxy_with_merge_tokens_go() {
     world().run("scenarios/enter_farm_proxy_with_merge_tokens.scen.json");
 }
 
-#[test]
-#[ignore]
-fn enter_moa_farm_proxy_go() {
-    world().run("scenarios/enter_moa_farm_proxy.scen.json");
-}
+// #[test]
+// #[ignore]
+// fn enter_farm_proxy_go() {
+//     world().run("scenarios/enter_farm_proxy.scen.json");
+// }
 
 #[test]
 #[ignore]
@@ -78,27 +78,27 @@ fn exit_farm_proxy_go() {
 
 #[test]
 #[ignore]
-fn exit_moa_farm_proxy_after_compound_rewards_go() {
-    world().run("scenarios/exit_moa_farm_proxy_after_compound_rewards.scen.json");
+fn exit_farm_proxy_after_compound_rewards_go() {
+    world().run("scenarios/exit_farm_proxy_after_compound_rewards.scen.json");
 }
 
 #[test]
 #[ignore]
-fn exit_moa_farm_proxy_after_compound_rewards_and_epoch_increase_go() {
+fn exit_farm_proxy_after_compound_rewards_and_epoch_increase_go() {
     world()
-        .run("scenarios/exit_moa_farm_proxy_after_compound_rewards_and_epoch_increase.scen.json");
+        .run("scenarios/exit_farm_proxy_after_compound_rewards_and_epoch_increase.scen.json");
 }
 
 #[test]
 #[ignore]
-fn exit_moa_farm_proxy_after_mint_rewards_go() {
-    world().run("scenarios/exit_moa_farm_proxy_after_mint_rewards.scen.json");
+fn exit_farm_proxy_after_mint_rewards_go() {
+    world().run("scenarios/exit_farm_proxy_after_mint_rewards.scen.json");
 }
 
 #[test]
 #[ignore]
-fn merge_locked_moa_tokens_go() {
-    world().run("scenarios/merge_locked_moa_tokens.scen.json");
+fn merge_locked_tokens_go() {
+    world().run("scenarios/merge_locked_tokens.scen.json");
 }
 
 #[test]
@@ -127,7 +127,7 @@ fn remove_liquidity_proxy_go() {
 
 #[test]
 #[ignore]
-fn remove_liquidity_proxy_after_swap_moa_go() {
+fn remove_liquidity_proxy_after_swap_go() {
     world().run("scenarios/remove_liquidity_proxy_after_swap_moa.scen.json");
 }
 

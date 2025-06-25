@@ -218,8 +218,10 @@ pub trait BaseFunctionsModule:
         }
 
         if migrated_amount > 0 {
+            let mut user_total_farm_position = self.get_user_total_farm_position(caller);
+            user_total_farm_position.total_farm_position += &migrated_amount;
             self.user_total_farm_position(caller)
-                .update(|total_farm_position| *total_farm_position += &migrated_amount);
+                .set(user_total_farm_position);
         }
 
         migrated_amount
@@ -229,16 +231,10 @@ pub trait BaseFunctionsModule:
         if migrated_amount == BigUint::zero() {
             return;
         }
-
-        let user_total_farm_position_mapper = self.user_total_farm_position(caller);
-        let mut user_total_farm_position = user_total_farm_position_mapper.get();
-
-        if user_total_farm_position > migrated_amount {
-            user_total_farm_position -= &migrated_amount;
-            user_total_farm_position_mapper.set(user_total_farm_position);
-        } else {
-            user_total_farm_position_mapper.clear();
-        }
+        self.user_total_farm_position(caller)
+            .update(|user_total_farm_position| {
+                user_total_farm_position.total_farm_position -= migrated_amount;
+            });
     }
 
     fn end_produce_rewards<FC: FarmContract<FarmSc = Self>>(&self) {
@@ -285,9 +281,10 @@ where
         sc: &<Self as FarmContract>::FarmSc,
         caller: &ManagedAddress<<<Self as FarmContract>::FarmSc as ContractBase>::Api>,
     ) -> BigUint<<<Self as FarmContract>::FarmSc as ContractBase>::Api> {
-        let user_total_farm_position = sc.user_total_farm_position(caller).get();
+        let user_total_farm_position = sc.get_user_total_farm_position(caller);
+        let user_farm_position = user_total_farm_position.total_farm_position;
 
-        sc.claim_boosted_yields_rewards(caller, user_total_farm_position)
+        sc.claim_boosted_yields_rewards(caller, user_farm_position)
     }
 }
 

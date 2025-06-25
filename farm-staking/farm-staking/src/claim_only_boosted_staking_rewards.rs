@@ -1,6 +1,3 @@
-use contexts::storage_cache::StorageCache;
-use farm_base_impl::base_traits_impl::FarmContract;
-
 use crate::base_impl_wrapper::FarmStakingWrapper;
 
 dharitri_sc::imports!();
@@ -19,7 +16,6 @@ pub trait ClaimOnlyBoostedStakingRewardsModule:
     + weekly_rewards_splitting::global_info::WeeklyRewardsGlobalInfo
     + weekly_rewards_splitting::locked_token_buckets::WeeklyRewardsLockedTokenBucketsModule
     + weekly_rewards_splitting::update_claim_progress_energy::UpdateClaimProgressEnergyModule
-    + farm_base_impl::base_farm_validation::BaseFarmValidationModule
     + energy_query::EnergyQueryModule
     + token_send::TokenSendModule
     + events::EventsModule
@@ -35,27 +31,17 @@ pub trait ClaimOnlyBoostedStakingRewardsModule:
             OptionalValue::Some(user) => user,
             OptionalValue::None => &caller,
         };
+        let user_total_farm_position = self.get_user_total_farm_position(user);
         if user != &caller {
             require!(
-                self.allow_external_claim(user).get(),
+                user_total_farm_position.allow_external_claim_boosted_rewards,
                 "Cannot claim rewards for this address"
             );
         }
 
-        require!(
-            !self.user_total_farm_position(user).is_empty(),
-            "User total farm position is empty!"
-        );
-
-        let mut storage_cache = StorageCache::new(self);
-        self.validate_contract_state(storage_cache.contract_state, &storage_cache.farm_token_id);
-        FarmStakingWrapper::<Self>::generate_aggregated_rewards(self, &mut storage_cache);
-
         let boosted_rewards = self.claim_only_boosted_payment(user);
         let boosted_rewards_payment =
             DcdtTokenPayment::new(self.reward_token_id().get(), 0, boosted_rewards);
-
-        self.set_farm_supply_for_current_week(&storage_cache.farm_token_supply);
 
         self.send_payment_non_zero(user, &boosted_rewards_payment);
 
@@ -76,8 +62,10 @@ pub trait ClaimOnlyBoostedStakingRewardsModule:
         }
 
         if migrated_amount > 0 {
+            let mut user_total_farm_position = self.get_user_total_farm_position(caller);
+            user_total_farm_position.total_farm_position += &migrated_amount;
             self.user_total_farm_position(caller)
-                .update(|total_farm_position| *total_farm_position += &migrated_amount);
+                .set(user_total_farm_position);
         }
 
         migrated_amount
@@ -87,16 +75,10 @@ pub trait ClaimOnlyBoostedStakingRewardsModule:
         if migrated_amount == BigUint::zero() {
             return;
         }
-
-        let user_total_farm_position_mapper = self.user_total_farm_position(caller);
-        let mut user_total_farm_position = user_total_farm_position_mapper.get();
-
-        if user_total_farm_position > migrated_amount {
-            user_total_farm_position -= &migrated_amount;
-            user_total_farm_position_mapper.set(user_total_farm_position);
-        } else {
-            user_total_farm_position_mapper.clear();
-        }
+        self.user_total_farm_position(caller)
+            .update(|user_total_farm_position| {
+                user_total_farm_position.total_farm_position -= migrated_amount;
+            });
     }
 
     // Cannot import the one from farm, as the Wrapper struct has different dependencies

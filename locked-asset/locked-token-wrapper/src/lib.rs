@@ -1,5 +1,4 @@
 #![no_std]
-#![allow(deprecated)]
 
 dharitri_sc::imports!();
 
@@ -54,12 +53,14 @@ pub trait LockedTokenWrapper:
             &ManagedVec::from_single_item(original_locked_tokens.clone()),
         );
 
-        self.send().direct_dcdt(
-            &caller,
-            &original_locked_tokens.token_identifier,
-            original_locked_tokens.token_nonce,
-            &original_locked_tokens.amount,
-        );
+        self.tx()
+            .to(&caller)
+            .single_dcdt(
+                &original_locked_tokens.token_identifier,
+                original_locked_tokens.token_nonce,
+                &original_locked_tokens.amount,
+            )
+            .transfer();
 
         original_locked_tokens
     }

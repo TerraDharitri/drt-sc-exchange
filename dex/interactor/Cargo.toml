@@ -1,0 +1,49 @@
+[[bin]]
+name = "interactor"
+path = "src/dex_interact.rs"
+
+[package]
+name = "interactor"
+version = "0.0.0"
+authors = ["contact@dharitri.org"]
+edition = "2021"
+publish = false
+
+[dependencies]
+toml = "0.8.6"
+
+[dependencies.clap]
+version = "4.4.7"
+features = ["derive"]
+
+[dependencies.serde]
+version = "1.0"
+features = ["derive"]
+
+[dependencies.dharitri-sc]
+version = "=1.11.2"           
+
+# [dependencies.dharitri-sc]
+# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/framework/base"
+
+[dependencies.dharitri-sc-modules]
+version = "=1.11.2"  
+# [dependencies.dharitri-sc-modules]
+# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/contracts/modules"
+
+[dependencies.dharitri-sc-snippets]
+version = "=1.11.2" 
+# [dependencies.dharitri-sc-snippets]
+# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/framework/snippets"
+
+[dependencies.dharitri-sc-scenario]
+version = "=1.11.2" 
+
+# [dependencies.dharitri-sc-scenario]
+# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/framework/scenario"
+
+[dependencies.proxies]
+path = "proxies"
+
+[dependencies.common_structs]
+path = "../../common/common_structs"

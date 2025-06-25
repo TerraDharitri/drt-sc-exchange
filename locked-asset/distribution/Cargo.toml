@@ -1,0 +1,27 @@
+[package]
+edition = "2021"
+name = "distribution"
+publish = false
+version = "0.0.0"
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies.common_structs]
+path = "../../common/common_structs"
+
+[dependencies.factory]
+path = "../factory"
+
+[dependencies.dharitri-sc]
+version = "=1.11.2"           
+features = ["dcdt-token-payment-legacy-decode"]
+
+# [dependencies.dharitri-sc]
+# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/framework/base"
+# features = ["dcdt-token-payment-legacy-decode"]
+
+[dev-dependencies.dharitri-sc-scenario]
+version = "=1.11.2"   
+# [dependencies.dharitri-sc-scenario]
+# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/framework/scenario"

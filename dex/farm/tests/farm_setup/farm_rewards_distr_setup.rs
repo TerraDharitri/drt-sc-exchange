@@ -174,7 +174,7 @@ where
         caller: &Address,
         farm_token_nonce: u64,
         farm_out_amount: RustBigUint,
-        expected_moa_balance: RustBigUint,
+        expected_balance: RustBigUint,
     ) {
         let b_mock = &mut self.blockchain_wrapper;
         b_mock
@@ -204,7 +204,7 @@ where
             )
             .assert_ok();
 
-        b_mock.check_dcdt_balance(caller, MOA_TOKEN_ID, &expected_moa_balance);
+        b_mock.check_dcdt_balance(caller, MOA_TOKEN_ID, &expected_balance);
     }
 
     pub fn reward_per_block_rate_change(&mut self, new_rate: RustBigUint) {
@@ -223,12 +223,12 @@ where
     pub fn handle_action(&mut self, action: Action) {
         match action {
             Action::EnterFarm(caller, amount) => self.enter_farm(&caller, amount),
-            Action::ExitFarm(caller, farm_token_nonce, farm_out_amount, expected_moa_balance) => {
+            Action::ExitFarm(caller, farm_token_nonce, farm_out_amount, expected_balance) => {
                 self.exit_farm(
                     &caller,
                     farm_token_nonce,
                     farm_out_amount,
-                    expected_moa_balance,
+                    expected_balance,
                 )
             }
             Action::RewardPerBlockRateChange(new_rate) => {
