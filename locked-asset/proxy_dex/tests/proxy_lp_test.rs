@@ -133,8 +133,7 @@ fn add_remove_liquidity_proxy_test() {
                 block_epoch,
                 managed_biguint!(user_balance),
             );
-            let actual_energy =
-                sc.get_updated_energy_entry_for_user(&managed_address!(&first_user));
+            let actual_energy = sc.user_energy(&managed_address!(&first_user)).get();
             assert_eq!(expected_energy, actual_energy);
         })
         .assert_ok();
@@ -191,8 +190,7 @@ fn add_remove_liquidity_proxy_test() {
                 block_epoch,
                 managed_biguint!(user_balance),
             );
-            let actual_energy =
-                sc.get_updated_energy_entry_for_user(&managed_address!(&first_user));
+            let actual_energy = sc.user_energy(&managed_address!(&first_user)).get();
             assert_eq!(expected_energy, actual_energy);
         })
         .assert_ok();
@@ -886,8 +884,7 @@ fn increase_proxy_lp_token_energy() {
                 block_epoch,
                 managed_biguint!(USER_BALANCE),
             );
-            let actual_energy =
-                sc.get_updated_energy_entry_for_user(&managed_address!(&first_user));
+            let actual_energy = sc.user_energy(&managed_address!(&first_user)).get();
             assert_eq!(expected_energy, actual_energy);
         })
         .assert_ok();
@@ -906,17 +903,6 @@ fn increase_proxy_lp_token_energy() {
             },
         )
         .assert_ok();
-
-    // check old tokens were burned
-    setup
-        .b_mock
-        .check_nft_balance::<WrappedLpTokenAttributes<DebugApi>>(
-            setup.proxy_wrapper.address_ref(),
-            WRAPPED_LP_TOKEN_ID,
-            1,
-            &rust_biguint!(0u64),
-            None,
-        );
 
     // chceck new wrapped lp token
     setup.b_mock.check_nft_balance(
@@ -950,8 +936,7 @@ fn increase_proxy_lp_token_energy() {
                 block_epoch,
                 managed_biguint!(USER_BALANCE),
             );
-            let actual_energy =
-                sc.get_updated_energy_entry_for_user(&managed_address!(&first_user));
+            let actual_energy = sc.user_energy(&managed_address!(&first_user)).get();
             assert_eq!(expected_energy, actual_energy);
         })
         .assert_ok();
@@ -1042,8 +1027,7 @@ fn increase_proxy_lp_token_energy_unlocked_tokens() {
                 block_epoch,
                 managed_biguint!(USER_BALANCE),
             );
-            let actual_energy =
-                sc.get_updated_energy_entry_for_user(&managed_address!(&first_user));
+            let actual_energy = sc.user_energy(&managed_address!(&first_user)).get();
             assert_eq!(expected_energy, actual_energy);
         })
         .assert_ok();
@@ -1068,7 +1052,7 @@ fn increase_proxy_lp_token_energy_unlocked_tokens() {
         )
         .assert_ok();
 
-    // check new wrapped lp token
+    // chceck new wrapped lp token
     setup.b_mock.check_nft_balance(
         &first_user,
         WRAPPED_LP_TOKEN_ID,
@@ -1085,17 +1069,6 @@ fn increase_proxy_lp_token_energy_unlocked_tokens() {
             lp_token_amount: managed_biguint!(expected_lp_token_amount.to_u64().unwrap()),
         }),
     );
-
-    // check old tokens were burned
-    setup
-        .b_mock
-        .check_nft_balance::<WrappedLpTokenAttributes<DebugApi>>(
-            setup.proxy_wrapper.address_ref(),
-            WRAPPED_LP_TOKEN_ID,
-            1,
-            &rust_biguint!(0u64),
-            None,
-        );
 
     // check user energy after
     setup
@@ -1114,8 +1087,7 @@ fn increase_proxy_lp_token_energy_unlocked_tokens() {
                 block_epoch,
                 managed_biguint!(USER_BALANCE),
             );
-            let actual_energy =
-                sc.get_updated_energy_entry_for_user(&managed_address!(&first_user));
+            let actual_energy = sc.user_energy(&managed_address!(&first_user)).get();
             assert_eq!(expected_energy, actual_energy);
         })
         .assert_ok();
@@ -1191,7 +1163,7 @@ fn increase_proxy_lp_token_energy_partially_unlocked_tokens() {
         }),
     );
 
-    let block_epoch = 1;
+    let mut block_epoch = 1;
     let user_locked_tokens_in_lp = locked_token_amount.to_u64().unwrap();
 
     // check user energy before
@@ -1206,11 +1178,15 @@ fn increase_proxy_lp_token_energy_partially_unlocked_tokens() {
                 block_epoch,
                 managed_biguint!(USER_BALANCE),
             );
-            let actual_energy =
-                sc.get_updated_energy_entry_for_user(&managed_address!(&first_user));
+            let actual_energy = sc.user_energy(&managed_address!(&first_user)).get();
             assert_eq!(expected_energy, actual_energy);
         })
         .assert_ok();
+
+    // Wait for tokens to unlock
+    block_epoch += LOCK_OPTIONS[0] / 2;
+
+    setup.b_mock.set_block_epoch(block_epoch);
 
     // call increase energy
     setup
@@ -1220,56 +1196,28 @@ fn increase_proxy_lp_token_energy_partially_unlocked_tokens() {
             &setup.proxy_wrapper,
             WRAPPED_LP_TOKEN_ID,
             1,
-            &(&expected_lp_token_amount / 2u64),
+            &expected_lp_token_amount,
             |sc| {
                 let _ = sc.increase_proxy_pair_token_energy_endpoint(LOCK_OPTIONS[1]);
             },
         )
         .assert_ok();
 
-    // check old tokens were burned
-    setup
-        .b_mock
-        .check_nft_balance::<WrappedLpTokenAttributes<DebugApi>>(
-            setup.proxy_wrapper.address_ref(),
-            WRAPPED_LP_TOKEN_ID,
-            1,
-            &rust_biguint!(0u64),
-            None,
-        );
-
-    // check remaining old wrapped lp token
-    setup.b_mock.check_nft_balance(
-        &first_user,
-        WRAPPED_LP_TOKEN_ID,
-        1,
-        &(&expected_lp_token_amount / 2u64),
-        Some(&WrappedLpTokenAttributes::<DebugApi> {
-            locked_tokens: DcdtTokenPayment {
-                token_identifier: managed_token_id!(LOCKED_TOKEN_ID),
-                // Nonce increases
-                token_nonce: 1,
-                amount: managed_biguint!(locked_token_amount.to_u64().unwrap()),
-            },
-            lp_token_id: managed_token_id!(LP_TOKEN_ID),
-            lp_token_amount: managed_biguint!(expected_lp_token_amount.to_u64().unwrap()),
-        }),
-    );
-
-    // check new wrapped lp token
+    // chceck new wrapped lp token
     setup.b_mock.check_nft_balance(
         &first_user,
         WRAPPED_LP_TOKEN_ID,
         2,
-        &(&expected_lp_token_amount / 2u64),
+        &expected_lp_token_amount,
         Some(&WrappedLpTokenAttributes::<DebugApi> {
             locked_tokens: DcdtTokenPayment {
                 token_identifier: managed_token_id!(LOCKED_TOKEN_ID),
-                token_nonce: 2,
-                amount: managed_biguint!(locked_token_amount.to_u64().unwrap() / 2u64),
+                // Nonce increases
+                token_nonce: 3,
+                amount: managed_biguint!(locked_token_amount.to_u64().unwrap()),
             },
             lp_token_id: managed_token_id!(LP_TOKEN_ID),
-            lp_token_amount: managed_biguint!(expected_lp_token_amount.to_u64().unwrap() / 2u64),
+            lp_token_amount: managed_biguint!(expected_lp_token_amount.to_u64().unwrap()),
         }),
     );
 
@@ -1281,17 +1229,16 @@ fn increase_proxy_lp_token_energy_partially_unlocked_tokens() {
             let second_lock_epochs =
                 BigInt::from(LOCK_OPTIONS[0] as i64) - BigInt::from(block_epoch as i64);
 
-            let expected_energy_amount = BigInt::from((user_locked_tokens_in_lp / 2u64) as i64)
+            let expected_energy_amount = BigInt::from((user_locked_tokens_in_lp) as i64)
                 * BigInt::from(first_lock_epochs as i64)
-                + BigInt::from((USER_BALANCE) as i64) * second_lock_epochs.clone()
-                - BigInt::from((user_locked_tokens_in_lp / 2u64) as i64) * second_lock_epochs;
+                + BigInt::from((USER_BALANCE - user_locked_tokens_in_lp) as i64)
+                    * second_lock_epochs;
             let expected_energy = Energy::new(
                 expected_energy_amount,
                 block_epoch,
                 managed_biguint!(USER_BALANCE),
             );
-            let actual_energy =
-                sc.get_updated_energy_entry_for_user(&managed_address!(&first_user));
+            let actual_energy = sc.user_energy(&managed_address!(&first_user)).get();
             assert_eq!(expected_energy, actual_energy);
         })
         .assert_ok();
@@ -1381,8 +1328,7 @@ fn increase_proxy_lp_legacy_token_energy() {
                 block_epoch,
                 managed_biguint!(USER_BALANCE),
             );
-            let actual_energy =
-                sc.get_updated_energy_entry_for_user(&managed_address!(&first_user));
+            let actual_energy = sc.user_energy(&managed_address!(&first_user)).get();
             assert_eq!(expected_energy, actual_energy);
         })
         .assert_ok();

@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                           37
+// Endpoints:                           38
 // Async Callback (empty):               1
-// Total number of exported functions:  40
+// Total number of exported functions:  41
 
 #![no_std]
 
@@ -26,6 +26,7 @@ dharitri_sc_wasm_adapter::endpoints! {
         removeKnownContracts => remove_known_contracts
         addKnownTokens => add_known_tokens
         removeKnownTokens => remove_known_tokens
+        setAllowExternalClaimRewards => set_allow_external_claim_rewards
         getLockedTokenId => locked_token_id
         getAllTokens => get_all_tokens
         getAllKnownContracts => known_contracts

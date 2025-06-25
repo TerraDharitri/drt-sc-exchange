@@ -1,7 +1,8 @@
 #![no_std]
 
-pub mod attr_ex_helper;
+mod attr_ex_helper;
 mod cache;
+mod energy_factory_migration_proxy;
 mod events;
 pub mod locked_asset;
 pub mod locked_asset_token_merge;

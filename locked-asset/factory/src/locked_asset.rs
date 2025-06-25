@@ -30,12 +30,14 @@ pub trait LockedAssetModule:
             .nft_create(total_amount, attributes);
         created_tokens.amount -= additional_amount_to_create;
 
-        self.send().direct_dcdt(
-            address,
-            &created_tokens.token_identifier,
-            created_tokens.token_nonce,
-            &created_tokens.amount,
-        );
+        self.tx()
+            .to(address)
+            .single_dcdt(
+                &created_tokens.token_identifier,
+                created_tokens.token_nonce,
+                &created_tokens.amount,
+            )
+            .transfer();
 
         created_tokens
     }
@@ -180,7 +182,10 @@ pub trait LockedAssetModule:
         if amount > &0 {
             let asset_token_id = self.asset_token_id().get();
             self.send().dcdt_local_mint(&asset_token_id, 0, amount);
-            self.send().direct_dcdt(dest, &asset_token_id, 0, amount);
+            self.tx()
+                .to(dest)
+                .single_dcdt(&asset_token_id, 0, amount)
+                .transfer();
         }
     }
 

@@ -9,14 +9,15 @@ publish = false
 path = "src/lib.rs"
 
 [dependencies.dharitri-sc]
-version = "1.13.6" 
-#[dependencies.dharitri-sc]
-#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-1.13.6/framework/base"
+version = "=1.11.10"           
+
+# [dependencies.dharitri-sc]
+# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/framework/base"
 
 [dependencies.dharitri-sc-modules]
-version = "=1.13.6" 
-#[dependencies.dharitri-sc-modules]
-#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-1.13.6/contracts/modules"
+version = "=1.11.10"  
+# [dependencies.dharitri-sc-modules]
+# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/contracts/modules"
 
 [dependencies.utils]
 path = "../../common/modules/utils"
@@ -48,6 +49,6 @@ num-traits = "0.2"
 hex = "0.4"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "=1.13.6" 
-#[dependencies.dharitri-sc-scenario]
-#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-1.13.6/framework/scenario"
+version = "=1.11.10"   
+# [dependencies.dharitri-sc-scenario]
+# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/framework/scenario"

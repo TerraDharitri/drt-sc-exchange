@@ -1,4 +1,5 @@
 #![no_std]
+#![allow(clippy::too_many_arguments)]
 
 dharitri_sc::imports!();
 dharitri_sc::derive_imports!();

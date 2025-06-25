@@ -2,18 +2,8 @@ dharitri_sc::imports!();
 
 pub const MAX_PENALTY_PERCENTAGE: u64 = 10_000;
 
+use crate::fees_collector_proxy;
 use crate::{events, tokens_per_user::UnstakePair};
-
-pub mod fees_collector_proxy {
-    dharitri_sc::imports!();
-
-    #[dharitri_sc::proxy]
-    pub trait FeesCollectorProxy {
-        #[payable("*")]
-        #[endpoint(depositSwapFees)]
-        fn deposit_swap_fees(&self);
-    }
-}
 
 #[dharitri_sc::module]
 pub trait FeesHandlerModule:
@@ -88,18 +78,13 @@ pub trait FeesHandlerModule:
         }
 
         let fees_collector_addr = self.fees_collector_address().get();
-        let _: IgnoreValue = self
-            .fees_collector_proxy_builder(fees_collector_addr)
+        self.tx()
+            .to(&fees_collector_addr)
+            .typed(fees_collector_proxy::FeesCollectorProxy)
             .deposit_swap_fees()
-            .with_dcdt_transfer(payment)
-            .execute_on_dest_context();
+            .payment(payment)
+            .sync_call();
     }
-
-    #[proxy]
-    fn fees_collector_proxy_builder(
-        &self,
-        sc_address: ManagedAddress,
-    ) -> fees_collector_proxy::Proxy<Self::Api>;
 
     #[view(getFeesBurnPercentage)]
     #[storage_mapper("feesBurnPercentage")]

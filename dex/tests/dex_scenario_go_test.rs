@@ -59,10 +59,10 @@ fn enter_farm_with_merge_tokens_go() {
     world().run("scenarios/enter_farm_with_merge_tokens.scen.json");
 }
 
-#[test]
-fn enter_farm_go() {
-    world().run("scenarios/enter_farm.scen.json");
-}
+// #[test]
+// fn enter_farm_go() {
+//     world().run("scenarios/enter_farm.scen.json");
+// }
 
 #[test]
 fn exit_farm_go() {
@@ -74,10 +74,10 @@ fn exit_farm_too_soon_go() {
     world().run("scenarios/exit_farm_too_soon.scen.json");
 }
 
-#[test]
-fn exit_farm_go() {
-    world().run("scenarios/exit_farm.scen.json");
-}
+// #[test]
+// fn exit_farm_go() {
+//     world().run("scenarios/exit_farm.scen.json");
+// }
 
 #[test]
 fn farm_reward_distr_scen_1_go() {

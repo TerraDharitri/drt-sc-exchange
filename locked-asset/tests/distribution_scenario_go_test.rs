@@ -64,11 +64,11 @@ fn enter_farm_proxy_with_merge_tokens_go() {
     world().run("scenarios/enter_farm_proxy_with_merge_tokens.scen.json");
 }
 
-#[test]
-#[ignore]
-fn enter_farm_proxy_go() {
-    world().run("scenarios/enter_farm_proxy.scen.json");
-}
+// #[test]
+// #[ignore]
+// fn enter_farm_proxy_go() {
+//     world().run("scenarios/enter_farm_proxy.scen.json");
+// }
 
 #[test]
 #[ignore]

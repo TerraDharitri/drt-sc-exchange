@@ -8,10 +8,12 @@ edition = "2018"
 path = "src/lib.rs"
 
 [dependencies.dharitri-sc]
-version = "1.13.6" 
-#[dependencies.dharitri-sc]
-#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-1.13.6/framework/base"
-#features = ["dcdt-token-payment-legacy-decode"]
+version = "=1.11.10"           
+features = ["dcdt-token-payment-legacy-decode"]
+
+# [dependencies.dharitri-sc]
+# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/framework/base"
+# features = ["dcdt-token-payment-legacy-decode"]
 
 [dependencies.common_structs]
 path = "../../common_structs"

@@ -33,15 +33,17 @@ path = "../../common/traits/unwrappable"
 path = "../../common/modules/legacy_token_decode_module"
 
 [dependencies.dharitri-sc]
-version = "1.13.6" 
-#[dependencies.dharitri-sc]
-#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-1.13.6/framework/base"
-#features = ["dcdt-token-payment-legacy-decode"]
+version = "=1.11.10"           
+features = ["dcdt-token-payment-legacy-decode"]
+
+# [dependencies.dharitri-sc]
+# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/framework/base"
+# features = ["dcdt-token-payment-legacy-decode"]
 
 [dependencies.dharitri-sc-modules]
-version = "=1.13.6" 
-#[dependencies.dharitri-sc-modules]
-#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-1.13.6/contracts/modules"
+version = "=1.11.10"  
+# [dependencies.dharitri-sc-modules]
+# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/contracts/modules"
 
 [dev-dependencies]
 num-bigint = "0.4.2"
@@ -49,6 +51,6 @@ num-traits = "0.2"
 hex = "0.4"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "=1.13.6" 
-#[dependencies.dharitri-sc-scenario]
-#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-1.13.6/framework/scenario"
+version = "=1.11.10"   
+# [dependencies.dharitri-sc-scenario]
+# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/framework/scenario"
