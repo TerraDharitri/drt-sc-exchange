@@ -6,7 +6,7 @@ dharitri_sc::derive_imports!();
 type EnterFarmResultType<BigUint> =
     MultiValue2<DcdtTokenPayment<BigUint>, DcdtTokenPayment<BigUint>>;
 type ExitFarmResultType<BigUint> =
-    MultiValue3<DcdtTokenPayment<BigUint>, DcdtTokenPayment<BigUint>, DcdtTokenPayment<BigUint>>;
+    MultiValue2<DcdtTokenPayment<BigUint>, DcdtTokenPayment<BigUint>>;
 type ClaimRewardsResultType<BigUint> =
     MultiValue2<DcdtTokenPayment<BigUint>, DcdtTokenPayment<BigUint>>;
 

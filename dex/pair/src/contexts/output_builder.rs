@@ -51,11 +51,6 @@ pub trait OutputBuilderModule:
         let mut payments: ManagedVec<DcdtTokenPayment<Self::Api>> = ManagedVec::new();
 
         payments.push(DcdtTokenPayment::new(
-            storage_cache.lp_token_id.clone(),
-            0,
-            add_liq_context.liq_added.clone(),
-        ));
-        payments.push(DcdtTokenPayment::new(
             storage_cache.first_token_id.clone(),
             0,
             &add_liq_context.first_payment.amount - &add_liq_context.first_token_optimal_amount,
@@ -142,14 +137,12 @@ pub trait OutputBuilderModule:
             ));
         }
 
-        if swap_context.final_input_amount < swap_context.input_token_amount {
-            let extra_amount = &swap_context.input_token_amount - &swap_context.final_input_amount;
-            payments.push(DcdtTokenPayment::new(
-                swap_context.input_token_id.clone(),
-                0,
-                extra_amount,
-            ));
-        }
+        let extra_amount = &swap_context.input_token_amount - &swap_context.final_input_amount;
+        payments.push(DcdtTokenPayment::new(
+            swap_context.input_token_id.clone(),
+            0,
+            extra_amount,
+        ));
 
         payments
     }

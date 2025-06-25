@@ -5,14 +5,12 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                           29
+// Endpoints:                           30
 // Async Callback (empty):               1
-// Total number of exported functions:  31
+// Total number of exported functions:  32
 
 #![no_std]
-
-// Configuration that works with rustc < 1.73.0.
-// TODO: Recommended rustc version: 1.73.0 or newer.
+#![allow(internal_features)]
 #![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
@@ -44,6 +42,7 @@ dharitri_sc_wasm_adapter::endpoints! {
         getUserVotedProposals => user_voted_proposals
         getProposalVotes => proposal_votes
         getProposalStatus => get_proposal_status
+        changeFeesCollectorAddress => change_fees_collector_address
         getFeesCollectorAddress => fees_collector_address
         setEnergyFactoryAddress => set_energy_factory_address
         getEnergyFactoryAddress => energy_factory_address

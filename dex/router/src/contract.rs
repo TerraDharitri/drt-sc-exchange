@@ -3,6 +3,7 @@
 dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
 
+pub mod config;
 pub mod enable_swap_by_user;
 mod events;
 pub mod factory;
@@ -11,7 +12,7 @@ pub mod multi_pair_swap;
 use factory::PairTokens;
 use pair::config::ProxyTrait as _;
 use pair::fee::ProxyTrait as _;
-use pair::ProxyTrait as _;
+use pair::{read_pair_storage, ProxyTrait as _};
 use pausable::ProxyTrait as _;
 
 const LP_TOKEN_DECIMALS: usize = 18;
@@ -24,7 +25,9 @@ const USER_DEFINED_TOTAL_FEE_PERCENT: u64 = 1_000;
 
 #[dharitri_sc::contract]
 pub trait Router:
-    factory::FactoryModule
+    config::ConfigModule
+    + read_pair_storage::ReadPairStorageModule
+    + factory::FactoryModule
     + events::EventsModule
     + multi_pair_swap::MultiPairSwap
     + token_send::TokenSendModule
@@ -39,8 +42,10 @@ pub trait Router:
         self.owner().set(&self.blockchain().get_caller());
     }
 
-    #[endpoint]
-    fn upgrade(&self) {}
+    #[upgrade]
+    fn upgrade(&self) {
+        self.state().set(false);
+    }
 
     #[only_owner]
     #[endpoint]
@@ -271,23 +276,6 @@ pub trait Router:
     }
 
     #[only_owner]
-    #[endpoint(setLocalRolesOwner)]
-    fn set_local_roles_owner(
-        &self,
-        token: TokenIdentifier,
-        address: ManagedAddress,
-        roles: MultiValueEncoded<DcdtLocalRole>,
-    ) {
-        require!(self.is_active(), "Not active");
-
-        self.send()
-            .dcdt_system_sc_proxy()
-            .set_special_roles(&address, &token, roles.into_iter())
-            .async_call()
-            .call_and_exit()
-    }
-
-    #[only_owner]
     #[endpoint(removePair)]
     fn remove_pair(
         &self,
@@ -325,8 +313,6 @@ pub trait Router:
                 })
                 .unwrap_or_else(ManagedAddress::zero);
         }
-
-        self.address_pair_map().remove(&pair_address);
 
         pair_address
     }
@@ -389,40 +375,9 @@ pub trait Router:
         }
     }
 
-    #[inline]
-    fn is_active(&self) -> bool {
-        self.state().get()
-    }
-
     #[only_owner]
     #[endpoint(setPairCreationEnabled)]
     fn set_pair_creation_enabled(&self, enabled: bool) {
         self.pair_creation_enabled().set(enabled);
     }
-
-    #[only_owner]
-    #[endpoint(migratePairMap)]
-    fn migrate_pair_map(&self) {
-        let pair_map = self.pair_map();
-        let mut address_pair_map = self.address_pair_map();
-        require!(
-            address_pair_map.is_empty(),
-            "The destination mapper must be empty"
-        );
-        for (pair_tokens, address) in pair_map.iter() {
-            address_pair_map.insert(address, pair_tokens);
-        }
-    }
-
-    #[view(getPairCreationEnabled)]
-    #[storage_mapper("pair_creation_enabled")]
-    fn pair_creation_enabled(&self) -> SingleValueMapper<bool>;
-
-    #[view(getState)]
-    #[storage_mapper("state")]
-    fn state(&self) -> SingleValueMapper<bool>;
-
-    #[view(getOwner)]
-    #[storage_mapper("owner")]
-    fn owner(&self) -> SingleValueMapper<ManagedAddress>;
 }

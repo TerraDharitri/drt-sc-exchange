@@ -5,14 +5,12 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                           70
+// Endpoints:                           71
 // Async Callback:                       1
-// Total number of exported functions:  72
+// Total number of exported functions:  73
 
 #![no_std]
-
-// Configuration that works with rustc < 1.73.0.
-// TODO: Recommended rustc version: 1.73.0 or newer.
+#![allow(internal_features)]
 #![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
@@ -24,8 +22,10 @@ dharitri_sc_wasm_adapter::endpoints! {
         init => init
         upgrade => upgrade
         mergeFarmTokens => merge_farm_tokens_endpoint
+        setBoostedYieldsRewardsPercentage => set_boosted_yields_rewards_percentage
         calculateRewardsForGivenPosition => calculate_rewards_for_given_position
         topUpRewards => top_up_rewards
+        withdrawRewards => withdraw_rewards
         endProduceRewards => end_produce_rewards
         setPerBlockRewardAmount => set_per_block_rewards
         setMaxApr => set_max_apr
@@ -71,7 +71,6 @@ dharitri_sc_wasm_adapter::endpoints! {
         unstakeFarmThroughProxy => unstake_farm_through_proxy
         unbondFarm => unbond_farm
         claimBoostedRewards => claim_boosted_rewards
-        setBoostedYieldsRewardsPercentage => set_boosted_yields_rewards_percentage
         collectUndistributedBoostedRewards => collect_undistributed_boosted_rewards
         getBoostedYieldsRewardsPercentage => boosted_yields_rewards_percentage
         getAccumulatedRewardsForWeek => accumulated_rewards_for_week

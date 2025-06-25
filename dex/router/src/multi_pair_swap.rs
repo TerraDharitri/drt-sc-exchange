@@ -2,8 +2,8 @@ dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
 
 use super::factory;
-
-use pair::ProxyTrait as _;
+use crate::config;
+use pair::{pair_actions::swap::ProxyTrait as _, read_pair_storage};
 
 type SwapOperationType<M> =
     MultiValue4<ManagedAddress<M>, ManagedBuffer<M>, TokenIdentifier<M>, BigUint<M>>;
@@ -12,10 +12,20 @@ pub const SWAP_TOKENS_FIXED_INPUT_FUNC_NAME: &[u8] = b"swapTokensFixedInput";
 pub const SWAP_TOKENS_FIXED_OUTPUT_FUNC_NAME: &[u8] = b"swapTokensFixedOutput";
 
 #[dharitri_sc::module]
-pub trait MultiPairSwap: factory::FactoryModule + token_send::TokenSendModule {
+pub trait MultiPairSwap:
+    config::ConfigModule
+    + read_pair_storage::ReadPairStorageModule
+    + factory::FactoryModule
+    + token_send::TokenSendModule
+{
     #[payable("*")]
     #[endpoint(multiPairSwap)]
-    fn multi_pair_swap(&self, swap_operations: MultiValueEncoded<SwapOperationType<Self::Api>>) {
+    fn multi_pair_swap(
+        &self,
+        swap_operations: MultiValueEncoded<SwapOperationType<Self::Api>>,
+    ) -> ManagedVec<DcdtTokenPayment> {
+        require!(self.is_active(), "Not active");
+
         let (token_id, nonce, amount) = self.call_value().single_dcdt().into_tuple();
         require!(nonce == 0, "Invalid nonce. Should be zero");
         require!(amount > 0u64, "Invalid amount. Should not be zero");
@@ -61,6 +71,8 @@ pub trait MultiPairSwap: factory::FactoryModule + token_send::TokenSendModule {
 
         payments.push(last_payment);
         self.send().direct_multi(&caller, &payments);
+
+        payments
     }
 
     fn actual_swap_fixed_input(

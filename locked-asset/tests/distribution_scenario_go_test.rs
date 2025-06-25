@@ -64,11 +64,11 @@ fn enter_farm_proxy_with_merge_tokens_go() {
     world().run("scenarios/enter_farm_proxy_with_merge_tokens.scen.json");
 }
 
-#[test]
-#[ignore]
-fn enter_farm_proxy_go() {
-    world().run("scenarios/enter_farm_proxy.scen.json");
-}
+// #[test]
+// #[ignore]
+// fn enter_farm_proxy_go() {
+//     world().run("scenarios/enter_farm_proxy.scen.json");
+// }
 
 #[test]
 #[ignore]
@@ -85,7 +85,8 @@ fn exit_farm_proxy_after_compound_rewards_go() {
 #[test]
 #[ignore]
 fn exit_farm_proxy_after_compound_rewards_and_epoch_increase_go() {
-    world().run("scenarios/exit_farm_proxy_after_compound_rewards_and_epoch_increase.scen.json");
+    world()
+        .run("scenarios/exit_farm_proxy_after_compound_rewards_and_epoch_increase.scen.json");
 }
 
 #[test]

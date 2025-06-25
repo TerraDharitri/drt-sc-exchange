@@ -56,7 +56,7 @@ pub trait LkmoaTransfer:
         self.add_permissions(caller, Permissions::OWNER);
     }
 
-    #[endpoint]
+    #[upgrade]
     fn upgrade(&self) {}
 
     #[endpoint]

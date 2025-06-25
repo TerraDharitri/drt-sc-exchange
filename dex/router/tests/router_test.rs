@@ -9,13 +9,14 @@ use dharitri_sc::{
         MultiValueEncoded,
     },
 };
-use pair::{config::ConfigModule, Pair};
+use pair::{
+    config::ConfigModule as PairConfigModule, pair_actions::initial_liq::InitialLiquidityModule,
+    Pair,
+};
 use pausable::{PausableModule, State};
 use router::{
-    enable_swap_by_user::EnableSwapByUserModule,
-    factory::{FactoryModule, PairTokens},
-    multi_pair_swap::SWAP_TOKENS_FIXED_INPUT_FUNC_NAME,
-    Router,
+    config::ConfigModule, enable_swap_by_user::EnableSwapByUserModule, factory::PairTokens,
+    multi_pair_swap::SWAP_TOKENS_FIXED_INPUT_FUNC_NAME, Router,
 };
 use router_setup::*;
 
@@ -133,7 +134,6 @@ fn test_router_upgrade_pair() {
 #[test]
 fn test_multi_pair_swap() {
     let mut router_setup = RouterSetup::new(router::contract_obj, pair::contract_obj);
-    router_setup.migrate_pair_map();
 
     router_setup.add_liquidity();
 
@@ -253,8 +253,6 @@ fn user_enable_pair_swaps_through_router_test() {
                 },
                 managed_address!(pair_wrapper.address_ref()),
             );
-
-            sc.migrate_pair_map();
 
             sc.add_common_tokens_for_user_pairs(MultiValueEncoded::from(ManagedVec::from(vec![
                 managed_token_id!(USDC_TOKEN_ID),
@@ -440,8 +438,6 @@ fn user_enable_pair_swaps_fail_test() {
                 },
                 managed_address!(pair_wrapper.address_ref()),
             );
-
-            sc.migrate_pair_map();
 
             sc.add_common_tokens_for_user_pairs(MultiValueEncoded::from(ManagedVec::from(vec![
                 managed_token_id!(USDC_TOKEN_ID),

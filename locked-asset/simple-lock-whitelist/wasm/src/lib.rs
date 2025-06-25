@@ -5,14 +5,12 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                           25
+// Endpoints:                           26
 // Async Callback:                       1
-// Total number of exported functions:  27
+// Total number of exported functions:  28
 
 #![no_std]
-
-// Configuration that works with rustc < 1.73.0.
-// TODO: Recommended rustc version: 1.73.0 or newer.
+#![allow(internal_features)]
 #![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
@@ -24,12 +22,13 @@ dharitri_sc_wasm_adapter::endpoints! {
         init => init
         upgrade => upgrade
         setTransferRoleLockedToken => set_transfer_role
+        setTransferRolesStatus => set_transfer_roles_status
         setTransferRoleProxyLpToken => set_transfer_role_proxy_lp
         setTransferRoleProxyFarmToken => set_transfer_role_proxy_farm
-        setLockedToken => set_locked_token
         lockTokens => lock_tokens_endpoint
         unlockTokens => unlock_tokens_endpoint
         getTokenWhitelist => token_whitelist
+        getTransferRolesNotSet => transfer_roles_not_set
         issueLockedToken => issue_locked_token
         getLockedTokenId => locked_token
         issueLpProxyToken => issue_lp_proxy_token

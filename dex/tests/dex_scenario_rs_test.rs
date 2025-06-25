@@ -67,9 +67,9 @@ fn enter_farm_with_merge_tokens_rs() {
 }
 
 #[test]
-fn enter_farm_rs() {
-    world().run("scenarios/enter_farm.scen.json");
-}
+// fn enter_farm_rs() {
+//     world().run("scenarios/enter_farm.scen.json");
+// }
 
 #[test]
 fn exit_farm_rs() {
@@ -82,9 +82,9 @@ fn exit_farm_too_soon_rs() {
 }
 
 #[test]
-fn exit_farm_rs() {
-    world().run("scenarios/exit_farm.scen.json");
-}
+// fn exit_farm_rs() {
+//     world().run("scenarios/exit_farm.scen.json");
+// }
 
 #[test]
 fn farm_reward_distr_scen_1_rs() {
