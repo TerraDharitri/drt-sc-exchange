@@ -28,10 +28,8 @@ panic = "abort"
 path = ".."
 
 [dependencies.dharitri-sc-wasm-adapter]
-version = "=1.11.10" 
-# [dependencies.dharitri-sc-wasm-adapter]
-# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/framework/wasm-adapter"
+version = "=1.14.0"
+#path = "/home/dugong/Desktop/teja-work/my_works1/rs-sdks/drt-rs-sdk-0.53.0/framework/base"
 
 [workspace]
 members = ["."]
-

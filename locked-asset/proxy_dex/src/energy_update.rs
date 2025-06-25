@@ -1,10 +1,9 @@
 dharitri_sc::imports!();
 
 use common_structs::{Epoch, Nonce};
+use energy_factory::{locked_token_transfer::ProxyTrait as _, ProxyTrait as _};
 use energy_query::Energy;
 use simple_lock::locked_token::LockedTokenAttributes;
-
-use crate::energy_factory_token_transfer_proxy;
 
 #[dharitri_sc::module]
 pub trait EnergyUpdateModule:
@@ -71,13 +70,10 @@ pub trait EnergyUpdateModule:
         lock_epochs: Epoch,
         energy_factory_addr: ManagedAddress,
     ) -> DcdtTokenPayment {
-        self.tx()
-            .to(&energy_factory_addr)
-            .typed(energy_factory_token_transfer_proxy::SimpleLockEnergyProxy)
+        self.energy_factory_proxy(energy_factory_addr)
             .extend_lock_period(lock_epochs, user)
-            .payment(old_tokens)
-            .returns(ReturnsResult)
-            .sync_call()
+            .with_dcdt_transfer(old_tokens)
+            .execute_on_dest_context()
     }
 
     fn set_energy_in_factory(
@@ -86,10 +82,9 @@ pub trait EnergyUpdateModule:
         energy: Energy<Self::Api>,
         energy_factory_addr: ManagedAddress,
     ) {
-        self.tx()
-            .to(&energy_factory_addr)
-            .typed(energy_factory_token_transfer_proxy::SimpleLockEnergyProxy)
+        let _: () = self
+            .energy_factory_proxy(energy_factory_addr)
             .set_user_energy_after_locked_token_transfer(user, energy)
-            .sync_call();
+            .execute_on_dest_context();
     }
 }

@@ -53,6 +53,12 @@ path = "../../common/modules/pausable"
 [dependencies.permissions_module]
 path = "../../common/modules/permissions_module"
 
+[dependencies.permissions_hub_module]
+path = "../../common/modules/permissions_hub_module"
+
+[dependencies.original_owner_helper]
+path = "../../common/modules/original_owner_helper"
+
 [dependencies.sc_whitelist_module]
 path = "../../common/modules/sc_whitelist_module"
 
@@ -77,23 +83,21 @@ path = "../../common/common_structs"
 [dependencies.common_errors]
 path = "../../common/common_errors"
 
+[dependencies.permissions-hub]
+path = "../../dex/permissions-hub"
+
 [dependencies.dharitri-sc]
-version = "=1.11.10"           
+version = "=1.14.0"
+#path = "/home/dugong/Desktop/teja-work/my_works1/rs-sdks/drt-rs-sdk-0.53.0/framework/base"
 features = ["dcdt-token-payment-legacy-decode"]
 
-# [dependencies.dharitri-sc]
-# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/framework/base"
-# features = ["dcdt-token-payment-legacy-decode"]
-
 [dependencies.dharitri-sc-modules]
-version = "=1.11.10"  
-# [dependencies.dharitri-sc-modules]
-# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/contracts/modules"
+version = "=1.14.0"
+#path = "/home/dugong/Desktop/teja-work/my_works1/rs-sdks/drt-rs-sdk-0.53.0/framework/base"
 
 [dev-dependencies]
 num-bigint = "0.4.2"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "=1.11.10"   
-# [dependencies.dharitri-sc-scenario]
-# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/framework/scenario"
+version = "=1.14.0"
+#path = "/home/dugong/Desktop/teja-work/my_works1/rs-sdks/drt-rs-sdk-0.53.0/framework/base"

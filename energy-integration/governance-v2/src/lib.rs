@@ -5,13 +5,14 @@ dharitri_sc::imports!();
 pub mod configurable;
 mod errors;
 pub mod events;
-pub mod fees_collector_proxy;
 pub mod proposal;
 pub mod proposal_storage;
 pub mod views;
 
 use proposal::*;
 use proposal_storage::VoteType;
+use weekly_rewards_splitting::events::Week;
+use weekly_rewards_splitting::global_info::ProxyTrait as _;
 
 use crate::configurable::{FULL_PERCENTAGE, MAX_GAS_LIMIT_PER_BLOCK};
 use crate::errors::*;
@@ -166,22 +167,15 @@ pub trait GovernanceV2:
         // First voter -> update total_energy
         if current_quorum == BigUint::zero() {
             let fees_collector_addr = self.fees_collector_address().get();
-
-            let last_global_update_week = self
-                .tx()
-                .to(&fees_collector_addr)
-                .typed(fees_collector_proxy::FeesCollectorProxy)
+            let last_global_update_week: Week = self
+                .fees_collector_proxy(fees_collector_addr.clone())
                 .last_global_update_week()
-                .returns(ReturnsResult)
-                .sync_call();
+                .execute_on_dest_context();
 
-            let total_quorum = self
-                .tx()
-                .to(&fees_collector_addr)
-                .typed(fees_collector_proxy::FeesCollectorProxy)
+            let total_quorum: BigUint = self
+                .fees_collector_proxy(fees_collector_addr)
                 .total_energy_for_week(last_global_update_week)
-                .returns(ReturnsResult)
-                .sync_call();
+                .execute_on_dest_context();
 
             let mut proposal = self.proposals().get(proposal_id);
             proposal.total_quorum = total_quorum;
@@ -311,13 +305,13 @@ pub trait GovernanceV2:
         proposal: &GovernanceProposal<Self::Api>,
         refund_amount: &BigUint,
     ) {
-        self.tx()
-            .to(&proposal.proposer)
-            .single_dcdt(
-                &proposal.fee_payment.token_identifier,
+        self.send().direct_non_zero_dcdt_payment(
+            &proposal.proposer,
+            &DcdtTokenPayment::new(
+                proposal.fee_payment.token_identifier.clone(),
                 proposal.fee_payment.token_nonce,
-                refund_amount,
-            )
-            .transfer();
+                refund_amount.clone(),
+            ),
+        );
     }
 }

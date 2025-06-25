@@ -105,14 +105,12 @@ pub trait LockedTokenModule:
             }
         }
 
-        self.tx()
-            .to(to)
-            .single_dcdt(
-                &payment.token_identifier,
-                payment.token_nonce,
-                &payment.amount,
-            )
-            .transfer();
+        self.send().direct_dcdt(
+            to,
+            &payment.token_identifier,
+            payment.token_nonce,
+            &payment.amount,
+        );
 
         payment
     }

@@ -1,0 +1,14 @@
+[package]
+name = "factory-legacy-meta"
+version = "0.0.0"
+authors = ["contact@dharitri.org"]
+edition = "2018"
+publish = false
+
+[dependencies.factory-legacy]
+path = ".."
+
+[dependencies.dharitri-sc-meta-lib]
+version = "1.14.0"
+#path = "/home/dugong/Desktop/teja-work/my_works1/rs-sdks/drt-rs-sdk-0.53.0/framework/base"
+default-features = false

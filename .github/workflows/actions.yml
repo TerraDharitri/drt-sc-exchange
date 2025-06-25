@@ -20,9 +20,9 @@ permissions:
 jobs:
   contracts:
     name: Contracts
-    uses: TerraDharitri/drt-sc-actions/.github/workflows/contracts.yml@v0.1.8
+    uses: TerraDharitri/drt-sc-actions/.github/workflows/contracts.yml@v0.1.19
     with:
-      rust-toolchain: nightly-2023-12-11
+      rust-toolchain: stable
       coverage-args: --ignore-filename-regex='/.cargo/git' --output ./coverage.md
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}

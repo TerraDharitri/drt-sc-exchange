@@ -5,12 +5,9 @@ edition = "2021"
 publish = false
 
 [dependencies.dharitri-sc]
-version = "=1.11.10"           
+version = "=1.14.0"
+#path = "/home/dugong/Desktop/teja-work/my_works1/rs-sdks/drt-rs-sdk-0.53.0/framework/base"
 features = ["dcdt-token-payment-legacy-decode"]
-
-# [dependencies.dharitri-sc]
-# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/framework/base"
-# features = ["dcdt-token-payment-legacy-decode"]
 
 [dependencies.farm]
 path = "../dex/farm"
@@ -20,12 +17,6 @@ path = "../dex/pair"
 
 [dependencies.router]
 path = "../dex/router"
-
-[dependencies.distribution]
-path = "distribution"
-
-[dependencies.factory]
-path = "factory"
 
 [dependencies.simple-lock]
 path = "simple-lock"
@@ -54,11 +45,9 @@ num-traits = "0.2"
 hex = "0.4"
 
 [dev-dependencies.dharitri-sc-modules]
-version = "=1.11.10" 
-# [dependencies.dharitri-sc-modules]
-# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/contracts/modules"
+version = "=1.14.0"
+#path = "/home/dugong/Desktop/teja-work/my_works1/rs-sdks/drt-rs-sdk-0.53.0/framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "=1.11.10"   
-# [dependencies.dharitri-sc-scenario]
-# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/framework/scenario"
+version = "=1.14.0"
+#path = "/home/dugong/Desktop/teja-work/my_works1/rs-sdks/drt-rs-sdk-0.53.0/framework/base"

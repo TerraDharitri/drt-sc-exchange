@@ -1,12 +1,11 @@
 #![no_std]
-#![allow(clippy::too_many_arguments)]
 
 dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
 
 pub mod base_functions;
 pub mod exit_penalty;
-pub mod pair_proxy;
+pub mod external_interaction;
 
 use base_functions::{ClaimRewardsResultType, DoubleMultiPayment, Wrapper};
 use common_structs::FarmTokenAttributes;
@@ -31,11 +30,14 @@ pub trait Farm:
     + farm_token::FarmTokenModule
     + pausable::PausableModule
     + permissions_module::PermissionsModule
+    + permissions_hub_module::PermissionsHubModule
+    + original_owner_helper::OriginalOwnerHelperModule
     + sc_whitelist_module::SCWhitelistModule
     + events::EventsModule
     + dharitri_sc_modules::default_issue_callbacks::DefaultIssueCallbacksModule
     + base_functions::BaseFunctionsModule
     + exit_penalty::ExitPenaltyModule
+    + external_interaction::ExternalInteractionsModule
     + farm_base_impl::base_farm_init::BaseFarmInitModule
     + farm_base_impl::base_farm_validation::BaseFarmValidationModule
     + farm_base_impl::enter_farm::BaseEnterFarmModule
@@ -223,17 +225,27 @@ pub trait Farm:
             OptionalValue::Some(user) => user,
             OptionalValue::None => &caller,
         };
-        let user_total_farm_position = self.get_user_total_farm_position(user);
         if user != &caller {
             require!(
-                user_total_farm_position.allow_external_claim_boosted_rewards,
+                self.allow_external_claim(user).get(),
                 "Cannot claim rewards for this address"
             );
         }
 
+        require!(
+            !self.user_total_farm_position(user).is_empty(),
+            "User total farm position is empty!"
+        );
+
+        let mut storage_cache = StorageCache::new(self);
+        self.validate_contract_state(storage_cache.contract_state, &storage_cache.farm_token_id);
+        Wrapper::<Self>::generate_aggregated_rewards(self, &mut storage_cache);
+
         let boosted_rewards = self.claim_only_boosted_payment(user);
         let boosted_rewards_payment =
             DcdtTokenPayment::new(self.reward_token_id().get(), 0, boosted_rewards);
+
+        self.set_farm_supply_for_current_week(&storage_cache.farm_token_supply);
 
         self.send_payment_non_zero(user, &boosted_rewards_payment);
 

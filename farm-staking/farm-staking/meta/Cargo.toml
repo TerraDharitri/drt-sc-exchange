@@ -8,8 +8,7 @@ publish = false
 [dependencies.farm-staking]
 path = ".."
 
-[dependencies.dharitri-sc-meta]
-version = "1.11.10" 
-# [dependencies.dharitri-sc-meta]
-# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/framework/meta"
-# default-features = false
+[dependencies.dharitri-sc-meta-lib]
+version = "1.14.0"
+#path = "/home/dugong/Desktop/teja-work/my_works1/rs-sdks/drt-rs-sdk-0.53.0/framework/base"
+default-features = false

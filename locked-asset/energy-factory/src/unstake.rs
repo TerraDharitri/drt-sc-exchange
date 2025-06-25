@@ -1,6 +1,21 @@
 dharitri_sc::imports!();
 
-use crate::{energy::Energy, token_unstake_proxy};
+use crate::energy::Energy;
+
+mod token_unstake_proxy {
+    dharitri_sc::imports!();
+
+    #[dharitri_sc::proxy]
+    pub trait TokenUnstakeProxy {
+        #[payable("*")]
+        #[endpoint(depositUserTokens)]
+        fn deposit_user_tokens(&self, user: ManagedAddress);
+
+        #[payable("*")]
+        #[endpoint(depositFees)]
+        fn deposit_fees(&self);
+    }
+}
 
 #[dharitri_sc::module]
 pub trait UnstakeModule:
@@ -47,22 +62,20 @@ pub trait UnstakeModule:
         payments.push(locked_tokens);
         payments.push(unlocked_tokens);
 
-        self.tx()
-            .to(&locking_sc_address)
-            .typed(token_unstake_proxy::TokenUnstakeProxy)
-            .deposit_user_tokens(&caller)
-            .payment(payments)
-            .sync_call();
+        let _: IgnoreValue = self
+            .token_unstake_sc_proxy_obj(locking_sc_address)
+            .deposit_user_tokens(caller)
+            .with_multi_token_transfer(payments)
+            .execute_on_dest_context();
     }
 
     fn send_fees_to_unstake_sc(&self, fees: DcdtTokenPayment) {
         let locking_sc_address = self.token_unstake_sc_address().get();
-        self.tx()
-            .to(&locking_sc_address)
-            .typed(token_unstake_proxy::TokenUnstakeProxy)
+        let _: IgnoreValue = self
+            .token_unstake_sc_proxy_obj(locking_sc_address)
             .deposit_fees()
-            .payment(fees)
-            .sync_call();
+            .with_dcdt_transfer(fees)
+            .execute_on_dest_context();
     }
 
     fn require_caller_unstake_sc(&self) {
@@ -73,6 +86,12 @@ pub trait UnstakeModule:
             "Only the unstake SC may call this endpoint"
         );
     }
+
+    #[proxy]
+    fn token_unstake_sc_proxy_obj(
+        &self,
+        sc_address: ManagedAddress,
+    ) -> token_unstake_proxy::Proxy<Self::Api>;
 
     #[view(getTokenUnstakeScAddress)]
     #[storage_mapper("tokenUnstakeScAddress")]

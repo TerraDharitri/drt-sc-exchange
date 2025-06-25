@@ -1459,7 +1459,7 @@ fn add_liquidity_through_simple_lock_proxy() {
         pair_setup
             .b_mock
             .get_dcdt_balance(&pair_setup.user_address, LOCKED_TOKEN_ID, 1);
-    let user_balance_before =
+    let user_moa_balance_before =
         pair_setup
             .b_mock
             .get_dcdt_balance(&pair_setup.user_address, MOA_TOKEN_ID, 0);
@@ -1509,7 +1509,7 @@ fn add_liquidity_through_simple_lock_proxy() {
     pair_setup.b_mock.check_dcdt_balance(
         &pair_setup.user_address,
         MOA_TOKEN_ID,
-        &(user_balance_before + 500_000u32),
+        &(user_moa_balance_before + 500_000u32),
     );
 
     // Add liquidity - same token pair as before -> same nonce (1)

@@ -12,7 +12,6 @@ pub mod locked_token_transfer;
 pub mod migration;
 pub mod penalty;
 pub mod token_merging;
-mod token_unstake_proxy;
 pub mod token_whitelist;
 pub mod unlock_with_penalty;
 pub mod unstake;
@@ -130,14 +129,12 @@ pub trait SimpleLockEnergy:
         let output_tokens =
             self.lock_by_token_type(&dest_address, payment, unlock_epoch, current_epoch);
 
-        self.tx()
-            .to(&dest_address)
-            .single_dcdt(
-                &output_tokens.token_identifier,
-                output_tokens.token_nonce,
-                &output_tokens.amount,
-            )
-            .transfer();
+        self.send().direct_dcdt(
+            &dest_address,
+            &output_tokens.token_identifier,
+            output_tokens.token_nonce,
+            &output_tokens.amount,
+        );
 
         output_tokens
     }
@@ -180,11 +177,12 @@ pub trait SimpleLockEnergy:
 
         self.send()
             .dcdt_local_mint(&output_payment.token_identifier, 0, &output_payment.amount);
-
-        self.tx()
-            .to(&caller)
-            .single_dcdt(&output_payment.token_identifier, 0, &output_payment.amount)
-            .transfer();
+        self.send().direct_dcdt(
+            &caller,
+            &output_payment.token_identifier,
+            0,
+            &output_payment.amount,
+        );
 
         output_payment
     }
@@ -223,15 +221,42 @@ pub trait SimpleLockEnergy:
             &payment.amount,
         );
 
-        self.tx()
-            .to(&caller)
-            .single_dcdt(
-                &output_tokens.token_identifier,
-                output_tokens.token_nonce,
-                &output_tokens.amount,
-            )
-            .transfer();
+        self.send().direct_dcdt(
+            &caller,
+            &output_tokens.token_identifier,
+            output_tokens.token_nonce,
+            &output_tokens.amount,
+        );
 
         output_tokens
+    }
+
+    #[only_owner]
+    #[endpoint(adjustUserEnergy)]
+    fn adjust_user_energy(
+        &self,
+        args: MultiValueEncoded<MultiValue3<ManagedAddress, BigInt, BigInt>>,
+    ) {
+        for arg in args {
+            let (user, energy_amount, token_amount) = arg.into_tuple();
+            require!(!self.user_energy(&user).is_empty(), "User energy not found");
+            let old_energy = self.get_updated_energy_entry_for_user(&user);
+            let new_energy_amount = old_energy.get_energy_amount_raw() + &energy_amount;
+            let new_total_locked_tokens = if token_amount >= 0 {
+                old_energy.get_total_locked_tokens() + &token_amount.magnitude()
+            } else {
+                let token_amount_magnitude = token_amount.magnitude();
+                require!(
+                    old_energy.get_total_locked_tokens() >= &token_amount_magnitude,
+                    "Insufficient locked tokens"
+                );
+                old_energy.get_total_locked_tokens() - &token_amount_magnitude
+            };
+
+            let current_epoch = self.blockchain().get_block_epoch();
+            let new_energy = Energy::new(new_energy_amount, current_epoch, new_total_locked_tokens);
+
+            self.set_energy_entry(&user, new_energy);
+        }
     }
 }

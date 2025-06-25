@@ -200,10 +200,8 @@ pub trait PriceDiscovery:
         require!(current_price >= min_price, BELOW_MIN_PRICE_ERR_MSG);
 
         let caller = self.blockchain().get_caller();
-        self.tx()
-            .to(&caller)
-            .rewa_or_single_dcdt(&refund_token_id, 0, &withdraw_amount)
-            .transfer();
+        self.send()
+            .direct(&caller, &refund_token_id, 0, &withdraw_amount);
 
         self.emit_withdraw_event(
             refund_token_id.clone(),

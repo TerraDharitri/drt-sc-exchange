@@ -111,7 +111,7 @@ pub trait FeesCollector:
         }
 
         if !rewards.is_empty() {
-            self.tx().to(&caller).payment(&rewards).transfer();
+            self.send().direct_multi(&caller, &rewards);
         }
 
         if total_locked_token_rewards_amount > 0 {

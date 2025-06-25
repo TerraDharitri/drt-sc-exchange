@@ -2,8 +2,18 @@ dharitri_sc::imports!();
 
 pub const MAX_PENALTY_PERCENTAGE: u64 = 10_000;
 
-use crate::fees_collector_proxy;
 use crate::{events, tokens_per_user::UnstakePair};
+
+pub mod fees_collector_proxy {
+    dharitri_sc::imports!();
+
+    #[dharitri_sc::proxy]
+    pub trait FeesCollectorProxy {
+        #[payable("*")]
+        #[endpoint(depositSwapFees)]
+        fn deposit_swap_fees(&self);
+    }
+}
 
 #[dharitri_sc::module]
 pub trait FeesHandlerModule:
@@ -57,13 +67,26 @@ pub trait FeesHandlerModule:
         self.burn_penalty(payment);
     }
 
+    #[only_owner]
+    #[endpoint(setFeesBurnPercentage)]
+    fn set_fees_burn_percentage(&self, fees_burn_percentage: u64) {
+        require!(
+            fees_burn_percentage <= MAX_PENALTY_PERCENTAGE,
+            "Fees burn percentage exceeds the maximum allowed percentage"
+        );
+        self.fees_burn_percentage().set(fees_burn_percentage);
+    }
+
     fn burn_penalty(&self, payment: DcdtTokenPayment) {
         let fees_burn_percentage = self.fees_burn_percentage().get();
         let burn_amount = &payment.amount * fees_burn_percentage / MAX_PENALTY_PERCENTAGE;
         let remaining_amount = &payment.amount - &burn_amount;
 
-        self.send()
-            .dcdt_local_burn(&payment.token_identifier, payment.token_nonce, &burn_amount);
+        self.send().dcdt_non_zero_local_burn(
+            &payment.token_identifier,
+            payment.token_nonce,
+            &burn_amount,
+        );
 
         self.send_fees_to_collector(DcdtTokenPayment::new(
             payment.token_identifier,
@@ -78,13 +101,18 @@ pub trait FeesHandlerModule:
         }
 
         let fees_collector_addr = self.fees_collector_address().get();
-        self.tx()
-            .to(&fees_collector_addr)
-            .typed(fees_collector_proxy::FeesCollectorProxy)
+        let _: IgnoreValue = self
+            .fees_collector_proxy_builder(fees_collector_addr)
             .deposit_swap_fees()
-            .payment(payment)
-            .sync_call();
+            .with_dcdt_transfer(payment)
+            .execute_on_dest_context();
     }
+
+    #[proxy]
+    fn fees_collector_proxy_builder(
+        &self,
+        sc_address: ManagedAddress,
+    ) -> fees_collector_proxy::Proxy<Self::Api>;
 
     #[view(getFeesBurnPercentage)]
     #[storage_mapper("feesBurnPercentage")]

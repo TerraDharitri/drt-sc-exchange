@@ -69,7 +69,8 @@ pub trait InitialLiquidityModule:
         let lp_payment =
             DcdtTokenPayment::new(storage_cache.lp_token_id.clone(), 0, liq_added.clone());
 
-        self.tx().to(&caller).payment(lp_payment).transfer();
+        self.send()
+            .direct_non_zero_dcdt_payment(&caller, &lp_payment);
 
         self.state().set(State::PartialActive);
 

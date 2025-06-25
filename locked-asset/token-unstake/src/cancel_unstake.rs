@@ -1,8 +1,9 @@
 dharitri_sc::imports!();
 
+use energy_factory::unstake::ProxyTrait as _;
 use simple_lock::locked_token::LockedTokenAttributes;
 
-use crate::{energy_factory_unstake_proxy, events};
+use crate::events;
 
 #[dharitri_sc::module]
 pub trait CancelUnstakeModule:
@@ -53,14 +54,13 @@ pub trait CancelUnstakeModule:
 
         entries_mapper.clear();
 
-        self.tx().to(&caller).payment(&output_payments).transfer();
+        self.send().direct_multi(&caller, &output_payments);
 
         let sc_address = self.energy_factory_address().get();
-        self.tx()
-            .to(&sc_address)
-            .typed(energy_factory_unstake_proxy::SimpleLockEnergyProxy)
+        let _: IgnoreValue = self
+            .energy_factory_proxy(sc_address)
             .revert_unstake(caller.clone(), energy)
-            .sync_call();
+            .execute_on_dest_context();
 
         self.emit_unlocked_tokens_event(&caller, ManagedVec::new());
         output_payments.into()

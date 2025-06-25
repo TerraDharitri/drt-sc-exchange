@@ -57,15 +57,12 @@ pub trait VirtualLockModule:
                     energy,
                 )
             });
-
-        self.tx()
-            .to(&dest_address)
-            .single_dcdt(
-                &locked_tokens.token_identifier,
-                locked_tokens.token_nonce,
-                &locked_tokens.amount,
-            )
-            .transfer();
+        self.send().direct_dcdt(
+            &dest_address,
+            &locked_tokens.token_identifier,
+            locked_tokens.token_nonce,
+            &locked_tokens.amount,
+        );
 
         locked_tokens
     }

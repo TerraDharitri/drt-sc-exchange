@@ -179,14 +179,12 @@ pub trait ProxyFarmModule:
         );
 
         if enter_farm_result.reward_tokens.amount > 0 {
-            self.tx()
-                .to(&caller)
-                .single_dcdt(
-                    &enter_farm_result.reward_tokens.token_identifier,
-                    enter_farm_result.reward_tokens.token_nonce,
-                    &enter_farm_result.reward_tokens.amount,
-                )
-                .transfer();
+            self.send().direct_dcdt(
+                &caller,
+                &enter_farm_result.reward_tokens.token_identifier,
+                enter_farm_result.reward_tokens.token_nonce,
+                &enter_farm_result.reward_tokens.amount,
+            );
         }
 
         (farm_tokens, enter_farm_result.reward_tokens).into()
@@ -216,7 +214,7 @@ pub trait ProxyFarmModule:
             farm_address,
             farm_proxy_token_attributes.farm_token_id,
             farm_proxy_token_attributes.farm_token_nonce,
-            payment.amount,
+            payment.amount.clone(),
             caller.clone(),
         );
         require!(
@@ -231,24 +229,29 @@ pub trait ProxyFarmModule:
             farm_proxy_token_attributes.farming_token_locked_nonce,
             exit_farm_result.initial_farming_tokens.amount,
         );
-        self.tx()
-            .to(&caller)
-            .single_dcdt(
-                &lp_proxy_token_payment.token_identifier,
-                lp_proxy_token_payment.token_nonce,
-                &lp_proxy_token_payment.amount,
-            )
-            .transfer();
+        self.send().direct_dcdt(
+            &caller,
+            &lp_proxy_token_payment.token_identifier,
+            lp_proxy_token_payment.token_nonce,
+            &lp_proxy_token_payment.amount,
+        );
+
+        if payment.amount > lp_proxy_token_payment.amount {
+            let penalty_amount = &payment.amount - &lp_proxy_token_payment.amount;
+
+            self.lp_proxy_token().nft_burn(
+                farm_proxy_token_attributes.farming_token_locked_nonce,
+                &penalty_amount,
+            );
+        }
 
         if exit_farm_result.reward_tokens.amount > 0 {
-            self.tx()
-                .to(&caller)
-                .single_dcdt(
-                    &exit_farm_result.reward_tokens.token_identifier,
-                    exit_farm_result.reward_tokens.token_nonce,
-                    &exit_farm_result.reward_tokens.amount,
-                )
-                .transfer();
+            self.send().direct_dcdt(
+                &caller,
+                &exit_farm_result.reward_tokens.token_identifier,
+                exit_farm_result.reward_tokens.token_nonce,
+                &exit_farm_result.reward_tokens.amount,
+            );
         }
 
         (lp_proxy_token_payment, exit_farm_result.reward_tokens).into()
@@ -298,14 +301,12 @@ pub trait ProxyFarmModule:
         );
 
         if claim_rewards_result.reward_tokens.amount > 0 {
-            self.tx()
-                .to(&caller)
-                .single_dcdt(
-                    &claim_rewards_result.reward_tokens.token_identifier,
-                    claim_rewards_result.reward_tokens.token_nonce,
-                    &claim_rewards_result.reward_tokens.amount,
-                )
-                .transfer();
+            self.send().direct_dcdt(
+                &caller,
+                &claim_rewards_result.reward_tokens.token_identifier,
+                claim_rewards_result.reward_tokens.token_nonce,
+                &claim_rewards_result.reward_tokens.amount,
+            );
         }
 
         (new_proxy_token_payment, claim_rewards_result.reward_tokens).into()
