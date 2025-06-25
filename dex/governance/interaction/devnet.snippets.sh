@@ -3,7 +3,7 @@ PROXY="https://devnet-gateway.dharitri.org"
 CHAIN_ID="D"
 
 GOVERNANCE_WASM_PATH="/home/numbat/Github/sc-dex-rs/dex/governance/output/governance.wasm"
-DCDT_ISSUE_ADDRESS="drt1yvesqqqqqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqzlllsd5j0s2"
+DCDT_ISSUE_ADDRESS="drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u"
 
 VOTE_NFT_NAME="0x564f5445"
 VOTE_NFT_TICKER="0x564f5445"
@@ -55,7 +55,7 @@ deployGovernanceSC() {
         --send || return
 }
 
-CONTRACT_ADDRESS="drt1qqqqqqqqqqqqqpgqcqm9vxzc3ghjgxfyd5dps6xhwpuhgsg6a4sqkvhged"
+CONTRACT_ADDRESS="drt1qqqqqqqqqqqqqpgqcqm9vxzc3ghjgxfyd5dps6xhwpuhgsg6a4sqtsqt6n"
 CONTRACT_ADDRESS_HEX="0x00000000000000000500c0365618588a2f2419246d1a1868d7707974411aed60"
 
 setSpecialRolesVoteNFT() {
@@ -141,7 +141,7 @@ execute() {
         --send || return
 }
 
-SELF_ADDR="drt1uv40ahysflse896x4ktnh6ecx43u7cmy9wnxnvcyp7deg299a4sq8s28dr"
+SELF_ADDR="drt1uv40ahysflse896x4ktnh6ecx43u7cmy9wnxnvcyp7deg299a4sq6vaywa"
 
 redeem() {
     drtpy --verbose contract call ${SELF_ADDR} --recall-nonce \

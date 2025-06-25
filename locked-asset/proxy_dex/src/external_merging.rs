@@ -1,3 +1,5 @@
+#![allow(deprecated)]
+
 dharitri_sc::imports!();
 
 use common_structs::PaymentsVec;

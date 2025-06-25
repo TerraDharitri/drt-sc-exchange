@@ -5,13 +5,12 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                           22
+// Upgrade:                              1
+// Endpoints:                           21
 // Async Callback (empty):               1
 // Total number of exported functions:  24
 
 #![no_std]
-#![allow(internal_features)]
-#![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
 dharitri_sc_wasm_adapter::panic_handler!();
@@ -40,7 +39,7 @@ dharitri_sc_wasm_adapter::endpoints! {
         getProposal => proposal
         getProposalIdCounter => proposal_id_counter
         getVoteNFTId => vote_nft_id
-        getMoaTokenId => token_id
+        getMoaTokenId => moa_token_id
         getProposalStatus => get_proposal_status_view
     )
 }

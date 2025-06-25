@@ -8,16 +8,14 @@ publish = false
 [lib]
 path = "src/lib.rs"
 
-[dependencies.dharitri-sc]                                     
-version = "=1.9.0" 
-#[dependencies.dharitri-sc]
-#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.48.0/framework/base"
-#features = ["dcdt-token-payment-legacy-decode"]
+[dependencies.dharitri-sc]
+version = "=1.11.10"
+#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.5/framework/base"
+features = ["dcdt-token-payment-legacy-decode"]
 
 [dependencies.dharitri-sc-modules]
-version = "=1.9.0" 
-#[dependencies.dharitri-sc-modules]
-#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.48.0/contracts/modules"
+version = "=1.11.10"
+#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.5/contracts/modules"
 
 [dependencies.common_structs]
 path = "../../common/common_structs"
@@ -28,6 +26,5 @@ num-traits = "0.2"
 hex = "0.4"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "=1.9.0" 
-#[dependencies.dharitri-sc-scenario]
-#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.48.0/framework/scenario"
+version = "=1.11.10"
+#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.5/framework/scenario"

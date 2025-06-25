@@ -48,7 +48,7 @@ The deployment function, it receives the required variables like token ids and a
     );
 ```
 
-Endpoint that allows the setup of the dual yield token. It receives the standard parameters for creating a new token, as is payable in rEWA.
+Endpoint that allows the setup of the dual yield token. It receives the standard parameters for creating a new token, as is payable in REWA.
 
 ### setLocalRolesDualYieldToken
 
@@ -96,5 +96,5 @@ One thing to note here is that between claiming rewards in the farming contract 
     );
 ```
 
-To unstake his current position, a user must send the desired amount of dual yield tokens to the proxy contract. At this moment, the proxy contract knows, based on the sent dual yield token, both the farm token position and staking token position. The first step is for the proxy contract to withdraw the LP tokens from the farms and the liquidity from the pair contract. After that all the harvested rewards, the resulting rEWA from removing the LP token and the unstake position of the staking token are all sent to the user. The unstaking process is ended with the burning of the dual yield tokens.
+To unstake his current position, a user must send the desired amount of dual yield tokens to the proxy contract. At this moment, the proxy contract knows, based on the sent dual yield token, both the farm token position and staking token position. The first step is for the proxy contract to withdraw the LP tokens from the farms and the liquidity from the pair contract. After that all the harvested rewards, the resulting REWA from removing the LP token and the unstake position of the staking token are all sent to the user. The unstaking process is ended with the burning of the dual yield tokens.
 It is important to note that because of the user’s unstaked position, an unbonding period is not needed.

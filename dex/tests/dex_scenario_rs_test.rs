@@ -2,7 +2,6 @@ use dharitri_sc_scenario::ScenarioWorld;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
-    blockchain.set_current_dir_from_workspace("dex");
 
     blockchain.register_contract("file:router/output/router.wasm", router::ContractBuilder);
     blockchain.register_contract("file:pair/output/pair.wasm", pair::ContractBuilder);
@@ -67,9 +66,9 @@ fn enter_farm_with_merge_tokens_rs() {
 }
 
 #[test]
-// fn enter_farm_rs() {
-//     world().run("scenarios/enter_farm.scen.json");
-// }
+fn enter_moa_farm_rs() {
+    world().run("scenarios/enter_moa_farm.scen.json");
+}
 
 #[test]
 fn exit_farm_rs() {
@@ -82,9 +81,9 @@ fn exit_farm_too_soon_rs() {
 }
 
 #[test]
-// fn exit_farm_rs() {
-//     world().run("scenarios/exit_farm.scen.json");
-// }
+fn exit_moa_farm_rs() {
+    world().run("scenarios/exit_moa_farm.scen.json");
+}
 
 #[test]
 fn farm_reward_distr_scen_1_rs() {

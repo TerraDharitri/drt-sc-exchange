@@ -18,9 +18,9 @@ mod price_provider_proxy {
 #[dharitri_sc::module]
 pub trait Lib: config::Config {
     fn get_vote_weight(&self, payment: &DcdtTokenPayment<Self::Api>) -> BigUint {
-        let token_id = self.token_id().get();
+        let moa_token_id = self.moa_token_id().get();
 
-        if payment.token_identifier == self.token_id().get() {
+        if payment.token_identifier == self.moa_token_id().get() {
             return payment.amount.clone();
         }
 
@@ -31,11 +31,11 @@ pub trait Lib: config::Config {
                     .execute_on_dest_context();
             let (token1, token2) = call_result.into_tuple();
 
-            if token1.token_identifier == token_id {
+            if token1.token_identifier == moa_token_id {
                 return token1.amount;
             }
 
-            if token2.token_identifier == token_id {
+            if token2.token_identifier == moa_token_id {
                 return token2.amount;
             }
         }

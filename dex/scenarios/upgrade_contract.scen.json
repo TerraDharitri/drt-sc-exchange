@@ -14,10 +14,7 @@
                 "function": "upgradePair",
                 "arguments": [
                     "str:ALC-abcdef",
-                    "str:WREWA-abcdef",
-                    "0x0000000000000000000000000000000000000000000000000000000000000000",
-                    "300",
-                    "100"
+                    "str:WREWA-abcdef"
                 ],
                 "gasLimit": "1,000,000,000",
                 "gasPrice": "0"

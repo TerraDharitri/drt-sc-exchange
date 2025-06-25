@@ -5,13 +5,12 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                           71
+// Upgrade:                              1
+// Endpoints:                           70
 // Async Callback:                       1
 // Total number of exported functions:  73
 
 #![no_std]
-#![allow(internal_features)]
-#![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
 dharitri_sc_wasm_adapter::panic_handler!();

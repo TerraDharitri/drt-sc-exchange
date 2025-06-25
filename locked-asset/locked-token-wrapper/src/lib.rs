@@ -1,4 +1,5 @@
 #![no_std]
+#![allow(deprecated)]
 
 dharitri_sc::imports!();
 

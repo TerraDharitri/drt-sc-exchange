@@ -1,0 +1,14 @@
+[package]
+name = "simple-lock-legacy-meta"
+version = "0.0.0"
+edition = "2021"
+publish = false
+authors = ["contact@dharitri.org"]
+
+[dependencies.simple-lock-legacy]
+path = ".."
+
+[dependencies.dharitri-sc-meta]
+version = "1.11.10"
+#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.5/framework/meta"
+default-features = false

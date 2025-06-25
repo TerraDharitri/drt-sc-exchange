@@ -21,11 +21,15 @@ debug = false
 panic = "abort"
 overflow-checks = false
 
+[profile.dev]
+panic = "abort"
+
 [dependencies.pause-all]
 path = ".."
 
 [dependencies.dharitri-sc-wasm-adapter]
-version = "=1.9.0"
+version = "=1.11.10"
+#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.5/framework/wasm-adapter"
 
 [workspace]
 members = ["."]

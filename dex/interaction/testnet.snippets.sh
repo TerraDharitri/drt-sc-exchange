@@ -7,7 +7,7 @@ CHAIN_ID="T"
 # PROXY="http://localhost:7950"
 # CHAIN_ID="local-testnet"
 
-DCDT_ISSUE_ADDRESS="drt1yvesqqqqqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqzlllsd5j0s2"
+DCDT_ISSUE_ADDRESS="drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez"
 ROUTE_ADDRESS="drt1qqqqqqqqqqqqqpgq9s7ft5fj72zyt8qn8yd24xcl8rxu9v4m0n4s0rqhfe"
 WREWA_WRAP_ADDRESS="drt1qqqqqqqqqqqqqpgq4axqc749vuqr27snr8d8qgvlmz44chsr0n4sxf2afk"
 PAIR_ADDRESS="drt1qqqqqqqqqqqqqpgqr23zlc896w6qc2hw3evmmdmppw6jaucv0n4s36jp5d"

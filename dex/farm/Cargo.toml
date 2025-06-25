@@ -68,16 +68,14 @@ path = "../../energy-integration/common-modules/weekly-rewards-splitting"
 [dependencies.energy-query]
 path = "../../energy-integration/common-modules/energy-query"
 
-[dependencies.dharitri-sc]                                     
-version = "=1.9.0" 
-#[dependencies.dharitri-sc]
-#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.48.0/framework/base"
-#features = ["dcdt-token-payment-legacy-decode"]
+[dependencies.dharitri-sc]
+version = "=1.11.10"
+#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.5/framework/base"
+features = ["dcdt-token-payment-legacy-decode"]
 
 [dependencies.dharitri-sc-modules]
-version = "=1.9.0" 
-#[dependencies.dharitri-sc-modules]
-#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.48.0/contracts/modules"
+version = "=1.11.10"
+#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.5/contracts/modules"
 
 [dev-dependencies]
 num-bigint = "0.4.2"
@@ -86,9 +84,8 @@ num-bigint = "0.4.2"
 path = "../../energy-integration/energy-update"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "=1.9.0" 
-#[dependencies.dharitri-sc-scenario]
-#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.48.0/framework/scenario"
+version = "=1.11.10"
+#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.5/framework/scenario"
 
 [dev-dependencies.energy-factory-mock]
 path = "../../energy-integration/energy-factory-mock"

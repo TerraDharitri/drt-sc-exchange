@@ -113,13 +113,7 @@ fn test_router_upgrade_pair() {
         .execute_tx(&owner, &router_wrapper, &rust_zero, |sc| {
             let first_token_id = managed_token_id!(CUSTOM_TOKEN_ID);
             let second_token_id = managed_token_id!(USDC_TOKEN_ID);
-            sc.upgrade_pair_endpoint(
-                first_token_id,
-                second_token_id,
-                managed_address!(&user),
-                300,
-                50,
-            );
+            sc.upgrade_pair_endpoint(first_token_id, second_token_id);
         })
         .assert_ok();
 
@@ -155,7 +149,7 @@ fn test_multi_pair_swap() {
 
     let ops = vec![
         (
-            router_setup.pair_wrapper.address_ref().clone(),
+            router_setup.moa_pair_wrapper.address_ref().clone(),
             SWAP_TOKENS_FIXED_INPUT_FUNC_NAME,
             WREWA_TOKEN_ID, //swap to wrewa
             1,

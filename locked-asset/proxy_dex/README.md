@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Locked MOA tokens can be used as MOA token in DharitriX, with the help of this proxy contract.
+Locked MOA tokens can be used as MOA token in xExchange, with the help of this proxy contract.
 
 ## Introduction
 

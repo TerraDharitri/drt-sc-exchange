@@ -1,6 +1,6 @@
 use bitflags::bitflags;
 use dharitri_sc::{
-    abi::TypeAbi,
+    abi::{TypeAbi, TypeAbiFrom},
     codec::{DecodeError, TopDecode, TopEncode},
 };
 bitflags! {
@@ -32,8 +32,16 @@ impl TopDecode for Permissions {
     }
 }
 
-impl TypeAbi for Permissions {
-    fn type_name() -> dharitri_sc::abi::TypeName {
-        core::any::type_name::<u32>().into()
-    }
-}
+impl TypeAbiFrom<Self> for Permissions {}
+
+ impl TypeAbi for Permissions {
+     type Unmanaged = Self;
+
+     fn type_name() -> dharitri_sc::abi::TypeName {
+         core::any::type_name::<u32>().into()
+     }
+
+     fn type_name_rust() -> dharitri_sc::abi::TypeName {
+         core::any::type_name::<u32>().into()
+     }
+ }

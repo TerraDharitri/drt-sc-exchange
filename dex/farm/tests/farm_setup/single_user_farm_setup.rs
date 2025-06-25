@@ -303,9 +303,9 @@ where
         &mut self,
         farm_token_amount: u64,
         farm_token_nonce: u64,
-        expected_out: u64,
+        expected_moa_out: u64,
         expected_farm_token_amount: u64,
-        expected_user_balance: &RustBigUint,
+        expected_user_moa_balance: &RustBigUint,
         expected_user_lp_token_balance: &RustBigUint,
     ) {
         let b_mock = &mut self.blockchain_wrapper;
@@ -336,12 +336,12 @@ where
                         managed_token_id!(MOA_TOKEN_ID)
                     );
                     assert_eq!(second_result.token_nonce, 0);
-                    assert_eq!(second_result.amount, managed_biguint!(expected_out));
+                    assert_eq!(second_result.amount, managed_biguint!(expected_moa_out));
                 },
             )
             .assert_ok();
 
-        b_mock.check_dcdt_balance(&self.user_address, MOA_TOKEN_ID, expected_user_balance);
+        b_mock.check_dcdt_balance(&self.user_address, MOA_TOKEN_ID, expected_user_moa_balance);
         b_mock.check_dcdt_balance(
             &self.user_address,
             LP_TOKEN_ID,
@@ -354,8 +354,8 @@ where
         &mut self,
         farm_token_amount: u64,
         farm_token_nonce: u64,
-        expected_out: u64,
-        expected_user_balance: &RustBigUint,
+        expected_moa_out: u64,
+        expected_user_moa_balance: &RustBigUint,
         expected_user_lp_token_balance: &RustBigUint,
         expected_farm_token_nonce_out: u64,
         expected_reward_per_share: u64,
@@ -385,7 +385,7 @@ where
                         managed_token_id!(MOA_TOKEN_ID)
                     );
                     assert_eq!(second_result.token_nonce, 0);
-                    assert_eq!(second_result.amount, managed_biguint!(expected_out));
+                    assert_eq!(second_result.amount, managed_biguint!(expected_moa_out));
                 },
             )
             .assert_ok();
@@ -406,7 +406,7 @@ where
             &rust_biguint!(farm_token_amount),
             Some(&expected_attributes),
         );
-        b_mock.check_dcdt_balance(&self.user_address, MOA_TOKEN_ID, expected_user_balance);
+        b_mock.check_dcdt_balance(&self.user_address, MOA_TOKEN_ID, expected_user_moa_balance);
         b_mock.check_dcdt_balance(
             &self.user_address,
             LP_TOKEN_ID,

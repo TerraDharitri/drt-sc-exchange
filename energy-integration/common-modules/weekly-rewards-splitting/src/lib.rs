@@ -1,6 +1,4 @@
 #![no_std]
-#![feature(trait_alias)]
-#![feature(int_roundings)]
 
 dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
