@@ -1,0 +1,36 @@
+[package]
+name = "factory-legacy"
+publish = false
+version = "0.0.0"
+edition = "2018"
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies.dharitri-sc]
+version = "1.13.6" 
+#[dependencies.dharitri-sc]
+#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-1.13.6/framework/base"
+#features = ["dcdt-token-payment-legacy-decode"]
+
+[dependencies.dharitri-sc-modules]
+version = "=1.13.6" 
+#[dependencies.dharitri-sc-modules]
+#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-1.13.6/contracts/modules"
+
+[dev-dependencies.dharitri-sc-scenario]
+version = "=1.13.6" 
+#[dependencies.dharitri-sc-scenario]
+#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-1.13.6/framework/scenario"
+
+[dependencies.common_structs]
+path = "../../common/common_structs"
+
+[dependencies.common_errors]
+path = "../../common/common_errors"
+
+[dependencies.token_merge_helper]
+path = "../../common/modules/token_merge_helper"
+
+[dependencies.energy-factory]
+path = "../../locked-asset/energy-factory"

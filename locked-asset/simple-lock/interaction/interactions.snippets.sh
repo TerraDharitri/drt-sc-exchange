@@ -3,7 +3,7 @@ PROXY="https://testnet-gateway.dharitri.org"
 CHAIN_ID="T"
 
 ZERO_ADDRESS="drt1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq85hk5z"
-DCDT_ISSUE_ADDRESS="drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez"
+DCDT_ISSUE_ADDRESS="drt1yvesqqqqqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqzlllsd5j0s2"
 SIMPLE_LOCK_ADDRESS=""
 PAIR_ADDRESS=""
 

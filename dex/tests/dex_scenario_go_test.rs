@@ -60,8 +60,8 @@ fn enter_farm_with_merge_tokens_go() {
 }
 
 #[test]
-fn enter_moa_farm_go() {
-    world().run("scenarios/enter_moa_farm.scen.json");
+fn enter_farm_go() {
+    world().run("scenarios/enter_farm.scen.json");
 }
 
 #[test]
@@ -75,8 +75,8 @@ fn exit_farm_too_soon_go() {
 }
 
 #[test]
-fn exit_moa_farm_go() {
-    world().run("scenarios/exit_moa_farm.scen.json");
+fn exit_farm_go() {
+    world().run("scenarios/exit_farm.scen.json");
 }
 
 #[test]

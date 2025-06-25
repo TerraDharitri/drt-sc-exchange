@@ -9,6 +9,7 @@ authors = ["contact@dharitri.org"]
 path = ".."
 
 [dependencies.dharitri-sc-meta]
-version = "1.11.10"
-#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.5/framework/meta"
-default-features = false
+version = "1.13.6" 
+#[dependencies.dharitri-sc-meta]
+#path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-1.13.6/framework/meta"
+#default-features = false

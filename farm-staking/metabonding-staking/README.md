@@ -2,14 +2,14 @@
 
 ## Abstract
 
-Metabonding is a new community bootstrapping product, that allows users to receive tokens from projects enrolled in the Metabonding program, based on their staked REWA and locked tokens.
+Metabonding is a new community bootstrapping product, that allows users to receive tokens from projects enrolled in the Metabonding program, based on their staked rEWA and locked tokens.
 
 ## Introduction
 
 The Metabonding staking contract works in conjunction with the main Metabonding contract.
 The workflow can be summarized like so:
 - Projects apply to the Metabonding program, by allocating a fixed number of tokens that will be distributed to users based on weekly snapshots.
-- The user can stake his locked assets, along with his staked REWA that is included by default in the snapshots, in order to get a portion of the allocated tokens.
+- The user can stake his locked assets, along with his staked rEWA that is included by default in the snapshots, in order to get a portion of the allocated tokens.
 - Daily snapshots are taken, with weekly reward distribution based on the average staked balance.
 
 The Metabonding staking contract takes care of the staking part of the workflow, by storing the staked locked token amounts.

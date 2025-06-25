@@ -11,7 +11,7 @@ PROXY="https://testnet-gateway.dharitri.org"
 CHAIN_ID="T"
 
 ZERO_ADDRESS="drt1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq85hk5z"
-DCDT_ISSUE_ADDRESS="drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez"
+DCDT_ISSUE_ADDRESS="drt1yvesqqqqqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqzlllsd5j0s2"
 LOCKING_SC_ADDRESS=""
 PRICE_DISCOVERY_ADDRESS=""
 

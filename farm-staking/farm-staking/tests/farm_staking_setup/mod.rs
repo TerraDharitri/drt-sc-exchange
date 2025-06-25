@@ -25,6 +25,7 @@ use farm_staking::unstake_farm::UnstakeFarmModule;
 use farm_staking::*;
 use farm_token::FarmTokenModule;
 use pausable::{PausableModule, State};
+use rewards::RewardsModule;
 
 pub static REWARD_TOKEN_ID: &[u8] = b"RIDE-abcdef"; // reward token ID
 pub static FARMING_TOKEN_ID: &[u8] = b"RIDE-abcdef"; // farming token ID
@@ -45,6 +46,11 @@ pub const MIN_ENERGY_AMOUNT_FOR_BOOSTED_YIELDS: u64 = 1;
 pub const MIN_FARM_AMOUNT_FOR_BOOSTED_YIELDS: u64 = 1;
 pub const WITHDRAW_AMOUNT_TOO_HIGH: &str =
     "Withdraw amount is higher than the remaining uncollected rewards!";
+
+pub struct NonceAmountPair {
+    pub nonce: u64,
+    pub amount: u64,
+}
 
 pub struct FarmStakingSetup<FarmObjBuilder, EnergyFactoryBuilder>
 where
@@ -509,6 +515,24 @@ where
         );
     }
 
+    pub fn unstake_farm_no_checks(
+        &mut self,
+        user: &Address,
+        farm_token_amount: u64,
+        farm_token_nonce: u64,
+    ) {
+        let _ = self.b_mock.execute_dcdt_transfer(
+            user,
+            &self.farm_wrapper,
+            FARM_TOKEN_ID,
+            farm_token_nonce,
+            &rust_biguint!(farm_token_amount),
+            |sc| {
+                sc.unstake_farm(OptionalValue::None);
+            },
+        );
+    }
+
     pub fn unbond_farm(
         &mut self,
         farm_token_nonce: u64,
@@ -554,6 +578,15 @@ where
             .assert_ok();
     }
 
+    pub fn check_farm_rps(&mut self, expected_amount: u64) {
+        self.b_mock
+            .execute_query(&self.farm_wrapper, |sc| {
+                let current_rps = sc.reward_per_share().get();
+                assert_eq!(managed_biguint!(expected_amount), current_rps);
+            })
+            .assert_ok();
+    }
+
     pub fn check_rewards_capacity(&mut self, expected_farm_token_supply: u64) {
         self.b_mock
             .execute_query(&self.farm_wrapper, |sc| {
@@ -569,7 +602,8 @@ where
     pub fn allow_external_claim_rewards(&mut self, user: &Address, allow_claim: bool) {
         self.b_mock
             .execute_tx(user, &self.farm_wrapper, &rust_biguint!(0), |sc| {
-                sc.allow_external_claim_boosted_rewards(allow_claim);
+                sc.allow_external_claim(&managed_address!(user))
+                    .set(allow_claim);
             })
             .assert_ok();
     }
@@ -755,7 +789,7 @@ where
                 if expected_amount > 0 && !user_total_farm_position_mapper.is_empty() {
                     assert_eq!(
                         managed_biguint!(expected_amount),
-                        user_total_farm_position_mapper.get().total_farm_position
+                        user_total_farm_position_mapper.get()
                     );
                 }
             })

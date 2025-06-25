@@ -7,14 +7,14 @@
         },
         {
             "step": "externalSteps",
-            "path": "steps/setup_moa_farm_contract.steps.json"
+            "path": "steps/setup_farm_contract.steps.json"
         },
         {
             "step": "scCall",
             "txId": "enter farm",
             "tx": {
                 "from": "address:user_with_moa",
-                "to": "sc:moa_farm_contract",
+                "to": "sc:farm_contract",
                 "dcdtValue": [
                     {
                         "tokenIdentifier": "str:MOA-abcdef",

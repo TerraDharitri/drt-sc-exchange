@@ -57,10 +57,10 @@ pub trait Config {
         require!(caller == sc_address, INVALID_CALLER_NOT_SELF);
     }
 
-    fn try_change_moa_token_id(&self, token_id: TokenIdentifier) {
+    fn try_change_token_id(&self, token_id: TokenIdentifier) {
         require!(token_id.is_valid_dcdt_identifier(), INVALID_DCDT);
 
-        self.moa_token_id().set(&token_id);
+        self.token_id().set(&token_id);
     }
 
     fn try_change_vote_nft_id(&self, token_id: TokenIdentifier) {
@@ -152,7 +152,7 @@ pub trait Config {
 
     #[view(getMoaTokenId)]
     #[storage_mapper("moaTokenId")]
-    fn moa_token_id(&self) -> SingleValueMapper<TokenIdentifier>;
+    fn token_id(&self) -> SingleValueMapper<TokenIdentifier>;
 
     #[storage_mapper("price_providers")]
     fn price_providers(&self) -> MapMapper<TokenIdentifier, ManagedAddress>;

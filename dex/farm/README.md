@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Liquidity providers of xExchange are incentivized with MOA rewards in exchange for them locking their LP tokens in Farm contracts.  
+Liquidity providers of DharitriX are incentivized with MOA rewards in exchange for them locking their LP tokens in Farm contracts.  
 
 ## Introduction
 

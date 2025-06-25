@@ -34,14 +34,14 @@ pub trait Governance:
         voting_delay_in_blocks: u64,
         voting_period_in_blocks: u64,
         vote_nft_id: TokenIdentifier,
-        moa_token_id: TokenIdentifier,
+        token_id: TokenIdentifier,
         min_weight_for_proposal: BigUint,
         governance_token_ids: ManagedVec<TokenIdentifier>,
         price_providers: MultiValueEncoded<MultiValue2<TokenIdentifier, ManagedAddress>>,
     ) {
         self.try_change_quorum(quorum);
         self.try_change_vote_nft_id(vote_nft_id);
-        self.try_change_moa_token_id(moa_token_id);
+        self.try_change_token_id(token_id);
         self.try_change_governance_token_ids(governance_token_ids);
         self.try_change_voting_delay_in_blocks(voting_delay_in_blocks);
         self.try_change_voting_period_in_blocks(voting_period_in_blocks);
