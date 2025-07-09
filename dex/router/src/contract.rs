@@ -1,4 +1,5 @@
 #![no_std]
+#![allow(deprecated)]
 
 dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
@@ -8,10 +9,12 @@ pub mod enable_swap_by_user;
 mod events;
 pub mod factory;
 pub mod multi_pair_swap;
-mod pair_proxy;
 
 use factory::PairTokens;
-use pair::read_pair_storage;
+use pair::config::ProxyTrait as _;
+use pair::fee::ProxyTrait as _;
+use pair::{read_pair_storage, ProxyTrait as _};
+use pausable::ProxyTrait as _;
 
 const LP_TOKEN_DECIMALS: usize = 18;
 const LP_TOKEN_INITIAL_SUPPLY: u64 = 1000;
@@ -52,11 +55,10 @@ pub trait Router:
             self.state().set(false);
         } else {
             self.check_is_pair_sc(&address);
-            self.tx()
-                .to(&address)
-                .typed(pair_proxy::PairProxy)
+            let _: IgnoreValue = self
+                .pair_contract_proxy(address)
                 .pause()
-                .sync_call();
+                .execute_on_dest_context();
         }
     }
 
@@ -67,11 +69,10 @@ pub trait Router:
             self.state().set(true);
         } else {
             self.check_is_pair_sc(&address);
-            self.tx()
-                .to(&address)
-                .typed(pair_proxy::PairProxy)
+            let _: IgnoreValue = self
+                .pair_contract_proxy(address)
                 .resume()
-                .sync_call();
+                .execute_on_dest_context();
         }
     }
 
@@ -202,14 +203,10 @@ pub trait Router:
             }
         };
 
-        let result = self
-            .tx()
-            .to(&pair_address)
-            .typed(pair_proxy::PairProxy)
+        let result: TokenIdentifier = self
+            .pair_contract_proxy(pair_address.clone())
             .get_lp_token_identifier()
-            .returns(ReturnsResult)
-            .sync_call();
-
+            .execute_on_dest_context();
         require!(
             !result.is_valid_dcdt_identifier(),
             "LP Token already issued"
@@ -247,14 +244,10 @@ pub trait Router:
         require!(self.is_active(), "Not active");
         self.check_is_pair_sc(&pair_address);
 
-        let pair_token = self
-            .tx()
-            .to(&pair_address)
-            .typed(pair_proxy::PairProxy)
+        let pair_token: TokenIdentifier = self
+            .pair_contract_proxy(pair_address.clone())
             .get_lp_token_identifier()
-            .returns(ReturnsResult)
-            .sync_call();
-
+            .execute_on_dest_context();
         require!(pair_token.is_valid_dcdt_identifier(), "LP token not issued");
 
         let roles = [DcdtLocalRole::Mint, DcdtLocalRole::Burn];
@@ -262,7 +255,8 @@ pub trait Router:
         self.send()
             .dcdt_system_sc_proxy()
             .set_special_roles(&pair_address, &pair_token, roles.iter().cloned())
-            .async_call_and_exit()
+            .async_call()
+            .call_and_exit()
     }
 
     #[only_owner]
@@ -318,11 +312,10 @@ pub trait Router:
         require!(self.is_active(), "Not active");
         self.check_is_pair_sc(&pair_address);
 
-        self.tx()
-            .to(&pair_address)
-            .typed(pair_proxy::PairProxy)
+        let _: IgnoreValue = self
+            .pair_contract_proxy(pair_address)
             .set_fee_on(true, fee_to_address, fee_token)
-            .sync_call();
+            .execute_on_dest_context();
     }
 
     #[only_owner]
@@ -336,11 +329,10 @@ pub trait Router:
         require!(self.is_active(), "Not active");
         self.check_is_pair_sc(&pair_address);
 
-        self.tx()
-            .to(&pair_address)
-            .typed(pair_proxy::PairProxy)
+        let _: IgnoreValue = self
+            .pair_contract_proxy(pair_address)
             .set_fee_on(false, fee_to_address, fee_token)
-            .sync_call();
+            .execute_on_dest_context();
     }
 
     #[callback]
@@ -354,15 +346,14 @@ pub trait Router:
         match result {
             ManagedAsyncCallResult::Ok(()) => {
                 self.pair_temporary_owner().remove(address);
-                self.tx()
-                    .to(address)
-                    .typed(pair_proxy::PairProxy)
+                let _: IgnoreValue = self
+                    .pair_contract_proxy(address.clone())
                     .set_lp_token_identifier(token_id.unwrap_dcdt())
-                    .sync_call();
+                    .execute_on_dest_context();
             }
             ManagedAsyncCallResult::Err(_) => {
                 if token_id.is_rewa() && returned_tokens > 0u64 {
-                    self.tx().to(caller).rewa(&returned_tokens).transfer();
+                    self.send().direct_rewa(caller, &returned_tokens);
                 }
             }
         }

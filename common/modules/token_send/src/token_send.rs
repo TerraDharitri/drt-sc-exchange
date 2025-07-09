@@ -18,10 +18,7 @@ pub trait TokenSendModule {
         }
 
         if !non_zero_payments.is_empty() {
-            self.tx()
-                .to(destination)
-                .payment(non_zero_payments)
-                .transfer();
+            self.send().direct_multi(destination, &non_zero_payments)
         }
     }
 
@@ -36,10 +33,7 @@ pub trait TokenSendModule {
             return;
         }
 
-        self.tx()
-            .to(to)
-            .single_dcdt(token_id, token_nonce, amount)
-            .transfer();
+        self.send().direct_dcdt(to, token_id, token_nonce, amount);
     }
 
     fn send_payment_non_zero(&self, to: &ManagedAddress, payment: &DcdtTokenPayment<Self::Api>) {

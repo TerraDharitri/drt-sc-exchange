@@ -38,14 +38,14 @@ fn test_exit_farm() {
     farm_setup.set_block_epoch(5);
     farm_setup.set_block_nonce(10);
 
-    let expected_out = 10 * PER_BLOCK_REWARD_AMOUNT;
+    let expected_moa_out = 10 * PER_BLOCK_REWARD_AMOUNT;
     let expected_lp_token_balance = rust_biguint!(USER_TOTAL_LP_TOKENS);
     farm_setup.exit_farm(
         farm_in_amount,
         expected_farm_token_nonce,
-        expected_out,
+        expected_moa_out,
         farm_in_amount,
-        &rust_biguint!(expected_out),
+        &rust_biguint!(expected_moa_out),
         &expected_lp_token_balance,
     );
     farm_setup.check_farm_token_supply(0);
@@ -65,15 +65,15 @@ fn test_exit_farm_with_penalty() {
 
     let expected_farm_token_amount =
         farm_in_amount - farm_in_amount * PENALTY_PERCENT / MAX_PERCENT;
-    let expected_out = 10 * PER_BLOCK_REWARD_AMOUNT;
+    let expected_moa_out = 10 * PER_BLOCK_REWARD_AMOUNT;
     let expected_lp_token_balance =
         rust_biguint!(USER_TOTAL_LP_TOKENS - farm_in_amount * PENALTY_PERCENT / MAX_PERCENT);
     farm_setup.exit_farm(
         farm_in_amount,
         expected_farm_token_nonce,
-        expected_out,
+        expected_moa_out,
         expected_farm_token_amount,
-        &rust_biguint!(expected_out),
+        &rust_biguint!(expected_moa_out),
         &expected_lp_token_balance,
     );
     farm_setup.check_farm_token_supply(0);
@@ -91,14 +91,14 @@ fn test_claim_rewards() {
     farm_setup.set_block_epoch(5);
     farm_setup.set_block_nonce(10);
 
-    let expected_out = 10 * PER_BLOCK_REWARD_AMOUNT;
+    let expected_moa_out = 10 * PER_BLOCK_REWARD_AMOUNT;
     let expected_lp_token_balance = rust_biguint!(USER_TOTAL_LP_TOKENS - farm_in_amount);
     let expected_reward_per_share = 500_000_000;
     farm_setup.claim_rewards(
         farm_in_amount,
         expected_farm_token_nonce,
-        expected_out,
-        &rust_biguint!(expected_out),
+        expected_moa_out,
+        &rust_biguint!(expected_moa_out),
         &expected_lp_token_balance,
         expected_farm_token_nonce + 1,
         expected_reward_per_share,

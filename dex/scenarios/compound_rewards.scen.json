@@ -3,7 +3,7 @@
     "steps": [
         {
             "step": "externalSteps",
-            "path": "enter_farm.scen.json"
+            "path": "enter_moa_farm.scen.json"
         },
         {
             "step": "setState",
@@ -17,7 +17,7 @@
             "txId": "unstake",
             "tx": {
                 "from": "address:user_with_moa",
-                "to": "sc:farm_contract",
+                "to": "sc:moa_farm_contract",
                 "dcdtValue": [
                     {
                         "tokenIdentifier": "str:FARM-abcdef",

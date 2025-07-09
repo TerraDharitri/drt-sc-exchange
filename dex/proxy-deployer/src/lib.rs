@@ -3,7 +3,6 @@
 dharitri_sc::imports!();
 
 pub mod farm_deploy;
-pub mod farm_proxy;
 
 #[dharitri_sc::contract]
 pub trait ProxyDeployer: farm_deploy::FarmDeployModule {

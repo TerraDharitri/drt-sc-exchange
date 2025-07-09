@@ -9,15 +9,10 @@ publish = false
 path = "src/lib.rs"
 
 [dependencies.dharitri-sc]
-version = "=1.11.2"           
-
-# [dependencies.dharitri-sc]
-# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/framework/base"
+version = "=1.15.0"
 
 [dependencies.dharitri-sc-modules]
-version = "=1.11.2"  
-# [dependencies.dharitri-sc-modules]
-# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/contracts/modules"
+version = "=1.15.0"
 
 [dependencies.utils]
 path = "../../common/modules/utils"
@@ -49,6 +44,4 @@ num-traits = "0.2"
 hex = "0.4"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "=1.11.2"   
-# [dependencies.dharitri-sc-scenario]
-# path = "/home/dugong/Desktop/teja-work/my_works/rs-sdks/drt-rs-sdk-0.50.1/framework/scenario"
+version = "=1.15.0"

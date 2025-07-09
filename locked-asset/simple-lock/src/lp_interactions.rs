@@ -1,7 +1,12 @@
 dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
 
-use crate::{error_messages::*, lp_proxy};
+use crate::error_messages::*;
+
+type AddLiquidityResultType<M> =
+    MultiValue3<DcdtTokenPayment<M>, DcdtTokenPayment<M>, DcdtTokenPayment<M>>;
+type RemoveLiquidityResultType<BigUint> =
+    MultiValue2<DcdtTokenPayment<BigUint>, DcdtTokenPayment<BigUint>>;
 
 pub struct AddLiquidityResultWrapper<M: ManagedTypeApi> {
     pub lp_tokens: DcdtTokenPayment<M>,
@@ -16,6 +21,30 @@ pub struct RemoveLiquidityResultWrapper<M: ManagedTypeApi> {
 
 // Must manually declare, as Pair SC already depends on simple-lock
 // This avoids circular dependency
+mod lp_proxy {
+    dharitri_sc::imports!();
+    use super::{AddLiquidityResultType, RemoveLiquidityResultType};
+
+    #[dharitri_sc::proxy]
+    pub trait LpProxy {
+        #[payable("*")]
+        #[endpoint(addLiquidity)]
+        fn add_liquidity(
+            &self,
+            first_token_amount_min: BigUint,
+            second_token_amount_min: BigUint,
+        ) -> AddLiquidityResultType<Self::Api>;
+
+        #[payable("*")]
+        #[endpoint(removeLiquidity)]
+        fn remove_liquidity(
+            &self,
+            first_token_amount_min: BigUint,
+            second_token_amount_min: BigUint,
+        ) -> RemoveLiquidityResultType<Self::Api>;
+    }
+}
+
 #[dharitri_sc::module]
 pub trait LpInteractionsModule {
     fn call_pair_add_liquidity(
@@ -30,15 +59,11 @@ pub trait LpInteractionsModule {
         lp_payments_in.push(first_payment.clone());
         lp_payments_in.push(second_payment.clone());
 
-        let lp_payments_out = self
-            .tx()
-            .to(&lp_address)
-            .typed(lp_proxy::LpProxy)
+        let lp_payments_out: AddLiquidityResultType<Self::Api> = self
+            .lp_proxy(lp_address)
             .add_liquidity(first_token_amount_min, second_token_amount_min)
-            .payment(lp_payments_in)
-            .returns(ReturnsResult)
-            .sync_call();
-
+            .with_multi_token_transfer(lp_payments_in)
+            .execute_on_dest_context();
         let (lp_tokens, first_token_optimal_payment, second_token_optimal_payment) =
             lp_payments_out.into_tuple();
 
@@ -79,14 +104,11 @@ pub trait LpInteractionsModule {
         expected_first_token_id_out: &TokenIdentifier,
         expected_second_token_id_out: &TokenIdentifier,
     ) -> RemoveLiquidityResultWrapper<Self::Api> {
-        let lp_payments_out = self
-            .tx()
-            .to(&lp_address)
-            .typed(lp_proxy::LpProxy)
+        let lp_payments_out: RemoveLiquidityResultType<Self::Api> = self
+            .lp_proxy(lp_address)
             .remove_liquidity(first_token_amount_min, second_token_amount_min)
-            .single_dcdt(&lp_token_id, 0, &lp_token_amount)
-            .returns(ReturnsResult)
-            .sync_call();
+            .with_dcdt_transfer((lp_token_id, 0, lp_token_amount))
+            .execute_on_dest_context();
 
         let (first_token_payment_out, second_token_payment_out) = lp_payments_out.into_tuple();
         require!(
@@ -100,4 +122,7 @@ pub trait LpInteractionsModule {
             second_token_payment_out,
         }
     }
+
+    #[proxy]
+    fn lp_proxy(&self, sc_address: ManagedAddress) -> lp_proxy::Proxy<Self::Api>;
 }

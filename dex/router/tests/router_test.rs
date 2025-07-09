@@ -149,7 +149,7 @@ fn test_multi_pair_swap() {
 
     let ops = vec![
         (
-            router_setup.pair_wrapper.address_ref().clone(),
+            router_setup.moa_pair_wrapper.address_ref().clone(),
             SWAP_TOKENS_FIXED_INPUT_FUNC_NAME,
             WREWA_TOKEN_ID, //swap to wrewa
             1,

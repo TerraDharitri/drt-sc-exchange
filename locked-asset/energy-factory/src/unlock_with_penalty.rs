@@ -10,7 +10,7 @@ use crate::{energy::Energy, lock_options::MAX_PENALTY_PERCENTAGE};
 pub static TOKEN_CAN_BE_UNLOCKED_ALREADY_ERR_MSG: &[u8] = b"Token can be unlocked already";
 
 pub struct LockReduceResult<M: ManagedTypeApi> {
-    pub new_lock_epochs: u64,
+    pub new_lock_epochs: Epoch,
     pub unlocked_tokens: RewaOrDcdtTokenPayment<M>,
     pub energy: Energy<M>,
 }
@@ -39,6 +39,7 @@ pub trait UnlockWithPenaltyModule:
     #[endpoint(unlockEarly)]
     fn unlock_early(&self) {
         self.require_not_paused();
+
         let caller = self.blockchain().get_caller();
         let payment = self.call_value().single_dcdt();
         let reduce_result = self.reduce_lock_period_common(&caller, payment.clone(), None);
@@ -94,14 +95,12 @@ pub trait UnlockWithPenaltyModule:
         energy.add_after_token_lock(&new_locked_tokens.amount, new_unlock_epoch, current_epoch);
         self.set_energy_entry(&caller, energy);
 
-        self.tx()
-            .to(&caller)
-            .rewa_or_single_dcdt(
-                &new_locked_tokens.token_identifier,
-                new_locked_tokens.token_nonce,
-                &new_locked_tokens.amount,
-            )
-            .transfer();
+        self.send().direct(
+            &caller,
+            &new_locked_tokens.token_identifier,
+            new_locked_tokens.token_nonce,
+            &new_locked_tokens.amount,
+        );
 
         self.to_dcdt_payment(new_locked_tokens)
     }

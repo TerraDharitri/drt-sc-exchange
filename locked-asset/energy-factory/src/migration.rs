@@ -103,7 +103,7 @@ pub trait SimpleLockMigrationModule:
             }
         });
 
-        self.tx().to(&caller).payment(&output_payments).transfer();
+        self.send().direct_multi(&caller, &output_payments);
 
         output_payments.into()
     }

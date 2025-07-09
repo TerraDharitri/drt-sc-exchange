@@ -23,6 +23,7 @@ pub trait UnstakeFarmModule:
     + utils::UtilsModule
     + farm_boosted_yields::FarmBoostedYieldsModule
     + farm_boosted_yields::boosted_yields_factors::BoostedYieldsFactorsModule
+    + farm_boosted_yields::undistributed_rewards::UndistributedRewardsModule
     + week_timekeeping::WeekTimekeepingModule
     + weekly_rewards_splitting::WeeklyRewardsSplittingModule
     + weekly_rewards_splitting::events::WeeklyRewardsSplittingEventsModule
@@ -118,10 +119,8 @@ pub trait UnstakeFarmModule:
                 unlock_epoch: current_epoch + min_unbond_epochs,
             },
         );
-        self.tx()
-            .to(to)
-            .single_dcdt(&farm_token_id, nft_nonce, &amount)
-            .transfer();
+        self.send()
+            .direct_dcdt(to, &farm_token_id, nft_nonce, &amount);
 
         DcdtTokenPayment::new(farm_token_id, nft_nonce, amount)
     }

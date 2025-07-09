@@ -39,7 +39,7 @@ dharitri_sc_wasm_adapter::endpoints! {
         getProposal => proposal
         getProposalIdCounter => proposal_id_counter
         getVoteNFTId => vote_nft_id
-        getMoaTokenId => token_id
+        getMoaTokenId => moa_token_id
         getProposalStatus => get_proposal_status_view
     )
 }

@@ -3,7 +3,7 @@
     "steps": [
         {
             "step": "externalSteps",
-            "path": "enter_farm_proxy.scen.json"
+            "path": "enter_moa_farm_proxy.scen.json"
         },
         {
             "step": "setState",
@@ -27,7 +27,7 @@
                 ],
                 "function": "compoundRewardsProxy",
                 "arguments": [
-                    "sc:farm_contract"
+                    "sc:moa_farm_contract"
                 ],
                 "gasLimit": "1,000,000,000",
                 "gasPrice": "0"
