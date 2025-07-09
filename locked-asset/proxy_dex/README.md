@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Locked MOA tokens can be used as MOA token in DharitriX, with the help of this proxy contract.
+Locked MOA tokens can be used as MOA token in Dharitrix, with the help of this proxy contract.
 
 ## Introduction
 

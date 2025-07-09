@@ -2,8 +2,8 @@ dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
 
 use super::factory;
-use crate::config;
-use crate::pair_proxy;
+use crate::{config, events};
+use pair::{pair_actions::swap::ProxyTrait as _, read_pair_storage};
 
 type SwapOperationType<M> =
     MultiValue4<ManagedAddress<M>, ManagedBuffer<M>, TokenIdentifier<M>, BigUint<M>>;
@@ -14,9 +14,10 @@ pub const SWAP_TOKENS_FIXED_OUTPUT_FUNC_NAME: &[u8] = b"swapTokensFixedOutput";
 #[dharitri_sc::module]
 pub trait MultiPairSwap:
     config::ConfigModule
-    + crate::read_pair_storage::ReadPairStorageModule
+    + read_pair_storage::ReadPairStorageModule
     + factory::FactoryModule
     + token_send::TokenSendModule
+    + events::EventsModule
 {
     #[payable("*")]
     #[endpoint(multiPairSwap)]
@@ -39,7 +40,7 @@ pub trait MultiPairSwap:
 
         let caller = self.blockchain().get_caller();
         let mut payments = ManagedVec::new();
-        let mut last_payment = DcdtTokenPayment::new(token_id, nonce, amount);
+        let mut last_payment = DcdtTokenPayment::new(token_id.clone(), nonce, amount.clone());
 
         for entry in swap_operations.into_iter() {
             let (pair_address, function, token_wanted, amount_wanted) = entry.into_tuple();
@@ -63,14 +64,19 @@ pub trait MultiPairSwap:
                 );
 
                 last_payment = payment;
-                payments.push(residuum);
+
+                if residuum.amount > 0 {
+                    payments.push(residuum);
+                }
             } else {
                 sc_panic!("Invalid function to call");
             }
         }
 
         payments.push(last_payment);
-        self.tx().to(&caller).payment(&payments).transfer();
+        self.send().direct_multi(&caller, &payments);
+
+        self.emit_multi_pair_swap_event(caller, token_id, amount, payments.clone());
 
         payments
     }
@@ -83,13 +89,10 @@ pub trait MultiPairSwap:
         token_out: TokenIdentifier,
         amount_out_min: BigUint,
     ) -> DcdtTokenPayment<Self::Api> {
-        self.tx()
-            .to(&pair_address)
-            .typed(pair_proxy::PairProxy)
+        self.pair_contract_proxy(pair_address)
             .swap_tokens_fixed_input(token_out, amount_out_min)
-            .single_dcdt(&token_in, 0, &amount_in)
-            .returns(ReturnsResult)
-            .sync_call()
+            .with_dcdt_transfer((token_in, 0, amount_in))
+            .execute_on_dest_context()
     }
 
     fn actual_swap_fixed_output(
@@ -100,13 +103,15 @@ pub trait MultiPairSwap:
         token_out: TokenIdentifier,
         amount_out: BigUint,
     ) -> (DcdtTokenPayment<Self::Api>, DcdtTokenPayment<Self::Api>) {
-        self.tx()
-            .to(&pair_address)
-            .typed(pair_proxy::PairProxy)
-            .swap_tokens_fixed_output(token_out, amount_out)
-            .single_dcdt(&token_in, 0, &amount_in_max)
-            .returns(ReturnsResult)
-            .sync_call()
-            .into_tuple()
+        let call_result: MultiValue2<DcdtTokenPayment<Self::Api>, DcdtTokenPayment<Self::Api>> =
+            self.pair_contract_proxy(pair_address)
+                .swap_tokens_fixed_output(token_out, amount_out)
+                .with_dcdt_transfer((token_in, 0, amount_in_max))
+                .execute_on_dest_context();
+
+        call_result.into_tuple()
     }
+
+    #[proxy]
+    fn pair_contract_proxy(&self, to: ManagedAddress) -> pair::Proxy<Self::Api>;
 }

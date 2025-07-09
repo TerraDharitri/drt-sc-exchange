@@ -4,10 +4,7 @@ dharitri_sc::imports!();
 
 pub mod dual_yield_token;
 pub mod external_contracts_interactions;
-pub mod farm_staking_proxy_methods;
-pub mod farm_with_locked_rewards_proxy;
 pub mod lp_farm_token;
-pub mod pair_proxy;
 pub mod proxy_actions;
 pub mod result_types;
 
@@ -17,6 +14,7 @@ pub trait FarmStakingProxy:
     + external_contracts_interactions::ExternalContractsInteractionsModule
     + lp_farm_token::LpFarmTokenModule
     + dharitri_sc_modules::default_issue_callbacks::DefaultIssueCallbacksModule
+    + permissions_hub_module::PermissionsHubModule
     + utils::UtilsModule
     + token_send::TokenSendModule
     + energy_query::EnergyQueryModule
@@ -24,6 +22,7 @@ pub trait FarmStakingProxy:
     + proxy_actions::stake::ProxyStakeModule
     + proxy_actions::claim::ProxyClaimModule
     + proxy_actions::unstake::ProxyUnstakeModule
+    + proxy_actions::external_interaction::ProxyExternalInteractionsModule
 {
     #[init]
     fn init(

@@ -5,7 +5,6 @@ dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
 
 pub mod constants;
-pub mod energy_factory_token_transfer_proxy;
 pub mod energy_transfer;
 pub mod events;
 
@@ -67,7 +66,7 @@ pub trait LkmoaTransfer:
         self.check_address_on_cooldown(&receiver_last_transfer_mapper);
         let funds = self.get_unlocked_funds(&receiver, &sender);
         self.add_energy_to_destination(receiver.clone(), &funds);
-        self.tx().to(&receiver).payment(&funds).transfer();
+        self.send().direct_multi(&receiver, &funds);
         self.locked_funds(&receiver, &sender).clear();
         self.all_senders(&receiver).swap_remove(&sender);
 
@@ -93,10 +92,7 @@ pub trait LkmoaTransfer:
         self.sender_last_transfer_epoch(&sender).clear();
 
         self.add_energy_to_destination(sender.clone(), &locked_funds.funds);
-        self.tx()
-            .to(&sender)
-            .payment(&locked_funds.funds)
-            .transfer();
+        self.send().direct_multi(&sender, &locked_funds.funds);
 
         self.emit_cancel_transfer_event(sender, receiver, locked_funds);
     }

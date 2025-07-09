@@ -2,7 +2,9 @@
 
 pub mod farm_staking_setup;
 use config::ConfigModule;
+use farm_boosted_yields::undistributed_rewards::UndistributedRewardsModule;
 use farm_staking::{
+    claim_only_boosted_staking_rewards::ClaimOnlyBoostedStakingRewardsModule,
     claim_stake_farm_rewards::ClaimStakeFarmRewardsModule,
     stake_farm::StakeFarmModule,
     token_attributes::{StakingFarmTokenAttributes, UnbondSftAttributes},
@@ -17,8 +19,11 @@ use dharitri_sc_scenario::{
 
 #[test]
 fn farm_staking_with_energy_setup_test() {
-    let mut fs_setup =
-        FarmStakingSetup::new(farm_staking::contract_obj, energy_factory::contract_obj);
+    let mut fs_setup = FarmStakingSetup::new(
+        farm_staking::contract_obj,
+        energy_factory::contract_obj,
+        permissions_hub::contract_obj,
+    );
 
     fs_setup.set_boosted_yields_factors();
     fs_setup.set_boosted_yields_rewards_percentage(BOOSTED_YIELDS_PERCENTAGE);
@@ -27,8 +32,11 @@ fn farm_staking_with_energy_setup_test() {
 #[test]
 fn farm_staking_boosted_rewards_no_energy_test() {
     DebugApi::dummy();
-    let mut fs_setup =
-        FarmStakingSetup::new(farm_staking::contract_obj, energy_factory::contract_obj);
+    let mut fs_setup = FarmStakingSetup::new(
+        farm_staking::contract_obj,
+        energy_factory::contract_obj,
+        permissions_hub::contract_obj,
+    );
 
     let user_address = fs_setup.user_address.clone();
 
@@ -73,8 +81,11 @@ fn farm_staking_boosted_rewards_no_energy_test() {
 #[test]
 fn farm_staking_other_user_enter_negative_test() {
     DebugApi::dummy();
-    let mut fs_setup =
-        FarmStakingSetup::new(farm_staking::contract_obj, energy_factory::contract_obj);
+    let mut fs_setup = FarmStakingSetup::new(
+        farm_staking::contract_obj,
+        energy_factory::contract_obj,
+        permissions_hub::contract_obj,
+    );
 
     let user_address = fs_setup.user_address.clone();
     let rand_user = fs_setup.b_mock.create_user_account(&rust_biguint!(0));
@@ -119,8 +130,11 @@ fn farm_staking_other_user_enter_negative_test() {
 #[test]
 fn farm_staking_boosted_rewards_with_energy_test() {
     DebugApi::dummy();
-    let mut fs_setup =
-        FarmStakingSetup::new(farm_staking::contract_obj, energy_factory::contract_obj);
+    let mut fs_setup = FarmStakingSetup::new(
+        farm_staking::contract_obj,
+        energy_factory::contract_obj,
+        permissions_hub::contract_obj,
+    );
 
     let user_address = fs_setup.user_address.clone();
     let user_address2 = fs_setup.user_address2.clone();
@@ -344,8 +358,11 @@ fn farm_staking_boosted_rewards_with_energy_test() {
 #[test]
 fn farm_staking_partial_position_handling_test() {
     DebugApi::dummy();
-    let mut fs_setup =
-        FarmStakingSetup::new(farm_staking::contract_obj, energy_factory::contract_obj);
+    let mut fs_setup = FarmStakingSetup::new(
+        farm_staking::contract_obj,
+        energy_factory::contract_obj,
+        permissions_hub::contract_obj,
+    );
 
     let user_address = fs_setup.user_address.clone();
 
@@ -506,8 +523,11 @@ fn farm_staking_partial_position_handling_test() {
 #[test]
 fn farm_staking_claim_boosted_rewards_for_user_test() {
     DebugApi::dummy();
-    let mut fs_setup =
-        FarmStakingSetup::new(farm_staking::contract_obj, energy_factory::contract_obj);
+    let mut fs_setup = FarmStakingSetup::new(
+        farm_staking::contract_obj,
+        energy_factory::contract_obj,
+        permissions_hub::contract_obj,
+    );
 
     let user_address = fs_setup.user_address.clone();
 
@@ -620,8 +640,11 @@ fn farm_staking_claim_boosted_rewards_for_user_test() {
 #[test]
 fn farm_staking_full_position_boosted_rewards_test() {
     DebugApi::dummy();
-    let mut fs_setup =
-        FarmStakingSetup::new(farm_staking::contract_obj, energy_factory::contract_obj);
+    let mut fs_setup = FarmStakingSetup::new(
+        farm_staking::contract_obj,
+        energy_factory::contract_obj,
+        permissions_hub::contract_obj,
+    );
 
     let user_address = fs_setup.user_address.clone();
 
@@ -735,8 +758,11 @@ fn farm_staking_full_position_boosted_rewards_test() {
 #[test]
 fn position_owner_change_test() {
     DebugApi::dummy();
-    let mut fs_setup =
-        FarmStakingSetup::new(farm_staking::contract_obj, energy_factory::contract_obj);
+    let mut fs_setup = FarmStakingSetup::new(
+        farm_staking::contract_obj,
+        energy_factory::contract_obj,
+        permissions_hub::contract_obj,
+    );
 
     let first_user = fs_setup.user_address.clone();
     let second_user = fs_setup.user_address2.clone();
@@ -1027,8 +1053,11 @@ fn position_owner_change_test() {
 #[test]
 fn farm_staking_farm_position_migration_test() {
     DebugApi::dummy();
-    let mut fs_setup =
-        FarmStakingSetup::new(farm_staking::contract_obj, energy_factory::contract_obj);
+    let mut fs_setup = FarmStakingSetup::new(
+        farm_staking::contract_obj,
+        energy_factory::contract_obj,
+        permissions_hub::contract_obj,
+    );
 
     let user = fs_setup.user_address.clone();
 
@@ -1050,11 +1079,8 @@ fn farm_staking_farm_position_migration_test() {
             0,
             &rust_biguint!(10),
             |sc| {
-                let mut user_total_farm_position =
-                    sc.get_user_total_farm_position(&managed_address!(&user));
-                user_total_farm_position.total_farm_position = managed_biguint!(0u64);
                 sc.user_total_farm_position(&managed_address!(&user))
-                    .set(user_total_farm_position);
+                    .set(managed_biguint!(0u64));
 
                 sc.farm_position_migration_nonce().set(5);
             },
@@ -1124,8 +1150,11 @@ fn farm_staking_farm_position_migration_test() {
 #[test]
 fn boosted_rewards_config_change_test() {
     DebugApi::dummy();
-    let mut fs_setup =
-        FarmStakingSetup::new(farm_staking::contract_obj, energy_factory::contract_obj);
+    let mut fs_setup = FarmStakingSetup::new(
+        farm_staking::contract_obj,
+        energy_factory::contract_obj,
+        permissions_hub::contract_obj,
+    );
 
     let first_user = fs_setup.user_address.clone();
     let second_user = fs_setup.user_address2.clone();
@@ -1429,4 +1458,688 @@ fn boosted_rewards_config_change_test() {
         first_user_total_rewards == second_user_total_rewards
             && first_user_total_rewards == third_user_total_rewards
     );
+}
+
+#[test]
+fn claim_only_boosted_rewards_per_week_test() {
+    DebugApi::dummy();
+    let mut fs_setup = FarmStakingSetup::new(
+        farm_staking::contract_obj,
+        energy_factory::contract_obj,
+        permissions_hub::contract_obj,
+    );
+
+    fs_setup.set_boosted_yields_factors();
+    fs_setup.set_boosted_yields_rewards_percentage(BOOSTED_YIELDS_PERCENTAGE);
+
+    let first_user = fs_setup.user_address.clone();
+    let farm_in_amount = 100_000_000;
+
+    fs_setup.set_user_energy(&first_user, 10_000, 0, 10);
+    fs_setup.stake_farm(&first_user, farm_in_amount, &[], 1, 0, 0);
+
+    fs_setup.check_farm_token_supply(farm_in_amount);
+    fs_setup.check_farm_rps(0u64);
+
+    fs_setup.b_mock.set_block_nonce(100);
+    fs_setup.b_mock.set_block_epoch(6);
+    fs_setup.set_user_energy(&first_user, 1_000, 6, 1);
+
+    // Reset user balance
+    fs_setup
+        .b_mock
+        .set_dcdt_balance(&first_user, FARMING_TOKEN_ID, &rust_biguint!(0));
+
+    // random user tx to collect rewards
+    let rand_user = fs_setup.b_mock.create_user_account(&rust_biguint!(0));
+    fs_setup.b_mock.set_dcdt_balance(
+        &rand_user,
+        FARMING_TOKEN_ID,
+        &rust_biguint!(USER_TOTAL_RIDE_TOKENS),
+    );
+
+    fs_setup.set_user_energy(&rand_user, 1, 6, 1);
+    fs_setup.stake_farm(&rand_user, 10, &[], 2, 3_000_000u64, 0);
+    fs_setup.unstake_farm_no_checks(&rand_user, 10, 2);
+
+    let farm_rps_increase = 3_000_000u64;
+    let mut current_farm_rps = 0;
+    current_farm_rps += farm_rps_increase;
+    fs_setup.check_farm_rps(current_farm_rps);
+
+    // advance 1 week
+    fs_setup.set_user_energy(&first_user, 1_000, 13, 1);
+    fs_setup.b_mock.set_block_nonce(200);
+    fs_setup.b_mock.set_block_epoch(13);
+
+    let boosted_rewards_for_week = 100;
+    fs_setup.claim_boosted_rewards_for_user(
+        &first_user,
+        &first_user,
+        boosted_rewards_for_week,
+        &rust_biguint!(boosted_rewards_for_week),
+    );
+
+    current_farm_rps += farm_rps_increase;
+    fs_setup.check_farm_rps(current_farm_rps);
+
+    // advance 1 week
+    fs_setup.set_user_energy(&first_user, 1_000, 15, 1);
+    fs_setup.b_mock.set_block_nonce(300);
+    fs_setup.b_mock.set_block_epoch(15);
+    fs_setup.claim_boosted_rewards_for_user(
+        &first_user,
+        &first_user,
+        boosted_rewards_for_week,
+        &rust_biguint!(boosted_rewards_for_week * 2),
+    );
+
+    current_farm_rps += farm_rps_increase;
+    fs_setup.check_farm_rps(current_farm_rps);
+    fs_setup.b_mock.check_dcdt_balance(
+        &first_user,
+        REWARD_TOKEN_ID,
+        &rust_biguint!(boosted_rewards_for_week * 2),
+    );
+
+    let expected_attributes = StakingFarmTokenAttributes::<DebugApi> {
+        reward_per_share: managed_biguint!(0),
+        compounded_reward: managed_biguint!(0),
+        current_farm_amount: managed_biguint!(farm_in_amount),
+        original_owner: managed_address!(&first_user),
+    };
+
+    fs_setup.b_mock.check_nft_balance(
+        &first_user,
+        FARM_TOKEN_ID,
+        1,
+        &rust_biguint!(farm_in_amount),
+        Some(&expected_attributes),
+    );
+}
+
+#[test]
+fn claim_rewards_per_week_test() {
+    DebugApi::dummy();
+    let mut fs_setup = FarmStakingSetup::new(
+        farm_staking::contract_obj,
+        energy_factory::contract_obj,
+        permissions_hub::contract_obj,
+    );
+
+    fs_setup.set_boosted_yields_factors();
+    fs_setup.set_boosted_yields_rewards_percentage(BOOSTED_YIELDS_PERCENTAGE);
+
+    let first_user = fs_setup.user_address.clone();
+    let farm_in_amount = 100_000_000;
+
+    fs_setup.set_user_energy(&first_user, 10_000, 0, 10);
+    fs_setup.stake_farm(&first_user, farm_in_amount, &[], 1, 0, 0);
+
+    fs_setup.check_farm_token_supply(farm_in_amount);
+    fs_setup.check_farm_rps(0u64);
+
+    fs_setup.b_mock.set_block_nonce(100);
+    fs_setup.b_mock.set_block_epoch(6);
+    fs_setup.set_user_energy(&first_user, 1_000, 6, 1);
+
+    // Reset user balance
+    fs_setup
+        .b_mock
+        .set_dcdt_balance(&first_user, FARMING_TOKEN_ID, &rust_biguint!(0));
+
+    // random user tx to collect rewards
+    let rand_user = fs_setup.b_mock.create_user_account(&rust_biguint!(0));
+    fs_setup.b_mock.set_dcdt_balance(
+        &rand_user,
+        FARMING_TOKEN_ID,
+        &rust_biguint!(USER_TOTAL_RIDE_TOKENS),
+    );
+
+    fs_setup.set_user_energy(&rand_user, 1, 6, 1);
+    fs_setup.stake_farm(&rand_user, 10, &[], 2, 3_000_000u64, 0);
+    fs_setup.unstake_farm_no_checks(&rand_user, 10, 2);
+
+    let farm_rps_increase = 3_000_000u64;
+    let mut current_farm_rps = 0;
+    current_farm_rps += farm_rps_increase;
+    fs_setup.check_farm_rps(current_farm_rps);
+
+    // advance 1 week
+    fs_setup.set_user_energy(&first_user, 1_000, 13, 1);
+    fs_setup.b_mock.set_block_nonce(200);
+    fs_setup.b_mock.set_block_epoch(13);
+
+    let base_rewards_for_week = 300;
+    let boosted_rewards_for_week = 100;
+
+    current_farm_rps += farm_rps_increase;
+    let mut user_rewards_balance = base_rewards_for_week * 2 + boosted_rewards_for_week;
+    fs_setup.claim_rewards(
+        &first_user,
+        farm_in_amount,
+        1,
+        base_rewards_for_week * 2 + boosted_rewards_for_week,
+        &rust_biguint!(user_rewards_balance),
+        &rust_biguint!(user_rewards_balance), // user balance has bet set to 0 at the start
+        4,
+        current_farm_rps,
+    );
+
+    fs_setup.check_farm_rps(current_farm_rps);
+
+    // advance 1 week
+    fs_setup.set_user_energy(&first_user, 1_000, 15, 1);
+    fs_setup.b_mock.set_block_nonce(300);
+    fs_setup.b_mock.set_block_epoch(15);
+
+    current_farm_rps += farm_rps_increase;
+    user_rewards_balance += base_rewards_for_week + boosted_rewards_for_week;
+    fs_setup.claim_rewards(
+        &first_user,
+        farm_in_amount,
+        4,
+        base_rewards_for_week + boosted_rewards_for_week,
+        &rust_biguint!(user_rewards_balance),
+        &rust_biguint!(user_rewards_balance),
+        5,
+        current_farm_rps,
+    );
+
+    fs_setup.check_farm_rps(current_farm_rps);
+
+    fs_setup.b_mock.check_dcdt_balance(
+        &first_user,
+        REWARD_TOKEN_ID,
+        &rust_biguint!(user_rewards_balance),
+    );
+}
+
+#[test]
+fn claim_boosted_rewards_with_zero_position_test() {
+    DebugApi::dummy();
+    let mut fs_setup = FarmStakingSetup::new(
+        farm_staking::contract_obj,
+        energy_factory::contract_obj,
+        permissions_hub::contract_obj,
+    );
+
+    fs_setup.set_boosted_yields_factors();
+    fs_setup.set_boosted_yields_rewards_percentage(BOOSTED_YIELDS_PERCENTAGE);
+
+    let first_user = fs_setup.user_address.clone();
+    let farm_in_amount = 100_000_000;
+
+    fs_setup.set_user_energy(&first_user, 10_000, 0, 10);
+    fs_setup.stake_farm(&first_user, farm_in_amount, &[], 1, 0, 0);
+
+    fs_setup.check_farm_token_supply(farm_in_amount);
+    fs_setup.check_farm_rps(0u64);
+
+    fs_setup.b_mock.set_block_nonce(100);
+    fs_setup.b_mock.set_block_epoch(6);
+    fs_setup.set_user_energy(&first_user, 1_000, 6, 1);
+
+    // Reset user balance
+    fs_setup
+        .b_mock
+        .set_dcdt_balance(&first_user, FARMING_TOKEN_ID, &rust_biguint!(0));
+
+    // tx to collect rewards
+    let second_user = fs_setup.b_mock.create_user_account(&rust_biguint!(0));
+    fs_setup.b_mock.set_dcdt_balance(
+        &second_user,
+        FARMING_TOKEN_ID,
+        &rust_biguint!(USER_TOTAL_RIDE_TOKENS),
+    );
+
+    fs_setup.set_user_energy(&second_user, 1, 6, 1);
+    fs_setup.stake_farm(&second_user, 10, &[], 2, 3_000_000u64, 0);
+    fs_setup.unstake_farm_no_checks(&second_user, 10, 2);
+
+    let farm_rps_increase = 3_000_000u64;
+    let mut current_farm_rps = 0;
+    current_farm_rps += farm_rps_increase;
+    fs_setup.check_farm_rps(current_farm_rps);
+
+    // advance 1 week
+    fs_setup.set_user_energy(&first_user, 1_000, 13, 1);
+    fs_setup.b_mock.set_block_nonce(200);
+    fs_setup.b_mock.set_block_epoch(13);
+
+    let boosted_rewards_for_week = 100;
+
+    fs_setup
+        .b_mock
+        .execute_tx(
+            &second_user,
+            &fs_setup.farm_wrapper,
+            &rust_biguint!(0u64),
+            |sc| {
+                sc.claim_boosted_rewards(OptionalValue::Some(managed_address!(&second_user)));
+            },
+        )
+        .assert_error(4, "User total farm position is empty!");
+
+    fs_setup.check_farm_rps(current_farm_rps);
+
+    // advance 1 week
+    fs_setup.set_user_energy(&first_user, 1_000, 15, 1);
+    fs_setup.b_mock.set_block_nonce(300);
+    fs_setup.b_mock.set_block_epoch(15);
+    fs_setup.claim_boosted_rewards_for_user(
+        &first_user,
+        &first_user,
+        boosted_rewards_for_week,
+        &rust_biguint!(boosted_rewards_for_week),
+    );
+
+    current_farm_rps += farm_rps_increase * 2;
+    fs_setup.check_farm_rps(current_farm_rps);
+    fs_setup.b_mock.check_dcdt_balance(
+        &first_user,
+        REWARD_TOKEN_ID,
+        &rust_biguint!(boosted_rewards_for_week),
+    );
+
+    let expected_attributes = StakingFarmTokenAttributes::<DebugApi> {
+        reward_per_share: managed_biguint!(0),
+        compounded_reward: managed_biguint!(0),
+        current_farm_amount: managed_biguint!(farm_in_amount),
+        original_owner: managed_address!(&first_user),
+    };
+
+    fs_setup.b_mock.check_nft_balance(
+        &first_user,
+        FARM_TOKEN_ID,
+        1,
+        &rust_biguint!(farm_in_amount),
+        Some(&expected_attributes),
+    );
+}
+
+#[test]
+fn test_multiple_positions_on_behalf() {
+    DebugApi::dummy();
+
+    let mut fs_setup = FarmStakingSetup::new(
+        farm_staking::contract_obj,
+        energy_factory::contract_obj,
+        permissions_hub::contract_obj,
+    );
+
+    fs_setup.set_boosted_yields_rewards_percentage(BOOSTED_YIELDS_PERCENTAGE);
+    fs_setup.set_boosted_yields_factors();
+    let mut block_nonce = 0u64;
+    fs_setup.b_mock.set_block_nonce(block_nonce);
+
+    // new external user
+    let external_user = fs_setup.b_mock.create_user_account(&rust_biguint!(0));
+    fs_setup.set_user_energy(&external_user, 1_000, 1, 1);
+
+    // authorized address
+    let farm_token_amount = 100_000_000;
+    let authorized_address = fs_setup.user_address.clone();
+    fs_setup.b_mock.set_dcdt_balance(
+        &authorized_address,
+        FARMING_TOKEN_ID,
+        &rust_biguint!(farm_token_amount * 2),
+    );
+
+    fs_setup.whitelist_address_on_behalf(&external_user, &authorized_address);
+
+    fs_setup.check_farm_token_supply(0);
+    fs_setup.stake_farm_on_behalf(&authorized_address, &external_user, farm_token_amount, 0, 0);
+    fs_setup.check_farm_token_supply(farm_token_amount);
+
+    let block_nonce_diff = 10u64;
+    block_nonce += block_nonce_diff;
+    fs_setup.b_mock.set_block_nonce(block_nonce);
+
+    let base_rewards = 30u64;
+    let boosted_rewards = 10u64;
+    let total_rewards = base_rewards + boosted_rewards;
+
+    // Only base rewards are given
+    fs_setup
+        .b_mock
+        .check_dcdt_balance(&external_user, REWARD_TOKEN_ID, &rust_biguint!(0));
+    fs_setup.claim_rewards_on_behalf(&authorized_address, 1, farm_token_amount);
+    fs_setup.b_mock.check_dcdt_balance(
+        &external_user,
+        REWARD_TOKEN_ID,
+        &rust_biguint!(base_rewards),
+    );
+
+    // random tx on end of week 1, to cummulate rewards
+    fs_setup.b_mock.set_block_epoch(6);
+    let temp_user = fs_setup.b_mock.create_user_account(&rust_biguint!(0));
+    fs_setup.b_mock.set_dcdt_balance(
+        &temp_user,
+        FARMING_TOKEN_ID,
+        &rust_biguint!(USER_TOTAL_RIDE_TOKENS),
+    );
+    fs_setup.set_user_energy(&external_user, 1_000, 6, 1);
+    fs_setup.set_user_energy(&temp_user, 1, 6, 1);
+    fs_setup.stake_farm(&temp_user, 10, &[], 3, 300_000u64, 0);
+    fs_setup.unstake_farm_no_checks(&temp_user, 10, 3);
+
+    // advance 1 week
+    block_nonce += block_nonce_diff;
+    fs_setup.b_mock.set_block_nonce(block_nonce);
+    fs_setup.b_mock.set_block_epoch(10);
+    fs_setup.set_user_energy(&external_user, 1_000, 10, 1);
+
+    // enter farm again for the same user (with additional payment)
+    fs_setup.check_farm_token_supply(farm_token_amount);
+    fs_setup.stake_farm_on_behalf(
+        &authorized_address,
+        &external_user,
+        farm_token_amount,
+        2, // nonce 2 as the user already claimed with this position
+        farm_token_amount,
+    );
+    fs_setup.check_farm_token_supply(farm_token_amount * 2);
+    fs_setup.b_mock.check_dcdt_balance(
+        &external_user,
+        REWARD_TOKEN_ID,
+        &rust_biguint!(base_rewards + boosted_rewards),
+    );
+
+    fs_setup.claim_rewards_on_behalf(&authorized_address, 5, farm_token_amount * 2);
+    fs_setup.check_farm_token_supply(farm_token_amount * 2);
+    fs_setup.b_mock.check_dcdt_balance(
+        &external_user,
+        REWARD_TOKEN_ID,
+        &rust_biguint!(total_rewards + base_rewards),
+    );
+
+    let farm_token_attributes: StakingFarmTokenAttributes<DebugApi> = StakingFarmTokenAttributes {
+        reward_per_share: managed_biguint!(600_000u64),
+        compounded_reward: managed_biguint!(0),
+        current_farm_amount: managed_biguint!(farm_token_amount * 2),
+        original_owner: managed_address!(&external_user),
+    };
+
+    fs_setup.b_mock.check_nft_balance(
+        &authorized_address,
+        FARM_TOKEN_ID,
+        6,
+        &rust_biguint!(farm_token_amount * 2),
+        Some(&farm_token_attributes),
+    );
+}
+
+#[test]
+fn owner_claim_undist_rewards_test() {
+    DebugApi::dummy();
+
+    let mut fs_setup = FarmStakingSetup::new(
+        farm_staking::contract_obj,
+        energy_factory::contract_obj,
+        permissions_hub::contract_obj,
+    );
+
+    let user_address = fs_setup.user_address.clone();
+    let user_address2 = fs_setup.user_address2.clone();
+
+    fs_setup.set_boosted_yields_factors();
+    fs_setup.set_boosted_yields_rewards_percentage(BOOSTED_YIELDS_PERCENTAGE);
+
+    fs_setup.set_user_energy(&user_address, 9_800, 0, 100);
+    fs_setup.set_user_energy(&user_address2, 4_900, 0, 350);
+
+    let farm_in_amount = 100_000_000;
+    fs_setup.stake_farm(&user_address, farm_in_amount, &[], 1, 0, 0);
+    fs_setup.stake_farm(&user_address2, farm_in_amount, &[], 2, 0, 0);
+    fs_setup.check_farm_token_supply(farm_in_amount * 2);
+
+    // claim to get energy registered
+    fs_setup
+        .b_mock
+        .execute_dcdt_transfer(
+            &user_address,
+            &fs_setup.farm_wrapper,
+            FARM_TOKEN_ID,
+            1,
+            &rust_biguint!(farm_in_amount),
+            |sc| {
+                let _ = sc.claim_rewards(OptionalValue::None);
+            },
+        )
+        .assert_ok();
+
+    fs_setup
+        .b_mock
+        .execute_dcdt_transfer(
+            &user_address2,
+            &fs_setup.farm_wrapper,
+            FARM_TOKEN_ID,
+            2,
+            &rust_biguint!(farm_in_amount),
+            |sc| {
+                let _ = sc.claim_rewards(OptionalValue::None);
+            },
+        )
+        .assert_ok();
+
+    // random user tx to collect rewards - week 1
+    let rand_user = fs_setup.b_mock.create_user_account(&rust_biguint!(0));
+    fs_setup.b_mock.set_dcdt_balance(
+        &rand_user,
+        FARMING_TOKEN_ID,
+        &rust_biguint!(USER_TOTAL_RIDE_TOKENS),
+    );
+
+    fs_setup.set_user_energy(&rand_user, 1, 6, 1);
+    fs_setup.set_block_epoch(6);
+    fs_setup.set_block_nonce(10);
+
+    fs_setup
+        .b_mock
+        .execute_dcdt_transfer(
+            &rand_user,
+            &fs_setup.farm_wrapper,
+            FARMING_TOKEN_ID,
+            0,
+            &rust_biguint!(10),
+            |sc| {
+                let _ = sc.stake_farm_endpoint(OptionalValue::None);
+            },
+        )
+        .assert_ok();
+
+    fs_setup
+        .b_mock
+        .execute_dcdt_transfer(
+            &rand_user,
+            &fs_setup.farm_wrapper,
+            FARM_TOKEN_ID,
+            5,
+            &rust_biguint!(10),
+            |sc| {
+                let _ = sc.unstake_farm(OptionalValue::None);
+            },
+        )
+        .assert_ok();
+
+    // first user claim - week 2
+    fs_setup.set_block_epoch(13);
+    fs_setup.set_block_nonce(20);
+
+    fs_setup
+        .b_mock
+        .execute_dcdt_transfer(
+            &user_address,
+            &fs_setup.farm_wrapper,
+            FARM_TOKEN_ID,
+            3,
+            &rust_biguint!(farm_in_amount),
+            |sc| {
+                let _ = sc.claim_rewards(OptionalValue::None);
+            },
+        )
+        .assert_ok();
+
+    // first user claim - week 3
+    fs_setup.set_block_epoch(20);
+    fs_setup.set_block_nonce(30);
+
+    fs_setup
+        .b_mock
+        .execute_dcdt_transfer(
+            &user_address,
+            &fs_setup.farm_wrapper,
+            FARM_TOKEN_ID,
+            7,
+            &rust_biguint!(farm_in_amount),
+            |sc| {
+                let _ = sc.claim_rewards(OptionalValue::None);
+            },
+        )
+        .assert_ok();
+
+    // first user claim - week 4
+    fs_setup.set_block_epoch(27);
+    fs_setup.set_block_nonce(40);
+
+    fs_setup
+        .b_mock
+        .execute_dcdt_transfer(
+            &user_address,
+            &fs_setup.farm_wrapper,
+            FARM_TOKEN_ID,
+            8,
+            &rust_biguint!(farm_in_amount),
+            |sc| {
+                let _ = sc.claim_rewards(OptionalValue::None);
+            },
+        )
+        .assert_ok();
+
+    // try to collect rewards too early - should fail
+    fs_setup
+        .b_mock
+        .execute_tx(
+            &fs_setup.owner_address,
+            &fs_setup.farm_wrapper,
+            &rust_biguint!(0),
+            |sc| {
+                sc.collect_undistributed_boosted_rewards();
+            },
+        )
+        .assert_error(4, "Current week must be higher than the week offset");
+
+    // first user claim - week 5
+    fs_setup.set_block_epoch(34);
+    fs_setup.set_block_nonce(50);
+
+    fs_setup
+        .b_mock
+        .execute_dcdt_transfer(
+            &user_address,
+            &fs_setup.farm_wrapper,
+            FARM_TOKEN_ID,
+            9,
+            &rust_biguint!(farm_in_amount),
+            |sc| {
+                let _ = sc.claim_rewards(OptionalValue::None);
+            },
+        )
+        .assert_ok();
+
+    // first user claim - week 6
+    fs_setup.set_block_epoch(41);
+    fs_setup.set_block_nonce(50);
+
+    fs_setup
+        .b_mock
+        .execute_dcdt_transfer(
+            &user_address,
+            &fs_setup.farm_wrapper,
+            FARM_TOKEN_ID,
+            10,
+            &rust_biguint!(farm_in_amount),
+            |sc| {
+                let _ = sc.claim_rewards(OptionalValue::None);
+            },
+        )
+        .assert_ok();
+
+    // first user claim - week 7
+    fs_setup.set_block_epoch(48);
+    fs_setup.set_block_nonce(60);
+
+    fs_setup
+        .b_mock
+        .execute_dcdt_transfer(
+            &user_address,
+            &fs_setup.farm_wrapper,
+            FARM_TOKEN_ID,
+            11,
+            &rust_biguint!(farm_in_amount),
+            |sc| {
+                let _ = sc.claim_rewards(OptionalValue::None);
+            },
+        )
+        .assert_ok();
+
+    fs_setup.set_block_epoch(49);
+
+    // Verify remaining rewards state
+    fs_setup
+        .b_mock
+        .execute_query(&fs_setup.farm_wrapper, |sc| {
+            // Check remaining rewards for weeks 1-3
+            let remaining1 = sc.remaining_boosted_rewards_to_distribute(1).get();
+            let remaining2 = sc.remaining_boosted_rewards_to_distribute(2).get();
+            let remaining3 = sc.remaining_boosted_rewards_to_distribute(3).get();
+
+            // We should have some undistributed rewards
+            assert!(
+                remaining1 > 0 && remaining2 > 0 && remaining3 > 0,
+                "Should have remaining rewards to distribute in weeks 1 to 3"
+            );
+
+            // Check last_collect_undist_week is not set yet
+            let last_collect = sc.last_collect_undist_week().get();
+            assert_eq!(last_collect, 0, "Last collect week should be 0 initially");
+        })
+        .assert_ok();
+
+    // owner collect undist rewards
+    let owner = fs_setup.owner_address.clone();
+    fs_setup
+        .b_mock
+        .execute_tx(
+            &fs_setup.owner_address,
+            &fs_setup.farm_wrapper,
+            &rust_biguint!(0),
+            |sc| {
+                let undist_rewards = sc.collect_undistributed_boosted_rewards();
+                assert_eq!(undist_rewards, 22);
+
+                // Verify last_collect_undist_week was updated
+                let last_collect = sc.last_collect_undist_week().get();
+                assert!(last_collect == 4, "Last collect week should be updated");
+
+                // Verify remaining rewards for week 1 are now zero
+                let remaining1 = sc.remaining_boosted_rewards_to_distribute(1).get();
+                assert_eq!(remaining1, 0u64, "Week 1 rewards should now be zero");
+
+                // Verify remaining rewards for week 2 are now zero
+                let remaining2 = sc.remaining_boosted_rewards_to_distribute(2).get();
+                assert_eq!(remaining2, 0u64, "Week 2 rewards should now be zero");
+
+                // Verify remaining rewards for week 3 are now zero
+                let remaining3 = sc.remaining_boosted_rewards_to_distribute(3).get();
+                assert_eq!(remaining3, 0u64, "Week 3 rewards should now be zero");
+            },
+        )
+        .assert_ok();
+
+    // check owner received tokens
+    fs_setup
+        .b_mock
+        .check_dcdt_balance(&owner, REWARD_TOKEN_ID, &rust_biguint!(22));
 }

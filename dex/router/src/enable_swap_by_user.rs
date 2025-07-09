@@ -1,10 +1,11 @@
 dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
 
-use pausable::State;
+use pair::{config::ProxyTrait as _, pair_actions::views::ProxyTrait as _, read_pair_storage};
+use pausable::{ProxyTrait as _, State};
 use simple_lock::locked_token::LockedTokenAttributes;
 
-use crate::{config, pair_proxy, DEFAULT_SPECIAL_FEE_PERCENT, USER_DEFINED_TOTAL_FEE_PERCENT};
+use crate::{config, DEFAULT_SPECIAL_FEE_PERCENT, USER_DEFINED_TOTAL_FEE_PERCENT};
 
 static PAIR_LP_TOKEN_ID_STORAGE_KEY: &[u8] = b"lpTokenIdentifier";
 static PAIR_INITIAL_LIQ_ADDER_STORAGE_KEY: &[u8] = b"initial_liquidity_adder";
@@ -27,7 +28,7 @@ pub struct SafePriceResult<M: ManagedTypeApi> {
 #[dharitri_sc::module]
 pub trait EnableSwapByUserModule:
     config::ConfigModule
-    + crate::read_pair_storage::ReadPairStorageModule
+    + read_pair_storage::ReadPairStorageModule
     + crate::factory::FactoryModule
     + crate::events::EventsModule
 {
@@ -136,14 +137,12 @@ pub trait EnableSwapByUserModule:
         self.set_fee_percents(pair_address.clone());
         self.pair_resume(pair_address.clone());
 
-        self.tx()
-            .to(&caller)
-            .single_dcdt(
-                &payment.token_identifier,
-                payment.token_nonce,
-                &payment.amount,
-            )
-            .transfer();
+        self.send().direct_dcdt(
+            &caller,
+            &payment.token_identifier,
+            payment.token_nonce,
+            &payment.amount,
+        );
 
         self.emit_user_swaps_enabled_event(
             caller,
@@ -177,13 +176,10 @@ pub trait EnableSwapByUserModule:
         pair_address: ManagedAddress,
         lp_token_amount: BigUint,
     ) -> SafePriceResult<Self::Api> {
-        let multi_value = self
-            .tx()
-            .to(&pair_address)
-            .typed(pair_proxy::PairProxy)
-            .get_tokens_for_given_position(lp_token_amount)
-            .returns(ReturnsResult)
-            .sync_call();
+        let multi_value: MultiValue2<DcdtTokenPayment<Self::Api>, DcdtTokenPayment<Self::Api>> =
+            self.user_pair_proxy(pair_address)
+                .get_tokens_for_given_position(lp_token_amount)
+                .execute_on_dest_context();
 
         let (first_result, second_result) = multi_value.into_tuple();
         let mut safe_price_result = SafePriceResult {
@@ -233,19 +229,17 @@ pub trait EnableSwapByUserModule:
     }
 
     fn set_fee_percents(&self, pair_address: ManagedAddress) {
-        self.tx()
-            .to(&pair_address)
-            .typed(pair_proxy::PairProxy)
+        let _: IgnoreValue = self
+            .user_pair_proxy(pair_address)
             .set_fee_percent(USER_DEFINED_TOTAL_FEE_PERCENT, DEFAULT_SPECIAL_FEE_PERCENT)
-            .sync_call();
+            .execute_on_dest_context();
     }
 
     fn pair_resume(&self, pair_address: ManagedAddress) {
-        self.tx()
-            .to(&pair_address)
-            .typed(pair_proxy::PairProxy)
+        let _: IgnoreValue = self
+            .user_pair_proxy(pair_address)
             .resume()
-            .sync_call();
+            .execute_on_dest_context();
     }
 
     fn read_storage_from_pair<T: TopDecode>(
@@ -257,4 +251,7 @@ pub trait EnableSwapByUserModule:
         self.storage_raw()
             .read_from_address(pair_address, key_buffer)
     }
+
+    #[proxy]
+    fn user_pair_proxy(&self, to: ManagedAddress) -> pair::Proxy<Self::Api>;
 }

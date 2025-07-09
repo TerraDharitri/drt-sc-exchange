@@ -3,8 +3,7 @@ dharitri_sc::derive_imports!();
 
 use common_structs::Epoch;
 
-#[type_abi]
-#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, Clone, PartialEq, Debug)]
+#[derive(TypeAbi, TopEncode, TopDecode, NestedEncode, NestedDecode, Clone, PartialEq, Debug)]
 pub struct Energy<M: ManagedTypeApi> {
     amount: BigInt<M>,
     last_update_epoch: Epoch,

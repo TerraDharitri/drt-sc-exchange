@@ -1,7 +1,8 @@
 dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
 
-use crate::{config, pair_proxy};
+use crate::config;
+use pair::read_pair_storage;
 
 const TEMPORARY_OWNER_PERIOD_BLOCKS: u64 = 50;
 
@@ -19,9 +20,10 @@ pub struct PairContractMetadata<M: ManagedTypeApi> {
 }
 
 #[dharitri_sc::module]
-pub trait FactoryModule:
-    config::ConfigModule + crate::read_pair_storage::ReadPairStorageModule
-{
+pub trait FactoryModule: config::ConfigModule + read_pair_storage::ReadPairStorageModule {
+    #[proxy]
+    fn pair_contract_deploy_proxy(&self) -> pair::Proxy<Self::Api>;
+
     fn init_factory(&self, pair_template_address_opt: Option<ManagedAddress>) {
         if let Some(addr) = pair_template_address_opt {
             self.pair_template_address().set(&addr);
@@ -45,9 +47,9 @@ pub trait FactoryModule:
             !self.pair_template_address().is_empty(),
             "pair contract template is empty"
         );
-        let new_address = self
-            .tx()
-            .typed(pair_proxy::PairProxy)
+
+        let (new_address, ()) = self
+            .pair_contract_deploy_proxy()
             .init(
                 first_token_id,
                 second_token_id,
@@ -58,12 +60,10 @@ pub trait FactoryModule:
                 initial_liquidity_adder,
                 admins,
             )
-            .from_source(self.pair_template_address().get())
-            .code_metadata(
+            .deploy_from_source(
+                &self.pair_template_address().get(),
                 CodeMetadata::UPGRADEABLE | CodeMetadata::READABLE | CodeMetadata::PAYABLE_BY_SC,
-            )
-            .returns(ReturnsNewManagedAddress)
-            .sync_call();
+            );
 
         self.pair_map().insert(
             PairTokens {
@@ -83,14 +83,14 @@ pub trait FactoryModule:
     }
 
     fn upgrade_pair(&self, pair_address: ManagedAddress) {
+        let pair_template_address = self.pair_template_address().get();
+        let code_metadata =
+            CodeMetadata::UPGRADEABLE | CodeMetadata::READABLE | CodeMetadata::PAYABLE_BY_SC;
         self.tx()
             .to(pair_address)
-            .typed(pair_proxy::PairProxy)
-            .upgrade()
-            .from_source(self.pair_template_address().get())
-            .code_metadata(
-                CodeMetadata::UPGRADEABLE | CodeMetadata::READABLE | CodeMetadata::PAYABLE_BY_SC,
-            )
+            .raw_upgrade()
+            .from_source(pair_template_address)
+            .code_metadata(code_metadata)
             .upgrade_async_call_and_exit();
     }
 

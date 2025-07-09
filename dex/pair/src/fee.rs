@@ -9,9 +9,19 @@ use crate::config::MAX_PERCENTAGE;
 use crate::contexts::base::StorageCache;
 use crate::contexts::base::SwapTokensOrder;
 
-use crate::fees_collector_proxy;
-use crate::self_proxy;
 use common_structs::TokenPair;
+use fees_collector::fees_accumulation::ProxyTrait as _;
+
+mod self_proxy {
+    dharitri_sc::imports!();
+
+    #[dharitri_sc::proxy]
+    pub trait PairProxy {
+        #[payable("*")]
+        #[endpoint(swapNoFeeAndForward)]
+        fn swap_no_fee(&self, token_out: TokenIdentifier, destination_address: ManagedAddress);
+    }
+}
 
 #[dharitri_sc::module]
 pub trait FeeModule:
@@ -162,13 +172,11 @@ pub trait FeeModule:
 
     fn send_fees_collector_cut(&self, token: TokenIdentifier, cut_amount: BigUint) {
         let fees_collector_address = self.fees_collector_address().get();
-
-        self.tx()
-            .to(&fees_collector_address)
-            .typed(fees_collector_proxy::FeesCollectorProxy)
+        let _: IgnoreValue = self
+            .fees_collector_proxy(fees_collector_address)
             .deposit_swap_fees()
-            .single_dcdt(&token, 0, &cut_amount)
-            .sync_call();
+            .with_dcdt_transfer((token, 0, cut_amount))
+            .execute_on_dest_context();
     }
 
     fn send_fee_slice(
@@ -288,12 +296,12 @@ pub trait FeeModule:
     ) {
         let pair_address = self.get_extern_swap_pair_address(available_token, requested_token);
 
-        self.tx()
-            .to(&pair_address)
-            .typed(self_proxy::PairProxy)
+        let _: IgnoreValue = self
+            .pair_proxy()
+            .contract(pair_address)
             .swap_no_fee(requested_token.clone(), destination_address.clone())
-            .single_dcdt(available_token, 0, available_amount)
-            .sync_call();
+            .with_dcdt_transfer((available_token.clone(), 0, available_amount.clone()))
+            .execute_on_dest_context();
     }
 
     #[inline]
@@ -388,6 +396,12 @@ pub trait FeeModule:
         }
         result
     }
+
+    #[proxy]
+    fn pair_proxy(&self) -> self_proxy::Proxy<Self::Api>;
+
+    #[proxy]
+    fn fees_collector_proxy(&self, sc_address: ManagedAddress) -> fees_collector::Proxy<Self::Api>;
 
     #[view(getFeesCollectorAddress)]
     #[storage_mapper("feesCollectorAddress")]

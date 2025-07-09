@@ -110,11 +110,8 @@ pub trait PairMock {
         let caller = self.blockchain().get_caller();
 
         let lp_token_amount = liquidity - MINIMUM_LIQUIDITY;
-
-        self.tx()
-            .to(&caller)
-            .single_dcdt(&lp_token_id, 0, &lp_token_amount)
-            .transfer();
+        self.send()
+            .direct_dcdt(&caller, &lp_token_id, 0, &lp_token_amount);
 
         (
             DcdtTokenPayment::new(lp_token_id, 0, lp_token_amount),

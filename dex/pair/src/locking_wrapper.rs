@@ -1,5 +1,3 @@
-use crate::energy_factory_lock_proxy;
-
 dharitri_sc::imports!();
 
 #[dharitri_sc::module]
@@ -58,15 +56,15 @@ pub trait LockingWrapperModule:
         amount: BigUint,
     ) -> DcdtTokenPayment<Self::Api> {
         let unlock_epoch = self.unlock_epoch().get();
-        let locking_sc_address = self.locking_sc_address().get();
+        let mut proxy_instance = self.get_locking_sc_proxy_instance();
 
-        self.tx()
-            .to(locking_sc_address)
-            .typed(energy_factory_lock_proxy::SimpleLockEnergyProxy)
+        let payment: RewaOrDcdtTokenPayment<Self::Api> = proxy_instance
             .lock_tokens_endpoint(unlock_epoch, opt_dest)
-            .single_dcdt(&token_id, 0, &amount)
-            .returns(ReturnsResult)
-            .sync_call()
+            .with_dcdt_transfer((token_id, 0, amount))
+            .execute_on_dest_context();
+        let (token_id, token_nonce, amount) = payment.into_tuple();
+
+        DcdtTokenPayment::new(token_id.unwrap_dcdt(), token_nonce, amount)
     }
 
     fn should_generate_locked_asset(&self) -> bool {
@@ -75,6 +73,14 @@ pub trait LockingWrapperModule:
 
         current_epoch < locking_deadline_epoch
     }
+
+    fn get_locking_sc_proxy_instance(&self) -> simple_lock::ProxyTo<Self::Api> {
+        let locking_sc_address = self.locking_sc_address().get();
+        self.locking_sc_proxy_obj(locking_sc_address)
+    }
+
+    #[proxy]
+    fn locking_sc_proxy_obj(&self, sc_address: ManagedAddress) -> simple_lock::Proxy<Self::Api>;
 
     #[view(getLockingScAddress)]
     #[storage_mapper("lockingScAddress")]

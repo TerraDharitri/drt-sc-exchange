@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                           67
+// Endpoints:                           68
 // Async Callback:                       1
-// Total number of exported functions:  70
+// Total number of exported functions:  71
 
 #![no_std]
 
@@ -32,14 +32,13 @@ dharitri_sc_wasm_adapter::endpoints! {
         calculateRewardsForGivenPosition => calculate_rewards_for_given_position
         getRewardPerShare => reward_per_share
         getRewardReserve => reward_reserve
-        allowExternalClaimBoostedRewards => allow_external_claim_boosted_rewards
-        getAllowExternalClaimRewards => get_allow_external_claim_rewards
         getFarmingTokenId => farming_token_id
         getRewardTokenId => reward_token_id
         getPerBlockRewardAmount => per_block_reward_amount
         getLastRewardBlockNonce => last_reward_block_nonce
         getDivisionSafetyConstant => division_safety_constant
         getUserTotalFarmPosition => user_total_farm_position
+        getAllowExternalClaim => allow_external_claim
         getFarmPositionMigrationNonce => farm_position_migration_nonce
         setLockingScAddress => set_locking_sc_address
         setLockEpochs => set_lock_epochs
@@ -57,6 +56,7 @@ dharitri_sc_wasm_adapter::endpoints! {
         removeAdmin => remove_admin_endpoint
         updateOwnerOrAdmin => update_owner_or_admin_endpoint
         getPermissions => permissions
+        setPermissionsHubAddress => set_permissions_hub_address
         addSCAddressToWhitelist => add_sc_address_to_whitelist
         removeSCAddressFromWhitelist => remove_sc_address_from_whitelist
         isSCAddressWhitelisted => is_sc_address_whitelisted
@@ -67,14 +67,15 @@ dharitri_sc_wasm_adapter::endpoints! {
         getMinimumFarmingEpoch => minimum_farming_epochs
         getBurnGasLimit => burn_gas_limit
         getPairContractManagedAddress => pair_contract_address
-        collectUndistributedBoostedRewards => collect_undistributed_boosted_rewards
+        enterFarmOnBehalf => enter_farm_on_behalf
+        claimRewardsOnBehalf => claim_rewards_on_behalf
         getBoostedYieldsRewardsPercentage => boosted_yields_rewards_percentage
         getAccumulatedRewardsForWeek => accumulated_rewards_for_week
         getFarmSupplyForWeek => farm_supply_for_week
-        getRemainingBoostedRewardsToDistribute => remaining_boosted_rewards_to_distribute
-        getUndistributedBoostedRewards => undistributed_boosted_rewards
         setBoostedYieldsFactors => set_boosted_yields_factors
         getBoostedYieldsFactors => get_boosted_yields_factors
+        collectUndistributedBoostedRewards => collect_undistributed_boosted_rewards
+        getRemainingBoostedRewardsToDistribute => remaining_boosted_rewards_to_distribute
         getCurrentWeek => get_current_week
         getFirstWeekStartEpoch => first_week_start_epoch
         getLastActiveWeekForUser => get_last_active_week_for_user_view
